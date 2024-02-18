@@ -1,0 +1,139 @@
+Les Network protocols sont un ensemble de regles derivant comment connecter des interfaces/appareils a travers un reseau
+pour des echanges d'information faciles et securises. Les protocoles sont utilis2s comme langage commun pour les 
+interfaces/appareils afin d'etablir la communication independamment des diferences de logiciel, matériels ou processus internes.
+
+Les protocols de connexion se presentent comme un fichier ASCII, decrivant les variaitons 
+"Defense Advanced Research Projects Agency" (DARPA) qui sont disponibles depuis le sous-systeme TCP/IP
+Ils peuvent etre consultes en utilisant les nombres dans le fichier d'inclusion <include file> ARPA 
+"Advanced Research Projects Agency" ou en les devinants. Ces nombres apparaissentdans le champ des protocols
+de chaque IP header.
+
+Des changements dur ce fichier entrainent des erreurs dans les paquets IP
+"incorrect IP package..."
+les protocols (nombre et nom correspondant) sonmt specifies par
+       IANA (Internet Assigned Numbers Authority).
+chaque ligne est formulee
+              protocol number aliases ...
+les champs sont separes par des espaces ou tabulations. les lignes vides sont ignorees
+si une ligne contient un diese hash mark (#), le diese et la suite de la ligne est ignoree.
+
+    les champs de description sont:
+       protocol
+              the native name for the protocol.  For example ip, tcp, or
+              udp.
+
+       number the official number for this protocol as it will appear
+              within the IP header.
+
+       aliases
+              optional aliases for the protocol.
+
+Ce fichier peut être distribué sur un réseau en utilisant un service de nommage network-wide 
+	(like Yellow Pages/NIS or BIND/Hesiod).
+
+
+FILES
+       /etc/protocols
+              The protocols definition file.
+
+________________________________________________________________________________________________________________
+
+PROTOENT
+The protoent structure is defined in <netdb.h> as follows:
+	struct protoent {
+		char  *p_name;       /* official protocol name */
+		char **p_aliases;    /* alias list */
+		int    p_proto;      /* protocol number */
+	}
+The members of the protoent structure are:
+	p_name 
+			The official name of the protocol.
+	p_aliases
+			A NULL-terminated list of alternative names for the
+			protocol.
+	p_proto
+			The protocol number.
+________________________________________________________________________________________________________________
+
+getprotoent(3)          Library Functions Manual          getprotoent(3)
+
+NAME
+
+       getprotoent, getprotobyname, getprotobynumber, setprotoent,
+       endprotoent - get protocol entry
+
+LIBRARY
+
+       Standard C library (libc, -lc)
+
+SYNOPSIS
+
+       #include <netdb.h>
+
+       struct protoent *getprotoent(void);
+
+       struct protoent *getprotobyname(const char *name);															<== <getprotobyname> autorised
+       struct protoent *getprotobynumber(int proto);
+
+       void setprotoent(int stayopen);
+       void endprotoent(void);
+
+DESCRIPTION
+
+       The getprotoent() function reads the next entry from the
+       protocols database (see protocols(5)) and returns a protoent
+       structure containing the broken-out fields from the entry.  A
+       connection is opened to the database if necessary.
+
+       The getprotobyname() function returns a protoent structure for
+       the entry from the database that matches the protocol name name.
+       A connection is opened to the database if necessary.
+
+       The getprotobynumber() function returns a protoent structure for
+       the entry from the database that matches the protocol number
+       number.  A connection is opened to the database if necessary.
+
+       The setprotoent() function opens a connection to the database,
+       and sets the next entry to the first entry.  If stayopen is
+       nonzero, then the connection to the database will not be closed
+       between calls to one of the getproto*() functions.
+
+       The endprotoent() function closes the connection to the database.
+
+RETURN VALUE
+
+       The getprotoent(), getprotobyname(), and getprotobynumber()
+       functions return a pointer to a statically allocated protoent
+       structure, or a null pointer if an error occurs or the end of the
+       file is reached.
+
+FILES
+
+       /etc/protocols
+              protocol database file
+
+ATTRIBUTES
+
+       For an explanation of the terms used in this section, see
+       attributes(7).
+       ┌────────────────────┬───────────────┬──────────────────────────┐
+       │ Interface          │ Attribute     │ Value                    │
+       ├────────────────────┼───────────────┼──────────────────────────┤
+       │ getprotoent()      │ Thread safety │ MT-Unsafe race:protoent  │
+       │                    │               │ race:protoentbuf locale  │
+       ├────────────────────┼───────────────┼──────────────────────────┤
+       │ getprotobyname()   │ Thread safety │ MT-Unsafe                │
+       │                    │               │ race:protobyname locale  │
+       ├────────────────────┼───────────────┼──────────────────────────┤
+       │ getprotobynumber() │ Thread safety │ MT-Unsafe                │
+       │                    │               │ race:protobynumber       │
+       │                    │               │ locale                   │
+       ├────────────────────┼───────────────┼──────────────────────────┤
+       │ setprotoent(),     │ Thread safety │ MT-Unsafe race:protoent  │
+       │ endprotoent()      │               │ locale                   │
+       └────────────────────┴───────────────┴──────────────────────────┘
+
+       In the above table, protoent in race:protoent signifies that if
+       any of the functions setprotoent(), getprotoent(), or
+       endprotoent() are used in parallel in different threads of a
+       program, then data races could occur.

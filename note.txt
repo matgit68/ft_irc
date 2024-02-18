@@ -1,0 +1,60 @@
+OUTIL
+	Tout ce qui respecte la norme C++ 98.
+	close,
+	gethostbyname, getaddrinfo, freeaddrinfo, 
+	bind,htons, htonl, ntohs, ntohl, 
+	inet_addr, inet_ntoa, 
+	signal, sigaction, lseek, fstat, fcntl,
+man-socket.txt
+	socket, setsockopt, getsockname, connect, listen, accept, send, recv, poll (ou équivalent select(), kqueue(), ou epoll())
+protocol.txt
+	getprotobyname, 
+
+creer un server IRC fonctionnant comme un serveur officiel
+/* 			SUJET
+Il existe plusieurs clients IRC. Vous devez choisir l’un d’eux comme référence.
+Votre client de référence sera utilisé pour l’évaluation
+	◦ Vous devez pouvoir vous authentifier, définir un nickname, un username, re-
+	joindre un channel, envoyer et recevoir des messages privés, avec votre client
+	de référence.
+	◦ Tous les messages envoyés par un client dans un channel doivent être transmis
+	à tous les clients ayant rejoint ce channel.
+	◦ Vous devez avoir des operators et des utilisateurs basiques.
+	◦ Vous devez donc implémenter les commandes spécifiques aux operateurs de
+	canaux.
+	◦ KICK - Ejecter un client du channel
+	◦ INVITE - Inviter un client au channel
+	◦ TOPIC - Modifier ou afficher le thème du channel
+	◦ MODE - Changer le mode du channel :
+	— i : Définir/supprimer le canal sur invitation uniquement
+	— t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
+	rateurs de canaux
+	— k : Définir/supprimer la clé du canal (mot de passe)
+	— o : Donner/retirer le privilège de l’opérateur de canal
+	— l : Définir/supprimer la limite d’utilisateurs pour le canal
+*/
+Votre binaire devra être appelé comme ceci :
+	./ircserv <port> <password>
+La communication entre le client et le serveur se fera en TCP/IP (v4 ou v6)
+
+
+creation server sous forme de prg simple avec sa gestion de data (class)
+inclure l'ensemble du focntionnement en TRY/CATCH (garantir l'absence de crash)
+	definir nos propres codes erreurs, messages erreur et comportement a adopter en cas d'erreur
+	/* 			SUJET
+		Vérifiez absolument toutes les erreurs et tous les problèmes possibles (donnée partiel-
+		lement reçue, bande passante faible, etc.).
+	*/
+SOCKET definir le port utiliser sur le localhost (127.0.0.1:xxxx) pour les communication client-serveur
+	port : 16 bits (0 à 65 535) = USHORT
+			Les numéros de 0 à 1023 sont réservés, par convention, à des services spécifiques.
+			Exemples (avec TCP) :
+			7 : echo 	25 : SMTP (acheminement mail) 	443 : HTTPS (HTTP sécurisé)
+			22 : SSH 	80 : HTTP (serveur web) 		465 : SMTPS (SMTP sécurisé)
+permettre les connections/communication avec les clients (? <signal> + <sigaction> ?)
+	siginfo_t : uid_t   si_uid;         /* UID réel de l'émetteur   */
+CLIENT le client se connectant au server est traiter comme un fd <accept> puis traiter dans le <poll> en attente
+	stockage info client en container<pollfd> (usage des reauest poll pour les transmission non bloquante server-irc)
+	identifier une 	nouvelle connexion client
+					deconnexion client
+					transmission msg
