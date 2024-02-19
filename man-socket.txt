@@ -12,8 +12,8 @@ le port UDP (user datagram protocol) n'est pas prealablement connecter, les echa
 
 le protocol TCP/IP permet alors
 	- transmission bidirectionnelle par flot d'octet
-	- garatie la fiabilite de l'echange des lors aue la liaison physique est cree
-	- garantie un flux ordonne (ordre de reception identiaue a la rensmission)
+	- garatie la fiabilite de l'echange des lors que la liaison physique est cree
+	- garantie un flux ordonne (ordre de reception identique a la transmission)
 	- Contrôle de flux. Permet au récepteur de limiter le débit d’émission en fonction de ses capacités de réception (entre récepteur et émetteur)
 	- Contrôle de congestion. Permet d’agir sur le débit d’émission pour éviter la surcharge du réseau (entre réseau et émetteur)
 
@@ -87,6 +87,358 @@ VOIR LES SOCKET - command shell
 			Exemples (avec TCP) :
 			7 : echo 	25 : SMTP (acheminement mail) 	443 : HTTPS (HTTP sécurisé)
 			22 : SSH 	80 : HTTP (serveur web) 		465 : SMTPS (SMTP sécurisé)
+_______________________________________________________________________________________________________________________
+socket(7)
+#include <sys/socket.h>
+sockfd = socket(int famille_socket, int type_socket, int protocole); 
+
+
+socket(2) crée une socket																					==> <socket()> autorised
+connect(2) connecte une socket à une adresse de socket distante												==> <connect()> autorised
+bind(2) attache une socket à une adresse local																==> <bind()> autorised
+listen(2) indique à la socket que de nouvelles connexions doivent être acceptées							==> <listen()> autorised
+accept(2) fournit une nouvelle socket avec la nouvelle connexion entrante. 									==> <accept()> autorised
+socketpair(2) renvoie deux sockets anonymes connectées (seulement implémenté pour quelques familles locales comme AF_UNIX).
+
+send(2), sendto(2), et sendmsg(2) envoient des données sur une socket										==> <send()> autorised
+recv(2), recvfrom(2) et recvmsg(2) reçoivent les données envoyées par une socket							==> <recv()> autorised
+poll(2) et select(2) attendent que des données arrivent ou que l'émission soit possible. 					==> <poll()> or <select()> autorised
+
+De plus, les opérations d'entrée-sortie standard comme write(2), writev(2), sendfile(2), read(2) et readv(2)
+peuvent être utilisées pour la lecture et l'écriture des données.
+
+getsockname(2) renvoie l'adresse de la socket locale														==> <getsockname()> aurotised
+getpeername(2) renvoie l'adresse de la socket distante. 
+getsockopt(2) et setsockopt(2) servent à définir et obtenir les options de la couche socket ou protocole. 	==> <setsockopt()> autorised
+ioctl(2) peut être utilisé pour lire et écrire d'autres options.
+
+close(2) sert à fermer une socket. shutdown(2) ferme une partie des connexions d'une socket multiple.		==> <close()> autorised
+
+La recherche ou l'utilisation de pread(2) et pwrite(2) avec un décalage non nul n'est pas possible sur les sockets.
+
+Des opérations d'entrée-sortie non bloquantes sur les sockets sont possibles en définissant 
+l'attribut O_NONBLOCK du descripteur de la socket avec fcntl(2). Toutes les opérations qui 					==> /!\ memoire --> use <poll()>
+devraient normalement bloquer se terminent alors avec l'erreur EAGAIN (l'opération devra être 
+retentée ultérieurement). 
+connect(2) renverra l'erreur EINPROGRESS. L'utilisateur peut alors attendre divers événements avec poll(2) ou select(2).
+			Événements E/S
+Événement		Appel		Circonstance
+Lecture			POLLIN		Arrivée de nouvelles données
+Lecture			POLLIN		Configuration d'une connexion achevée (pour les sockets orientées connexion)
+Lecture			POLLHUP		Demande de déconnexion initiée par l'autre extrémité
+Lecture			POLLHUP		Connexion rompue (seulement pour les protocoles orientés connexion) 
+								Lors de l'écriture sur la socket, le signal SIGPIPE est aussi émis.
+Écriture		POLLOUT		La socket a assez de place dans le tampon d'émission pour écrire de nouvelles données.
+Lect./Écrit.	POLLIN|
+				POLLOUT 	Un appel sortant à connect(2) est terminé.
+Lect./Écrit.	POLLERR		Une erreur asynchrone s'est produite.
+Lect./Écrit.	POLLHUP		Le correspondant a clos un sens de communication.
+Exception		POLLPRI		Arrivée de données urgentes. SIGURG est alors envoyé.
+
+Une alternative à poll(2) et select(2) est de laisser le noyau informer l'application des événements par 
+l'intermédiaire d'un signal SIGIO. Pour cela, l'attribut O_ASYNC doit être défini sur un descripteur de fichier 
+de la socket via fcntl(2) et un gestionnaire de signal valable pour SIGIO doit être installé avec sigaction(2). 
+Consultez les remarques sur les Signaux ci-dessous.
+
+Structures d'adresse de socket
+Chaque domaine de socket a son propre format pour les adresses de socket, avec une structure d'adresse propre. 
+Chacune de ces structures commence avec un champ entier « family » (famille), de type sa_family_t, qui indique 
+le type de structure d'adresse. Cela permet aux appels système génériques à tous les domaines de sockets 
+(par exemple connect(2), bind(2), accept(2), getsockname(2), getpeername(2)) de déterminer le domaine d'une adresse de socket donnée.
+
+Le type struct sockaddr est défini afin de pouvoir passer n'importe quel type d'adresse de socket aux interface 
+dans l'API des sockets. Le but de ce type est purement d'autoriser la conversion de types d'adresse de socket propres 
+à un domaine vers le type « générique », afin d'éviter les avertissements du compilateur au sujet de la non 
+correspondance dans les appels de l'API des sockets.
+
+De plus, l'API des sockets fournit le type de données struct sockaddr_storage. Ce type est fait pour contenir toute 
+structure d'adresse de socket spécifique à un domaine. Il est suffisamment grand et est aligné correctement 
+(en particulier, il est assez grand pour contenir des adresses de socket IPv6). 
+Cette structure contient le champ suivant, qui peut être utilisé pour identifier le type d'adresse socket 
+effectivement stockée dans la structure :
+
+    sa_family_t ss_family;
+
+La structure sockaddr_storage est utile dans les programmes qui doivent prendre en charge les adresses de socket 
+de manière générique (par exemple les programmes qui doivent gérer à la fois des adresses de socket IPv4 et IPv6).
+
+Options de sockets
+Les options présentées ci-dessous peuvent être définies en utilisant setsockopt(2) et lues avec getsockopt(2) 
+avec le niveau de socket positionné à SOL_SOCKET, et ce pour toutes les sockets. 
+Sauf mention contraire, optval est un pointeur vers un int.
+
+SO_ACCEPTCONN																										==> peut etre utile en debug
+    Renvoie une valeur indiquant si la socket a été déclarée comme acceptant les connexions à l'aide de listen(2). 
+	La valeur 0 indique que la socket n'est pas en attente de connexions et la valeur 1 indique que la socket 
+	accepte les connexions. Cette option de socket peut être seulement lue, et pas modifiée. 
+SO_BINDTODEVICE
+    Attache cette socket à un périphérique donné, tel que « eth0 », comme indiqué dans le nom d'interface transmis. 
+	Si le nom est une chaîne vide ou si la longueur de l'option est nulle, la socket est détachée du périphérique. 
+	L'option transmise est une chaîne de longueur variable terminée par un caractère nul, contenant le nom de 
+	l'interface, la longueur maximale étant IFNAMSIZ. Si une socket est attachée à une interface, seuls les paquets 
+	reçus de cette interface particulière sont traités par la socket. Cela ne fonctionne que pour certains types de 
+	sockets, en particulier les sockets AF_INET. Ce n'est pas géré pour les sockets paquet (utilisez pour cela bind(2)).
+
+    Avant Linux 3.8, cette option de socket pouvait être configurée, sans pouvoir être lue par getsockopt(2). 
+	Depuis Linux 3.8, elle est lisible. Le paramètre optlen doit contenir la taille du tampon destiné à recevoir le nom 
+	du périphérique, préférablement IFNAMSZ. La véritable longueur du nom du périphérique est renvoyée dans le paramètre optlen. 
+SO_BROADCAST
+    Définir ou lire l'attribut de diffusion. Une fois activé, les sockets de datagrammes sont autorisées à envoyer 
+	des paquets à une adresse de diffusion. Cette option n'a aucun effet sur les sockets orientées flux. 
+SO_BSDCOMPAT
+    Active la compatibilité BSD bogue-à-bogue. Cela est utilisé par le module du protocole UDP de Linux 2.0 et 2.2. 
+	Si cette compatibilité est activée, les erreurs ICMP reçues pour une socket UDP ne seront pas transmises au 
+	programme utilisateur. Dans les versions récentes du noyau, la gestion de cette option a été abandonnée 
+	progressivement : Linux 2.4 l'ignore silencieusement et Linux 2.6 génère une alerte noyau (printk()) si le 
+	programme utilise cette option. Linux 2.0 activait également les options de compatibilité BSD bogue-à-bogue 
+	(modification aléatoire des en-têtes, non prise en compte de l'attribut de diffusion) pour les sockets brutes 
+	ayant cette option, mais cela a été éliminé dans Linux 2.2. 
+SO_DEBUG
+    Active le débogage de socket. Cela n'est autorisé que pour les processus avec la capacité CAP_NET_ADMIN ou un 
+	identifiant d'utilisateur effectif égal à 0. 
+SO_DOMAIN (depuis Linux 2.6.32)
+    Récupère le domaine de socket en tant qu'entier, en renvoyant une valeur telle que AF_INET6. 
+	Consultez socket(2) pour plus de détails. Cette option de socket peut être seulement lue, et pas modifiée. 
+SO_ERROR
+	Lit et efface l'erreur en cours sur la socket. Cette option de socket peut être seulement lue, et pas modifiée.
+	Demande un entier. 
+SO_DONTROUTE
+    Ne pas émettre par l'intermédiaire d'une passerelle, n'envoyer qu'aux hôtes directement connectés. 
+	Le même effet peut être obtenu avec l'attribut MSG_DONTROUTE durant une opération send(2) sur la socket. 
+	Demande un attribut entier booléen. 
+SO_KEEPALIVE
+    Active l'émission de messages périodiques gardant la socket ouverte pour les sockets orientées connexion. 
+	Demande un attribut entier booléen. 
+SO_LINGER
+    Définit ou lit l'option SO_LINGER. Le paramètre est une structure linger.
+
+    struct linger {
+        int l_onoff;    /* définition de l'activité */
+        int l_linger;   /* durée d'attente en secondes */
+    };
+
+    Lorsque ce paramètre est actif, un appel à close(2) ou shutdown(2) ne se terminera pas avant que tous les 
+	messages en attente pour la socket aient été correctement émis ou que le délai d'attente soit écoulé. 
+	Sinon, l'appel se termine immédiatement et la fermeture est effectuée en arrière-plan. Lorsque la socket 
+	est fermée au cours d'un exit(2), elle attend toujours en arrière-plan. 
+SO_MARK (depuis Linux 2.6.25)
+    Positionner la marque pour chaque paquet envoyé au travers de cette socket (similaire à la cible MARK de 
+	netfilter, mais pour les sockets). Le changement de marque peut être utilisé pour un routage par marques 
+	sans netfilter ou pour le filtrage de paquets. Utiliser cette option nécessite la capacité CAP_NET_ADMIN. 
+SO_OOBINLINE
+    Si cette option est activée, les données hors bande sont placées directement dans le flux des données reçues. 
+	Sinon, elles ne sont transmises que si l'attribut MSG_OOB est défini durant la réception. 
+SO_PASSCRED
+    Autorise ou interdit la réception des messages de contrôle SCM_CREDENTIALS. 
+	Pour plus de détails, consultez unix(7). 
+SO_PEEK_OFF (depuis Linux 3.4)
+    Cette option, qui n'est à ce jour garantie que pour les sockets unix(7), définit la valeur de la 
+	« position de lecture » (ou « peek offset ») pour l'appel système recv(2) lorsqu'il est invoqué avec l'attribut MSG_PEEK.
+
+    Lorsque cette option reçoit une valeur négative (elle est initialisée à -1 pour toute nouvelle socket), 
+	elle se comporte classiquement : recv(2), avec l'attribut MSG_PEEK, lit les données depuis le début de la file.
+
+    Lorsque l'option reçoit une valeur supérieure ou égale à zéro, alors la lecture suivante des données accumulées 
+	dans la socket est réalisée à la position précisée par la valeur de l'option. Dans le même temps, la 
+	« position de lecture » est incrémentée du nombre d'octets lus dans la file, de façon à ce que la prochaine 
+	lecture renvoie la donnée suivante dans la file.
+
+    Si des données sont retirées de la tête de la file par la fonction recv(2) (ou équivalent) sans l'attribut MSG_PEEK, 
+	alors la « position de lecture » est diminuée du nombre d'octets supprimés. Autrement dit, l'acquisition de données 
+	sans avoir recours à l'attribut MSG_PEEK a pour effet de modifier la « position de lecture », de sorte que la prochaine 
+	lecture renvoie les données qui auraient été renvoyées si aucune donnée n'avait été supprimée.
+
+    Pour les sockets de datagrammes, si la « position de lecture » pointe à l'intérieur d'un paquet, alors les données 
+	renvoyées seront marquées de l'attribut MSG_TRUNC.
+
+    L'exemple suivant illustre l'usage de SO_PEEK_OFF. Imaginons une socket de flux contenant les données suivantes dans sa file :
+
+
+        aabbccddeeff
+
+    La séquence suivante d'appels à recv(2) aura l'effet décrit dans les commentaires :
+
+    int ov = 4;                  // affecte 4 à la position de lecture
+    setsockopt(fd, SOL_SOCKET, SO_PEEK_OFF, &ov, sizeof(ov));
+    recv(fd, buf, 2, MSG_PEEK);  // Lit "cc"; l'indide de position prend la valeur 6
+    recv(fd, buf, 2, MSG_PEEK);  // Lit "dd"; l'indice de position prend la valeur 8
+    recv(fd, buf, 2, 0);         // Lit "aa"; l'indice de position prend la valeur 6
+    recv(fd, buf, 2, MSG_PEEK);  // Lit "ee"; l'indice position prend la valeur 8
+
+SO_PEERCRED
+    Renvoie les données d'authentification du processus étranger connecté à cette socket. Cela n'est possible 
+	que pour les sockets de flux AF_UNIX connectées et les paires de sockets AF_UNIX de flux et de datagrammes 
+	crées avec socketpair(2) ; consultez unix(7). Les données retournées sont celles qui étaient effectives au 
+	moment de l'appel à connect(2) ou socketpair(2). L'argument est une structure ucred. Il faut définir la macro 
+	de test de fonctionnalité _GNU_SOURCE pour activer la définition de cette structure dans <sys/socket.h>. 
+	Cette option de socket peut être seulement lue, et pas modifiée. 
+SO_PRIORITY
+    Définir la priorité définie par le protocole pour tous les paquets envoyés sur la socket. Linux utilise cette 
+	valeur pour trier les files réseau : les paquets avec une priorité élevée peuvent être traités d'abord, en 
+	fonction de la gestion des files sur le périphérique. Pour ip(7), cela définit aussi le champ 
+	IP Type-Of-Service (TOS) pour les paquets sortants. 
+	Établir une priorité en dehors de l'intervalle allant de 0 à 6 nécessite la capacité CAP_NET_ADMIN. 
+SO_PROTOCOL (depuis Linux 2.6.32)																					==> peut etre utile debug
+    Récupère le protocole de socket en tant qu'entier, en renvoyant une valeur telle que IPPROTO_SCTP. 
+	Consultez socket(2) pour plus de détails. Cette option de socket peut être seulement lue, et pas modifiée. 
+SO_RCVBUF
+    Définit ou lit la taille maximale en octets du tampon de réception. Le noyau double cette valeur (pour 
+	prévoir de l'espace pour les opérations de service) lorsque la valeur est définie avec setsockopt(2), et 
+	cette valeur doublée est retournée par getsockopt(2). 
+	La valeur par défaut est définie par le fichier /proc/sys/net/core/rmem_default 
+	et la valeur maximale autorisée est définie par le fichier /proc/sys/net/core/rmem_max. 
+	La valeur (doublée) minimale pour cette option est 256. 
+SO_RCVBUFFORCE (depuis Linux 2.6.14)
+    En utilisant cette option de socket, un processus privilégié (CAP_NET_ADMIN) peut exécuter la même tâche que 
+	SO_RCVBUF, mais la limite rmem_max peut être remplacée. 
+SO_RCVLOWAT et SO_SNDLOWAT
+    Indique le nombre minimal d'octets dans le tampon pour que la couche socket passe les données au protocole 
+	(SO_SNDLOWAT) ou à l'utilisateur en réception (SO_RCVLOWAT). Ces deux valeurs sont initialisées à 1. 
+	SO_SNDLOWAT n'est pas modifiable (setsockopt(2) échoue avec l'erreur ENOPROTOOPT). SO_RCVLOWAT est 
+	modifiable seulement depuis Linux 2.4. Les appels système select(2) et poll(2) ne respectent pour le moment 
+	pas la définition de SO_RCVLOWAT sur Linux, et marque la socket comme lisible même lorsqu'un unique octet de 
+	données est disponible. La lecture suivante depuis la socket sera bloquée jusqu'à ce que SO_RCVLOWAT octets soient disponibles. 
+SO_RCVTIMEO et SO_SNDTIMEO																							==> reperer erreur flux connexion
+    Indiquer le délai maximal d'émission ou de réception avant de signaler une erreur. 
+	Le paramètre est une structure timeval. Si une fonction d'entrée ou de sortie bloque pendant cet intervalle de 
+	temps et que des données ont été envoyées ou reçues, la valeur de retour de cette fonction sera la quantité de 
+	données transmises ; si aucune donnée n'a été transmise et si le délai d'attente est atteint, -1 est renvoyé et 
+	errno est positionnée à EAGAIN ou EWOULDBLOCK, ou EINPROGRESS (pour connect(2)), comme si la socket avait été 
+	définie comme non bloquante. Si le délai d'attente est défini à zéro (valeur par défaut), l'opération ne sera 
+	jamais interrompue. Les délais n'ont d'effet que pour les appels système faisant des E/S sur des sockets 
+	(par exemple read(2), recvmsg(2), send(2), sendmsg(2)) ; ils n'ont pas d'effet pour select(2), poll(2), epoll_wait(2), etc. 
+SO_REUSEADDR
+    Indique que les règles utilisées pour la validation des adresses fournies dans un appel à bind(2) doivent 
+	autoriser la réutilisation des adresses locales. Pour les sockets AF_INET, cela signifie que la socket peut 
+	être attachée à n'importe quelle adresse sauf lorsqu'une socket active en écoute y est liée. 
+	Lorsque la socket en écoute est attachée à INADDR_ANY avec un port spécifique, il n'est pas possible de 
+	s'attacher à ce port quelle que soit l'adresse locale. L'argument est un attribut booléen entier. 
+SO_RXQ_OVFL (depuis Linux 2.6.33)
+    Indique qu'un message auxiliaire (cmsg) sous la forme d'une valeur non-signée et codée sur 32 bits doit
+	être jointe aux tampons de sockets (skbs), indiquant le nombre de paquets perdus par la socket entre les 
+	deux derniers paquets reçus. 
+SO_SNDBUF
+    Définit ou lit la taille maximale en octets du tampon d'émission. Le noyau double cette valeur (pour prévoir 
+	de l'espace pour les opérations de service) lorsque la valeur est définie avec setsockopt(2), et cette valeur 
+	doublée est retournée par getsockopt(2). 
+	La valeur par défaut est définie par le fichier /proc/sys/net/core/wmem_default 
+	et la valeur maximale autorisée est définie par le fichier /proc/sys/net/core/wmem_max. 
+	La valeur (doublée) minimale pour cette option est 2048. 
+SO_SNDBUFFORCE (depuis Linux 2.6.14)
+    En utilisant cette option de socket, un processus privilégié (CAP_NET_ADMIN) peut exécuter la même tâche que 
+	SO_SNDBUF, mais la limite wmem_max peut être remplacée. 
+SO_TIMESTAMP
+    Active ou désactive la réception des messages de contrôle SO_TIMESTAMP. Le message de contrôle d'horodatage 
+	est envoyé avec le niveau SOL_SOCKET et le champ cmsg_data est une structure timeval indiquant la date de 
+	réception du dernier paquet fourni à l'utilisateur dans cet appel. 
+	Consultez cmsg(3) pour plus de détails sur les messages de contrôle. 
+SO_TYPE
+    Lit le type de socket, sous forme d'entier (comme SOCK_STREAM). 
+	Cette option de socket peut être seulement lue, et pas modifiée. 
+SO_BUSY_POLL (depuis Linux 3.11)
+    Définit la durée approximative, en milliseconde, d’attente active de réception bloquante en absence de données. 
+	CAP_NET_ADMIN est nécessaire pour augmenter cette valeur. La valeur par défaut pour cette option est contrôlée 
+	par le fichier /proc/sys/net/core/busy_read.
+
+    La valeur dans le fichier /proc/sys/net/core/busy_poll détermine la durée pendant laquelle select(2) et poll(2)
+	seront en attente active lors d’une opération sur des sockets avec SO_BUSY_POLL défini et qu’aucun événement à
+	signaler n’est trouvé.
+
+    Dans les deux cas, l’attente active ne sera réalisée que lorsque les dernières données reçues par la socket 
+	proviennent d’un périphérique réseau qui ne prend pas en charge cette option.
+
+    Bien que l’attente active peut améliorer la latence de quelques applications, une attention particulière doit 
+	être portées à son utilisation puisque cela augmentera à la fois l’utilisation du processeur et la consommation puissance. 
+
+
+Signaux
+Lors de l'écriture sur une socket orientée connexion qui a été fermée (localement ou à l'autre extrémité), 			==> /!\
+le signal SIGPIPE est envoyé au processus qui écrivait, et EPIPE est renvoyé. 
+Le signal n'est pas envoyé lorsque l'appel d'écriture indiqué contenait l'attribut MSG_NOSIGNAL.
+
+Lorsque demandé avec l'option FIOSETOWN de fcntl(2) ou l'option SIOCSPGRP de ioctl(2), le signal SIGIO est 
+envoyé quand un événement d'entrée-sortie a lieu. Il est possible d'utiliser poll(2) ou select(2) dans le 
+gestionnaire de signal pour savoir sur quelle socket l'événement s'est produit. Une alternative 
+(sous Linux 2.2) est de définir un signal en temps-réel avec le fnctl(2) F_SETSIG. Le gestionnaire du 
+signal en temps-réel sera appelé avec le descripteur de fichier dans le champ si_fd de siginfo_t. 
+Consultez fcntl(2) pour plus d'informations.
+
+Dans certains cas (par exemple, différents processus accédant à la même socket), la condition ayant déclenché 
+le signal SIGIO peut avoir déjà disparu quand le processus réagit au signal. Si cela se produit, le processus 
+devrait attendre à nouveau car Linux renverra ce signal ultérieurement.
+
+
+Interfaces /proc
+Les paramètres réseau de base des sockets sont accessibles en utilisant les fichiers du répertoire /proc/sys/net/core/.
+
+rmem_default
+    contient la taille en octets par défaut du tampon de réception. 
+rmem_max
+    contient la taille maximale en octets du tampon de réception qu'un utilisateur peut définir avec l'option SO_RCVBUF de la socket. 
+wmem_default
+    contient la taille en octets par défaut du tampon d'émission de la socket. 
+wmem_max
+    contient la taille maximale en octets du tampon d'émission qu'un utilisateur peut définir avec l'option SO_SNDBUF de la socket. 
+message_cost et message_burst
+    configurent le filtrage par jeton utilisé pour limiter la charge des messages d'avertissement dus aux événements réseau extérieurs. 
+netdev_max_backlog
+    contient le nombre maximal de paquets dans la file d'entrée globale. 
+optmem_max
+    contient la taille maximale par socket des données de service et des données de contrôle utilisateur comme les iovecs. 
+
+
+Ioctls
+Ces opérations sont accessibles en utilisant ioctl(2) :
+
+error = ioctl(ip_socket, type_ioctl, &valeur_résultat);
+
+SIOCGSTAMP
+    Renvoie une structure timeval avec la date de réception du dernier paquet transmis à l'utilisateur. 
+	Cela est utile pour des mesures précises du temps de cheminement. Consultez setitimer(2) pour une 
+	description de la structure timeval. L'ioctl ne doit être utilisé que si l'option SO_TIMESTAMP de la 
+	socket n'est pas définie. Sinon, la date du dernier paquet reçu quand SO_TIMESTAMP n'était pas définie 
+	est renvoyée, provoquant un échec s'il n'existe pas de tels paquets (c'est-à-dire que ioctl(2) 
+	renvoie -1 avec un errno défini à ENOENT). 
+SIOCSPGRP
+    Définit le processus ou le groupe de processus à qui envoyer les signaux SIGIO ou SIGURG lorsqu'une 
+	opération d'entrée-sortie asynchrone est terminée ou si des données urgentes sont disponibles. 
+	L'argument est un pointeur sur un pid_t. Si l'argument est positif, le signal est envoyé à ce processus. 
+	S'il est négatif, le signal est envoyé au groupe de processus dont l'identifiant correspond à la valeur 
+	absolue de l'argument. Un processus ne peut demander que l'émission vers lui-même ou son propre groupe, à 
+	moins qu'il ait la capacité CAP_KILL ou un identifiant d'utilisateur effectif nul. 
+FIOASYNC
+    Change l'attribut O_ASYNC pour activer ou désactiver le mode d'entrée-sortie asynchrone de la socket. 
+	Un mode d'entrée-sortie asynchrone signifie que le signal SIGIO ou le signal défini avec F_SETSIG est 
+	envoyé quand un événement d'entrée-sortie se produit. 
+    Le paramètre est un booléen entier. (Cette opération est synonyme de l'utilisation de fcntl(2) pour définir l'attribut O_ASYNC). 
+SIOCGPGRP
+    Lit le processus ou le groupe de processus auquel les signaux SIGIO ou SIGURG sont envoyés. 
+	Zéro est obtenu quand aucun n'est défini. 
+
+
+Opérations fcntl(2) valables :
+
+FIOGETOWN
+    Identique à l'ioctl(2) SIOCGPGRP. 
+FIOSETOWN
+    Identique à l'ioctl(2) SIOCSPGRP. 
+
+VERSIONS
+SO_BINDTODEVICE a été introduit dans Linux 2.0.30. SO_PASSCRED est une nouveauté de Linux 2.2. 
+Les interfaces /proc ont été introduites dans Linux 2.2. SO_RCVTIMEO et SO_SNDTIMEO sont gérés depuis Linux 2.3.41. 
+Auparavant, les délais d'attente étaient définis dans les protocoles et ne pouvaient être ni lus ni modifiés.
+
+NOTES
+Linux suppose que la moitié du tampon d'émission/réception est utilisé pour les structures internes du noyau. 
+Ainsi les valeurs dans les fichiers /proc correspondants sont deux fois plus grandes que ce que l'on peut 
+observer directement sur le câble.
+
+Linux ne permettra la réutilisation des ports qu'avec l'option SO_REUSEADDR lorsque celle-ci sera définie 
+à la fois par le précédent programme qui a effectué un bind(2) sur le port et par le programme qui veut 
+réutiliser ce port. Ceci diffère de certaines implémentations (par exemple, sur FreeBSD) où seul le dernier 
+programme doit définir l'option SO_REUSEADDR. Habituellement, cette différence est invisible, puisque, par exemple, 
+un programme serveur est conçu pour toujours définir cette option. 
+
 _______________________________________________________________________________________________________________________
 
 SOCKET

@@ -2,11 +2,11 @@ OUTIL
 	Tout ce qui respecte la norme C++ 98.
 	close,
 	gethostbyname, getaddrinfo, freeaddrinfo, 
-	bind,htons, htonl, ntohs, ntohl, 
+	htons, htonl, ntohs, ntohl, 
 	inet_addr, inet_ntoa, 
 	signal, sigaction, lseek, fstat, fcntl,
 man-socket.txt
-	socket, setsockopt, getsockname, connect, listen, accept, send, recv, poll (ou équivalent select(), kqueue(), ou epoll())
+	socket, setsockopt, getsockname, connect, bind, listen, accept, send, recv, poll (ou équivalent select(), kqueue(), ou epoll())
 protocol.txt
 	getprotobyname, 
 
