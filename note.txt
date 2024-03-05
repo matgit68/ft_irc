@@ -1,13 +1,12 @@
 OUTIL
 	Tout ce qui respecte la norme C++ 98.
 	close,
-	gethostbyname
+	gethostbyname, getaddrinfo, freeaddrinfo, 
 	htons, htonl, ntohs, ntohl, 
 	inet_addr, inet_ntoa, 
 	signal, sigaction, lseek, fstat, fcntl,
 man-socket.txt
-	socket, setsockopt, getsockname, connect, getaddrinfo, freeaddrinfo, bind, listen, accept, 
-	send, recv, poll (ou équivalent select(), kqueue(), ou epoll())
+	socket, setsockopt, getsockname, connect, bind, listen, accept, send, recv, poll (ou équivalent select(), kqueue(), ou epoll())
 protocol.txt
 	getprotobyname, 
 
@@ -50,13 +49,12 @@ SOCKET definir le port utiliser sur le localhost (127.0.0.1:xxxx) pour les commu
 	port : 16 bits (0 à 65 535) = USHORT
 			Les numéros de 0 à 1023 sont réservés, par convention, à des services spécifiques.
 			Exemples (avec TCP) :
-			7 : echo 		25 : SMTP (acheminement mail) 		443 : HTTPS (HTTP sécurisé)
-			22 : SSH 		80 : HTTP (serveur web) 			465 : SMTPS (SMTP sécurisé)
+			7 : echo 	25 : SMTP (acheminement mail) 	443 : HTTPS (HTTP sécurisé)
+			22 : SSH 	80 : HTTP (serveur web) 		465 : SMTPS (SMTP sécurisé)
 permettre les connections/communication avec les clients (? <signal> + <sigaction> ?)
 	siginfo_t : uid_t   si_uid;         /* UID réel de l'émetteur   */
 CLIENT le client se connectant au server est traiter comme un fd <accept> puis traiter dans le <poll> en attente
 	stockage info client en container<pollfd> (usage des reauest poll pour les transmission non bloquante server-irc)
-	identifier une 	nouvelle connexion client <accept>
+	identifier une 	nouvelle connexion client
 					deconnexion client
 					transmission msg
-	une fois la connexion accepter <connect> permet de relier a un port le fd 
