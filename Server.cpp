@@ -22,10 +22,10 @@ int Server::getFd() const { return fd; }
 
 int Server::getPort() const { return port; }
 
-Client *Server::getClient(std::string name) {
-	if (clients.find(name) == clients.end())
+Client *Server::getClient(int fd) {
+	if (clients.find(fd) == clients.end())
 		return NULL;
-	return clients[name];
+	return clients[fd];
 }
 
 Channel *Server::getChannel(std::string name) {

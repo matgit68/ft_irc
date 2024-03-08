@@ -18,8 +18,9 @@
 #include <fcntl.h>
 #include <iostream>
 
-#define BUFFER	512
+#define BUFFER	5
 #define MAX_EVENTS 10
+#define FAIL -1
 
 class Client;
 class Channel;
@@ -29,11 +30,8 @@ private:
 	int fd, port;
 	std::string passwd;
 	struct sockaddr_in address;
-
 	struct epoll_event ev, events[MAX_EVENTS];
-	int listen_sock, addrlen, conn_sock, nfds, epollfd;
-
-	std::map <std::string, Client*> clients;
+	std::map <int, Client*> clients;
 	std::map <std::string, Channel*> channels;
 	Server();
 
@@ -45,9 +43,10 @@ public:
 
 	int getFd() const;
 	int getPort() const;
-	Client *getClient(std::string);
+	Client *getClient(int);
 	Channel *getChannel(std::string);
 
 	void init();
 	void run();
+	void broadcast(Client*, std::string);
 };
