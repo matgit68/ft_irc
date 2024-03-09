@@ -8,6 +8,7 @@ class Server;
 class Client{
 private:
 	std::string user, nick, buffer;
+	Server *server;
 	int fd;
 	Client(Client const &ref);
 	Client &operator=(Client const &ref);

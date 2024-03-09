@@ -58,3 +58,19 @@ CLIENT le client se connectant au server est traiter comme un fd <accept> puis t
 	identifier une 	nouvelle connexion client
 					deconnexion client
 					transmission msg
+
+
+[12 h 14] https://www.geeksforgeeks.org/socket-programming-cc/
+https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/
+Socket Programming in C/C++ - GeeksforGeeks
+Socket Programming in C/C++: Handling multiple clients on server without multi threading - GeeksforGeeks
+[12 h 14] ca c'est pour les sockets
+[12 h 15] http://vidalc.chez.com/lf/socket.html
+http://sdz.tdct.org/sdz/les-sockets.html
+[12 h 15] https://dd.ircdocs.horse/refs/commands/join
+[12 h 15] https://modern.ircdocs.horse/#errnosuchnick-401
+[12 h 15] et les deux derniers c'est pour les requêtes IRC
+
+https://github.com/marineks/Ft_irc
+http://chi.cs.uchicago.edu/chirc/irc.html
+https://irc.dalexhd.dev/index.html

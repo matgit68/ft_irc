@@ -9,8 +9,8 @@ class Client;
 class Channel{
 private:
 	std::string name, topic, mode, passwd; // mode could be a string containing "itkol"
-	std::set <std::string> clients; // list of clients using the channel
-	std::set <std::string> op; // list of clients ops on the channel
+	std::set <int> clients; // list of clients using the channel
+	std::set <int> op; // list of clients ops on the channel
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
 

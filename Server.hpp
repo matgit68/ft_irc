@@ -19,7 +19,7 @@
 #include <iostream>
 
 #define BUFFER	5
-#define MAX_EVENTS 10
+#define MAX_EVENTS 2
 #define FAIL -1
 
 class Client;

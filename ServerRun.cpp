@@ -91,7 +91,7 @@ void Server::run() {
 				valread = recv(events[n].data.fd, buf, BUFFER, 0);
 				if (valread == FAIL) {
 					perror("recv");
-					exit(EXIT_FAILURE);
+					// exit(EXIT_FAILURE);
 				}
 				if (valread == 0) { // client disconnected -> remove fd from epoll, delete Client from clients map then close fd
 					if (epoll_ctl(epollfd, EPOLL_CTL_DEL, events[n].data.fd, &ev) == FAIL) { // unwatch fd
@@ -107,7 +107,7 @@ void Server::run() {
 							std::cerr << "couldnt close fd " << events[n].data.fd << std::endl;
 						std::cout << "Client " << events[n].data.fd << " disconnected" << std::endl;
 					}
-					break;
+					continue;
 				}
 				buf[valread] = '\0';
 				clients[events[n].data.fd]->receive(this, buf); // message will be buffered and treated by client instance
