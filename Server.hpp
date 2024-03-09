@@ -27,12 +27,12 @@ class Channel;
 
 class Server {
 private:
-	int fd, port;
-	std::string passwd;
-	struct sockaddr_in address;
-	struct epoll_event ev, events[MAX_EVENTS];
-	std::map <int, Client*> clients;
-	std::map <std::string, Channel*> channels;
+	int _fd, _port;
+	std::string _passwd;
+	struct sockaddr_in _address;
+	struct epoll_event _ev, _events[MAX_EVENTS];
+	std::map <int, Client*> _clients;
+	std::map <std::string, Channel*> _channels;
 	Server();
 
 public:

@@ -7,21 +7,21 @@ class Server;
 
 class Client{
 private:
-	std::string user, nick, buffer;
-	Server *server;
-	int fd;
+	std::string _user, _nick, _buffer;
+	Server *_server;
+	int _fd;
 	Client(Client const &ref);
 	Client &operator=(Client const &ref);
-	bool clientReady;
+	bool _clientReady;
 
 public:
-	Client(int);
+	Client(int, Server*);
 	~Client();
 	int getFd() const;
 	std::string getUser() const;
 	std::string getNick() const;
 	void setUser(std::string);
 	void setNick(std::string);
-	void receive(Server*, char*);
-	void parse(Server*);
+	void receive(char*);
+	void parse(std::string);
 };

@@ -8,9 +8,9 @@ class Client;
 
 class Channel{
 private:
-	std::string name, topic, mode, passwd; // mode could be a string containing "itkol"
-	std::set <int> clients; // list of clients using the channel
-	std::set <int> op; // list of clients ops on the channel
+	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkol"
+	std::set <int> _clients; // list of clients using the channel
+	std::set <int> _op; // list of clients ops on the channel
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
 
@@ -21,7 +21,7 @@ public:
 	std::string getTopic() const;
 	void setTopic(std::string);
 
-	bool isOp(std::string);
-	void giveOp(std::string); // give op privilege to a client identified by his name
-	void removeOp(std::string); // remove op privilege to a client identified by his name
+	bool isOp(int);
+	void giveOp(int); // give op privilege to a client identified by his name
+	void removeOp(int); // remove op privilege to a client identified by his name
 };

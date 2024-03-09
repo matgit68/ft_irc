@@ -1,27 +1,27 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string n): name(n) {}
+Channel::Channel(std::string n): _name(n) {}
 
 Channel::~Channel() {}
 
-std::string Channel::getName() const { return name; }
+std::string Channel::getName() const { return _name; }
 
-std::string Channel::getTopic() const { return topic; }
+std::string Channel::getTopic() const { return _topic; }
 
-void Channel::setTopic(std::string t) { topic = t; }
+void Channel::setTopic(std::string t) { _topic = t; }
 
-bool Channel::isOp(std::string name) {
-	if (op.find(name) != op.end())
+bool Channel::isOp(int id) {
+	if (_op.find(id) != _op.end())
 		return true;
 	return false;
 }
 
-void Channel::giveOp(std::string name) {
-	if (op.find(name) == op.end())
-		op.insert(name);
+void Channel::giveOp(int id) {
+	if (_op.find(id) == _op.end())
+		_op.insert(id);
 }
 
-void Channel::removeOp(std::string name) {
-	if (op.find(name) != op.end())
-		op.erase(name);
+void Channel::removeOp(int id) {
+	if (_op.find(id) != _op.end())
+		_op.erase(id);
 }
