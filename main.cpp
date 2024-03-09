@@ -5,7 +5,12 @@ int main(int argc, char **argv) {
 		std::cerr << "Usage : ./ircserv <port> <password>" <<std::endl ;
 		return EXIT_FAILURE;
 	}
-	Server s(atoi(argv[1]), argv[2]);
+	int p = atoi(argv[1]);
+	if (p < 1024 || p > 65535)
+	{
+		// changer port ou exit erreur
+	}
+	Server s(p, argv[2]);
 
 	s.init();
 	s.run();
