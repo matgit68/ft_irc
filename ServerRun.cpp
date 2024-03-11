@@ -131,18 +131,14 @@ std::cerr << "debug CAP LS : " + cap;
 	{
 		if (!client->getStatus())
 		{
-			usleep(100);
-			std::string end = client->getUser() + " " + client->getNick() + " :Welcome to the Internet Relay Network " + client->getNick() + "\r\n";
-std::cerr << "debug CAP END : " + end;
-			if (send(client->getFd(), end.c_str(), end.size(), 0) != (ssize_t) end.size())
-				std::cerr << "Error sending msg" << std::endl;
-			std::string wel = client->getNick() + " :Welcome to the <networkname> Network, " + client->getPrefix() + "\r\n";
-std::cerr << "debug CAP END : " + wel;
-			if (send(client->getFd(), wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
-				std::cerr << "Error sending msg" << std::endl;
+			client->setStatus();
+std::cerr << "debug CAP END : " + client->getNick() + " - " + client->getUser();
 		}
+		if (client->getStatus() && !client->getResponse() && !((client->getNick()).empty()) && !((client->getUser()).empty()))
+			client->setResponse();
+
 	}
-	else if (!client->getStatus() && !msg.compare(0, 5, "USER "))
+	else if (/*!client->getStatus() && */!msg.compare(0, 5, "USER "))
 	{
 		// to parse and set
 		// USER <username> <hostname> <servername> :<realname>
@@ -167,13 +163,17 @@ std::cerr << "debug USER : " + msg;
 		msg.erase(0, msg.find_first_of(":", 0) + 1);
 std::cerr << "debug USER : " + msg;
 		client->setReal(msg);
+		if (client->getStatus() && !client->getResponse() && !((client->getNick()).empty()) && !((client->getUser()).empty()))
+			client->setResponse();
 	}
-	else if (!client->getStatus() && !msg.compare(0, 5, "NICK "))
+	else if (/*!client->getStatus() && */!msg.compare(0, 5, "NICK "))
 	{
 		msg.erase(0, 4);
 		msg.erase(0, msg.find_first_not_of(" \r\t\v\f\n", 0));
 std::cerr << "debug NICK : " + msg;
 		client->setNick(msg);
+		if (client->getStatus() && !client->getResponse() && !((client->getNick()).empty()) && !((client->getUser()).empty()))
+			client->setResponse();
 	}
 	else
 		for (it = _clients.begin(); it != _clients.end(); ++it)

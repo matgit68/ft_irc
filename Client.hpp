@@ -12,12 +12,13 @@ private:
 	int _fd;
 	Client(Client const &ref);
 	Client &operator=(Client const &ref);
-	bool _clientReady;
+	bool _clientReady, _response;
 
 public:
 	Client(int, Server*);
 	~Client();
 	bool getStatus() const;
+	bool getResponse() const;
 	int getFd() const;
 	std::string getUser() const;
 	std::string getNick() const;
@@ -29,6 +30,7 @@ public:
 	void setReal(std::string);
 	void setHost(std::string);
 	void setStatus(void);
+	void setResponse(void);
 	void receive(char*);
 	void parse(std::string);
 };
