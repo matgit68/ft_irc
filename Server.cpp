@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(int p, std::string pass): _port(p), _passwd(pass) {
+	initFunPtr();
 }
 
 Server::~Server() {}
@@ -34,3 +35,23 @@ Channel *Server::getChannel(std::string name) {
 	return _channels[name];
 }
 
+funPtr Server::getCommand(std::string name) {
+	if (_commands.find(name) == _commands.end())
+		return NULL;
+return _commands[name];
+}
+
+void Server::initFunPtr() {
+	_commands["PING"] = &ping;
+	_commands["KICK"] = &kick;
+	_commands["INVITE"] = &invite;
+	_commands["TOPIC"] = &topic;
+	_commands["MODE"] = &mode;
+	_commands["CAP"] = &cap;
+	_commands["PASS"] = &pass;
+	_commands["NICK"] = &nick;
+	_commands["USER"] = &user;
+	_commands["QUIT"] = &quit;
+	_commands["JOIN"] = &join;
+	_commands["PRIVMSG"] = &privmsg;
+}

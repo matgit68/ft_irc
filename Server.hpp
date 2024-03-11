@@ -1,29 +1,11 @@
 #pragma once
 
-#include <stdio.h>
-#include <string.h>//strlen
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>//close
-#include <arpa/inet.h>//close
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
-#include <sys/epoll.h>
-#include <string>
-#include <map>
-#include "Client.hpp"
-#include "Channel.hpp"
-#include <fcntl.h>
-#include <iostream>
-
-#define BUFFER	5
-#define MAX_EVENTS 2
-#define FAIL -1
+#include "hpp.hpp"
 
 class Client;
 class Channel;
+
+typedef void (*funPtr)(Client *, std::string);
 
 class Server {
 private:
@@ -33,6 +15,7 @@ private:
 	struct epoll_event _ev, _events[MAX_EVENTS];
 	std::map <int, Client*> _clients;
 	std::map <std::string, Channel*> _channels;
+	std::map <std::string, funPtr> _commands;
 	Server();
 
 public:
@@ -45,7 +28,9 @@ public:
 	int getPort() const;
 	Client *getClient(int);
 	Channel *getChannel(std::string);
+	funPtr getCommand(std::string);
 
+	void initFunPtr();
 	void init();
 	void run();
 	void broadcast(Client*, std::string);

@@ -82,12 +82,12 @@ void Server::run() {
 					exit(EXIT_FAILURE);
 				}
 				if (_clients.find(newFd) == _clients.end()) { // creates a new Client and adds it to clients map
-					std::cout << "Creating client for fd " << newFd << std::endl;
+					// std::cout << "Creating client for fd " << newFd << std::endl;
 					_clients[newFd] = new Client(newFd, this);
 				}
 			}
 			else { // if active fd is NOT server fd, we're receving a message
-				std::cout << "\n(Receiving on fd " << _events[n].data.fd << ')' << std::endl;
+				// std::cout << "\n(Receiving on fd " << _events[n].data.fd << ')' << std::endl;
 				valread = recv(_events[n].data.fd, buf, BUFFER, 0);
 				if (valread == FAIL) {
 					perror("recv");
