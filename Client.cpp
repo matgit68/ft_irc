@@ -23,6 +23,18 @@ void Client::receive(char* str) {
 	}
 }
 
+// purpose of receive v2
+// we used substr() instead of clear() in case there are serveral CRLF in the same buffer, so we should cycle the buffer with while() until there's no CRLF left ?
+// or what ??
+void Client::receiveV2(char* str) { 
+	_buffer.append(str);
+	size_t pos;
+	while ((pos= _buffer.find("\r\n")) != std::string::npos) {
+		parse(_buffer.substr(0, pos + 2));
+		_buffer.erase(0, pos + 2);
+	}
+}
+
 void Client::parse(std::string msg) {
 	std::cout << "PARSE " << msg;
 	_server->broadcast(this, msg); // for testing purposes
@@ -48,7 +60,6 @@ void Client::setResponse(void) {
 // std::cerr << "debug CAP END : " + end;
 // 		if (send(_fd, end.c_str(), end.size(), 0) != (ssize_t) end.size())
 // 			std::cerr << "Error sending msg" << std::endl;
-
 		std::string wel = "001 " + _nick + " :Welcome to the <networkname> Network, " + this->getPrefix() + "\r\n";
 std::cerr << "debug CAP END : " + wel;
 		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())

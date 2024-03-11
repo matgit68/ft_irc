@@ -32,5 +32,6 @@ public:
 	void setStatus(void);
 	void setResponse(void);
 	void receive(char*);
+	void receiveV2(char* str);
 	void parse(std::string);
 };
