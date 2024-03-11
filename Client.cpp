@@ -53,6 +53,12 @@ void Client::setResponse(void) {
 std::cerr << "debug CAP END : " + wel;
 		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
 			std::cerr << "Error sending msg" << std::endl;
+
+//   "002 <client> :Your host is <servername>, running version <version>"
+		wel = "003 " + _nick + " :This server was created " + _server->getCreatedTime() + "\r\n";
+		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
+			std::cerr << "Error sending msg" << std::endl;
+//	 "004 <client> <servername> <version> <available user modes> <available channel modes> [<channel modes with a parameter>]"
 	}
 }
 void Client::setHost(std::string h) { _host = h; }

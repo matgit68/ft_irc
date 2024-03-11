@@ -10,6 +10,7 @@ CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -fsanitize=address -g3
 SRC =	Client.cpp\
 		Server.cpp\
 		ServerRun.cpp\
+		time.cpp\
 		main.cpp\
 
 OBJ = $(SRC:.cpp=.o)

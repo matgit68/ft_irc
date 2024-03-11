@@ -17,10 +17,13 @@
 #include "Channel.hpp"
 #include <fcntl.h>
 #include <iostream>
+#include <ctime>
 
 #define BUFFER	5
 #define MAX_EVENTS 2
 #define FAIL -1
+
+std::string timestring(void);
 
 class Client;
 class Channel;
@@ -28,7 +31,7 @@ class Channel;
 class Server {
 private:
 	int _fd, _port;
-	std::string _passwd;
+	std::string _passwd, _createdTime;
 	struct sockaddr_in _address;
 	struct epoll_event _ev, _events[MAX_EVENTS];
 	std::map <int, Client*> _clients;
@@ -45,6 +48,7 @@ public:
 	int getPort() const;
 	Client *getClient(int);
 	Channel *getChannel(std::string);
+	std::string getCreatedTime(void) const;
 
 	void init();
 	void run();

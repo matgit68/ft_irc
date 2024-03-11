@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(int p, std::string pass): _port(p), _passwd(pass) {
+Server::Server(int p, std::string pass): _port(p), _passwd(pass), _createdTime(timestring()) {
 }
 
 Server::~Server() {}
@@ -34,3 +34,4 @@ Channel *Server::getChannel(std::string name) {
 	return _channels[name];
 }
 
+std::string Server::getCreatedTime(void) const { return _createdTime; }
