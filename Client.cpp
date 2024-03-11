@@ -27,3 +27,16 @@ void Client::parse(std::string msg) {
 	std::cout << "PARSE " << msg;
 	_server->broadcast(this, msg); // for testing purposes
 }
+
+bool Client::getStatus(void) const { return _clientReady; }
+std::string Client::getHost() const { return _host; }
+std::string Client::getPrefix() const { 
+	return (_nick.empty() ? "*" \
+		: (_nick + (_user.empty() ? "" : "!" + _user) +
+		(_host.empty() ? "" : "@" + _host)));
+	}
+std::string Client::getReal() const { return _real; }
+
+void Client::setStatus(void) { _clientReady = !_clientReady; }
+void Client::setHost(std::string h) { _host = h; }
+void Client::setReal(std::string r) { _real = r; }

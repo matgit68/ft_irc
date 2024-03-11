@@ -102,7 +102,7 @@ void Server::run() {
 						if (_clients.find(_events[n].data.fd) != _clients.end()) // remove Client from map
 							_clients.erase(_events[n].data.fd);
 						else
-							std::cout << "Couldnt find client of fd " << _events[n].data.fd << std::endl;
+							std::cerr << "Couldnt find client of fd " << _events[n].data.fd << std::endl;
 						if (close(_events[n].data.fd) == FAIL) // close fd
 							std::cerr << "couldnt close fd " << _events[n].data.fd << std::endl;
 						std::cout << "Client " << _events[n].data.fd << " disconnected" << std::endl;
@@ -119,8 +119,65 @@ void Server::run() {
 
 void Server::broadcast(Client* client, std::string msg) {
 	std::map<int, Client*>::iterator it;
-	for (it = _clients.begin(); it != _clients.end(); ++it)
-    	if (it->second != client)
-			if (send(it->second->getFd(), msg.c_str(), msg.size(), 0) != (ssize_t) msg.size())
+std::cerr << "debug BROADCAST : " + msg;
+	if (!client->getStatus() && !msg.compare(0, 6, "CAP LS") && (!msg[6] || msg[6] == ' '))
+	{
+		std::string cap = "CAP * LS :\r\n";
+std::cerr << "debug CAP LS : " + cap;
+		if (send(client->getFd(), cap.c_str(), cap.size(), 0)!= (ssize_t) cap.size())
+			std::cerr << "Error sending msg" << std::endl;
+	}
+	else if (!msg.compare("CAP END\r\n"))
+	{
+		if (!client->getStatus())
+		{
+			usleep(100);
+			std::string end = client->getUser() + " " + client->getNick() + " :Welcome to the Internet Relay Network " + client->getNick() + "\r\n";
+std::cerr << "debug CAP END : " + end;
+			if (send(client->getFd(), end.c_str(), end.size(), 0) != (ssize_t) end.size())
 				std::cerr << "Error sending msg" << std::endl;
+			std::string wel = client->getNick() + " :Welcome to the <networkname> Network, " + client->getPrefix() + "\r\n";
+std::cerr << "debug CAP END : " + wel;
+			if (send(client->getFd(), wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
+				std::cerr << "Error sending msg" << std::endl;
+		}
+	}
+	else if (!client->getStatus() && !msg.compare(0, 5, "USER "))
+	{
+		// to parse and set
+		// USER <username> <hostname> <servername> :<realname>
+std::cerr << "debug USER : " + msg;
+		msg.erase(0, 4);
+		msg.erase(0, msg.find_first_not_of(" \r\t\v\f\n", 0));
+std::cerr << "debug USER : " + msg;
+		client->setUser(msg.substr(0, msg.find_first_of(" \r\t\v\f\n", 0)));	
+						// ERR_NEEDMOREPARAMS if empty 
+						// MUST NOT contain any of the following characters: space (' ', 0x20), 
+							// comma (',', 0x2C), asterisk ('*', 0x2A), question mark ('?', 0x3F), 
+							// exclamation mark ('!', 0x21), at sign ('@', 0x40).
+						// MUST NOT start with any of the following characters: dollar ('$', 0x24), 
+							// colon (':', 0x3A).
+						// MUST NOT start with a character listed as a channel type, channel membership
+							// prefix, or prefix listed in the IRCv3 multi-prefix Extension.
+						// SHOULD NOT contain any dot character ('.', 0x2E).
+		msg.erase(0, msg.find_first_not_of(" \r\t\v\f\n", 0));
+		msg.erase(0, msg.find_first_of(" \r\t\v\f\n", 0));
+std::cerr << "debug USER : " + msg;
+		client->setHost(msg.substr(0, msg.find_first_of(" \r\t\v\f\n", 0)));
+		msg.erase(0, msg.find_first_of(":", 0) + 1);
+std::cerr << "debug USER : " + msg;
+		client->setReal(msg);
+	}
+	else if (!client->getStatus() && !msg.compare(0, 5, "NICK "))
+	{
+		msg.erase(0, 4);
+		msg.erase(0, msg.find_first_not_of(" \r\t\v\f\n", 0));
+std::cerr << "debug NICK : " + msg;
+		client->setNick(msg);
+	}
+	else
+		for (it = _clients.begin(); it != _clients.end(); ++it)
+			if (it->second != client)
+				if (send(it->second->getFd(), msg.c_str(), msg.size(), 0) != (ssize_t) msg.size())
+					std::cerr << "Error sending msg" << std::endl;
 }
