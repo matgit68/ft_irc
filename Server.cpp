@@ -23,6 +23,8 @@ int Server::getFd() const { return _fd; }
 
 int Server::getPort() const { return _port; }
 
+std::string Server::getPasswd() const { return _passwd; }
+
 Client *Server::getClient(int fd) {
 	if (_clients.find(fd) == _clients.end())
 		return NULL;
