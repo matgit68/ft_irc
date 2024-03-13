@@ -45,20 +45,21 @@ void Client::receive(char* str) {
 
 void Client::parse(std::string msg) {
 	size_t pos;
-	std::cout << "PARSE " << msg << std::endl;
+	std::cout << "Received(" << _fd << ") : " << msg << std::endl;
 	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
-		_server->broadcast(this, msg); // for testing purposes
+		// _server->broadcast(this, msg); // for testing purposes
 		// send an error ERR_NEEDMOREPARAMS (461) ?
 		return ;
 	}
 	funPtr f = _server->getCommand(msg.substr(0, pos));
 	if (f != NULL)
 		f(this, msg.substr(pos + 1, msg.size()));
-	else
-		_server->broadcast(this, msg); // for testing purposes
+	// else
+	// 	std::cout << msg << std::endl;
+		// _server->broadcast(this, msg); // for testing purposes
 }
 
-bool Client::getStatus(void) const { return _clientReady; }
+bool Client::getStatus(void) const { return _passwd && !_nick.empty() && !_real.empty() && !_user.empty(); }
 
 std::string Client::getHost() const { return _host; }
 

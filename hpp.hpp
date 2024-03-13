@@ -25,15 +25,17 @@
 
 class Client;
 
-void ping(Client *client, std::string args);
-void kick(Client *client, std::string args);
-void invite(Client *client, std::string args);
-void topic(Client *client, std::string args);
-void mode(Client *client, std::string args);
-void cap(Client *client, std::string args);
-void pass(Client *client, std::string args);
-void nick(Client *client, std::string args);
-void user(Client *client, std::string args);
-void quit(Client *client, std::string args);
-void join(Client *client, std::string args);
-void privmsg(Client *client, std::string args);
+void ping(Client *, std::string);
+void kick(Client *, std::string);
+void invite(Client *, std::string);
+void topic(Client *, std::string);
+void mode(Client *, std::string);
+void cap(Client *, std::string);
+void pass(Client *, std::string);
+void nick(Client *, std::string);
+void user(Client *, std::string);
+void quit(Client *, std::string);
+void join(Client *, std::string);
+void privmsg(Client *, std::string);
+void broad(Client *, std::string);
+void ft_send(Client *, std::string);

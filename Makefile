@@ -8,6 +8,7 @@ CXX = c++
 CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -fsanitize=address -g3
 
 SRC =	cap.cpp\
+		broad.cpp\
 		Channel.cpp\
 		Client.cpp\
 		invite.cpp\
@@ -24,6 +25,7 @@ SRC =	cap.cpp\
 		ServerRun.cpp\
 		topic.cpp\
 		user.cpp\
+		utils.cpp\
 
 OBJ = $(SRC:.cpp=.o)
 

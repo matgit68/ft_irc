@@ -10,7 +10,7 @@ typedef void (*funPtr)(Client *, std::string);
 class Server {
 private:
 	int _fd, _port;
-	std::string _passwd;
+	std::string _passwd, _hostname;
 	struct sockaddr_in _address;
 	struct epoll_event _ev, _events[MAX_EVENTS];
 	std::map <int, Client*> _clients;
@@ -35,7 +35,7 @@ public:
 	void init();
 	void run();
 	void broadcast(Client*, std::string);
-
+	void sendRegistration(Client *);
 	// void cap(Client *client, std::string args);
 	// void invite(Client *client, std::string args);
 	// void join(Client *client, std::string args);
