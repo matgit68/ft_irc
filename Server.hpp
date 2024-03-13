@@ -1,41 +1,21 @@
 #pragma once
 
-#include <stdio.h>
-#include <string.h>//strlen
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>//close
-#include <arpa/inet.h>//close
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
-#include <sys/epoll.h>
-#include <string>
-#include <map>
-#include "Client.hpp"
-#include "Channel.hpp"
-#include <fcntl.h>
-#include <iostream>
-#include <ctime>
-
-#define BUFFER	5
-#define MAX_EVENTS 2
-#define FAIL -1
-
-std::string timestring(void);
+#include "hpp.hpp"
 
 class Client;
 class Channel;
 
+typedef void (*funPtr)(Client *, std::string);
+
 class Server {
 private:
 	int _fd, _port;
-	std::string _passwd, _createdTime;
+	std::string _passwd, _hostname, _createdTime;
 	struct sockaddr_in _address;
 	struct epoll_event _ev, _events[MAX_EVENTS];
 	std::map <int, Client*> _clients;
 	std::map <std::string, Channel*> _channels;
+	std::map <std::string, funPtr> _commands;
 	Server();
 
 public:
@@ -46,11 +26,27 @@ public:
 
 	int getFd() const;
 	int getPort() const;
+	std::string getPasswd() const;
 	Client *getClient(int);
 	Channel *getChannel(std::string);
+	funPtr getCommand(std::string);
 	std::string getCreatedTime(void) const;
 
+	void initFunPtr();
 	void init();
 	void run();
 	void broadcast(Client*, std::string);
+	void sendRegistration(Client *);
+	// void cap(Client *client, std::string args);
+	// void invite(Client *client, std::string args);
+	// void join(Client *client, std::string args);
+	// void kick(Client *client, std::string args);
+	// void mode(Client *client, std::string args);
+	// void nick(Client *client, std::string args);
+	// void pass(Client *client, std::string args);
+	// void ping(Client *client, std::string args);
+	// void privmsg(Client *client, std::string args);
+	// void quit(Client *client, std::string args);
+	// void topic(Client *client, std::string args);
+	// void user(Client *client, std::string args);
 };

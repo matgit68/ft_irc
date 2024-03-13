@@ -7,11 +7,26 @@ NAME = ircserv
 CXX = c++
 CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -fsanitize=address -g3
 
-SRC =	Client.cpp\
+SRC =	cap.cpp\
+		broad.cpp\
+		Channel.cpp\
+		Client.cpp\
+		invite.cpp\
+		join.cpp\
+		kick.cpp\
+		main.cpp\
+		mode.cpp\
+		nick.cpp\
+		pass.cpp\
+		ping.cpp\
+		privmsg.cpp\
+		quit.cpp\
 		Server.cpp\
 		ServerRun.cpp\
 		time.cpp\
-		main.cpp\
+		topic.cpp\
+		user.cpp\
+		utils.cpp\
 
 OBJ = $(SRC:.cpp=.o)
 
