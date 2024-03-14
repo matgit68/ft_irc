@@ -16,5 +16,8 @@ void nick(Client *client, std::string args) {
 //     They MUST NOT start with any of the following characters: dollar ('$', 0x24), colon (':', 0x3A).
 //     They MUST NOT start with a character listed as a channel type, channel membership prefix, or prefix listed in the IRCv3 multi-prefix Extension.
 //     They SHOULD NOT contain any dot character ('.', 0x2E).
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 4a28f7aa2de2f57531a2b95d6520a0460f1ac100

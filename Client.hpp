@@ -8,12 +8,16 @@ class Server;
 
 class Client{
 private:
+<<<<<<< HEAD
 	std::string _user, _nick, _real, _buffer, _host, _param, _command;
+=======
+	std::string _user, _nick, _real, _buffer, _host, _srvaddr;
+>>>>>>> 4a28f7aa2de2f57531a2b95d6520a0460f1ac100
 	Server *_server;
 	int _fd;
 	Client(Client const &ref);
 	Client &operator=(Client const &ref);
-	bool _clientReady, _response, _passwd;
+	bool _clientReady, _response, _passwd; // i had a pb with only clientReady, so i added _response, i havn't test again now, so i don't no if ze need to add this again.
 
 public:
 	Client(int, Server*);

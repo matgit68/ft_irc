@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int f, Server *s): _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false) {}
+Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false) {}
 
 Client::~Client() {}
 
@@ -45,20 +45,29 @@ void Client::receive(char* str) {
 
 void Client::parse(std::string msg) {
 	size_t pos;
-	std::cout << "PARSE " << msg << std::endl;
+	std::cout << "Received(" << _fd << ") : " << msg << std::endl;
 	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
-		_server->broadcast(this, msg); // for testing purposes
+		// _server->broadcast(this, msg); // for testing purposes
 		// send an error ERR_NEEDMOREPARAMS (461) ?
+// I think this is the good error cause the irssi like other clients send always precision with msg send before the text
+// but be careful about PING, and maybe some others cmd
+// I think we should take the entiere string on getCommand if there is'nt any spaces
+	// and formulate the error on the keywords' functions for this case
 		return ;
 	}
 	funPtr f = _server->getCommand(msg.substr(0, pos));
 	if (f != NULL)
 		f(this, msg.substr(pos + 1, msg.size()));
-	else
-		_server->broadcast(this, msg); // for testing purposes
+	// else
+	// 	std::cout << msg << std::endl;
+		// _server->broadcast(this, msg); // for testing purposes
+// BROADCAST 
+// actually the iterator start with the current client ?
+// the broadcast should be use since _server->client ?
+// but exclude the current fd-client like now
 }
 
-bool Client::getStatus(void) const { return _clientReady; }
+bool Client::getStatus(void) const { return _passwd && !_nick.empty() && !_real.empty() && !_user.empty(); }
 
 std::string Client::getHost() const { return _host; }
 
@@ -78,7 +87,7 @@ void Client::setStatus(void) { _clientReady = !_clientReady; }
 
 void Client::setResponse(void) {
 	_response = !_response;
-	if (_response)// choose ur message
+/*	if (_response)// choose ur message
 	{
 // 		std::string end = "001 " + _user + " " + _nick + " :Welcome to the Internet Relay Network " + _nick + "\r\n";
 // std::cerr << "debug CAP END : " + end;
@@ -88,7 +97,12 @@ void Client::setResponse(void) {
 		std::cerr << "debug CAP END : " + wel;
 		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
 			std::cerr << "Error sending msg" << std::endl;
-	}
+
+//   "002 <client> :Your host is <servername>, running version <version>"
+		wel = "003 " + _nick + " :This server was created " + _server->getCreatedTime() + "\r\n";
+		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
+			std::cerr << "Error sending msg" << std::endl;
+	}*/
 }
 
 void Client::setHost(std::string h) { _host = h; }
