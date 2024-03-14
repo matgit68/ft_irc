@@ -2,11 +2,12 @@
 
 
 
-void invite(Client *client, std::string args) {
+void invite(Client *client, std::string args) 
+{
+	(void)args;
+	(void)client;
 
-
-(void)args;
-(void)client;
+	
 
 	// std::string userNick = client->getNick();
 	
