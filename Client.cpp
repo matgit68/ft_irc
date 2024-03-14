@@ -107,4 +107,4 @@ void Client::setResponse(void) {
 
 void Client::setHost(std::string h) { _host = h; }
 void Client::setReal(std::string r) { _real = r; }
-std::string Client::getCommand( void ) { return _command;}
+// std::string Client::getCommand( void ) { return _command;}

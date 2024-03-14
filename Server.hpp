@@ -30,32 +30,13 @@ public:
 	Client *getClient(int);
 	Channel *getChannel(std::string);
 	funPtr getCommand(std::string);
-<<<<<<< HEAD
 	
-=======
 	std::string getCreatedTime(void) const;
->>>>>>> 4a28f7aa2de2f57531a2b95d6520a0460f1ac100
 
 	void initFunPtr();
 	void init();
 	void run();
 	void broadcast(Client*, std::string);
-<<<<<<< HEAD
 
-
-=======
 	void sendRegistration(Client *);
->>>>>>> 4a28f7aa2de2f57531a2b95d6520a0460f1ac100
-	// void cap(Client *client, std::string args);
-	// void invite(Client *client, std::string args);
-	// void join(Client *client, std::string args);
-	// void kick(Client *client, std::string args);
-	// void mode(Client *client, std::string args);
-	// void nick(Client *client, std::string args);
-	// void pass(Client *client, std::string args);
-	// void ping(Client *client, std::string args);
-	// void privmsg(Client *client, std::string args);
-	// void quit(Client *client, std::string args);
-	// void topic(Client *client, std::string args);
-	// void user(Client *client, std::string args);
 };

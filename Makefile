@@ -26,11 +26,7 @@ SRC =	cap.cpp\
 		time.cpp\
 		topic.cpp\
 		user.cpp\
-<<<<<<< HEAD
-		utils.cpp \
-=======
 		utils.cpp\
->>>>>>> 4a28f7aa2de2f57531a2b95d6520a0460f1ac100
 
 OBJ = $(SRC:.cpp=.o)
 

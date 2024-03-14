@@ -8,11 +8,7 @@ class Server;
 
 class Client{
 private:
-<<<<<<< HEAD
-	std::string _user, _nick, _real, _buffer, _host, _param, _command;
-=======
 	std::string _user, _nick, _real, _buffer, _host, _srvaddr;
->>>>>>> 4a28f7aa2de2f57531a2b95d6520a0460f1ac100
 	Server *_server;
 	int _fd;
 	Client(Client const &ref);
@@ -41,5 +37,5 @@ public:
 	void setResponse(void);
 	void receive(char*);
 	void parse(std::string);
-	std::string getCommand( void );
+	// std::string getCommand( void );
 };
