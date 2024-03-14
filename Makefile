@@ -24,6 +24,7 @@ SRC =	cap.cpp\
 		ServerRun.cpp\
 		topic.cpp\
 		user.cpp\
+		utils.cpp \
 
 OBJ = $(SRC:.cpp=.o)
 

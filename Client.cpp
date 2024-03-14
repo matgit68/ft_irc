@@ -90,5 +90,7 @@ void Client::setResponse(void) {
 			std::cerr << "Error sending msg" << std::endl;
 	}
 }
+
 void Client::setHost(std::string h) { _host = h; }
 void Client::setReal(std::string r) { _real = r; }
+std::string Client::getCommand( void ) { return _command;}

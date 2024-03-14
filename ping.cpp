@@ -2,8 +2,9 @@
 
 void ping(Client *client, std::string args) {
 	std::string answer;
+	
 	if (args.empty()) {
-		send(client->getFd(), "ERR_NEEDMOREPARAMS\r\n", 20, 0);
+		sendClient(client->getFd(), ERR_NEEDMOREPARAMS( "PING"));
 		return ;
 	}
 	else

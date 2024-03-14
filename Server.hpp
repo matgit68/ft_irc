@@ -30,11 +30,13 @@ public:
 	Client *getClient(int);
 	Channel *getChannel(std::string);
 	funPtr getCommand(std::string);
+	
 
 	void initFunPtr();
 	void init();
 	void run();
 	void broadcast(Client*, std::string);
+
 
 	// void cap(Client *client, std::string args);
 	// void invite(Client *client, std::string args);

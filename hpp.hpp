@@ -18,6 +18,8 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "ErrMessages.hpp"
+#include "Message.hpp"
 
 #define BUFFER 512
 #define MAX_EVENTS 5
@@ -37,3 +39,4 @@ void user(Client *client, std::string args);
 void quit(Client *client, std::string args);
 void join(Client *client, std::string args);
 void privmsg(Client *client, std::string args);
+void sendClient(int fd, std::string response);

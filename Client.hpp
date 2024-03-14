@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "Server.hpp"
 
 class Server;
 
 class Client{
 private:
-	std::string _user, _nick, _real, _buffer, _host;
+	std::string _user, _nick, _real, _buffer, _host, _param, _command;
 	Server *_server;
 	int _fd;
 	Client(Client const &ref);
@@ -36,4 +37,5 @@ public:
 	void setResponse(void);
 	void receive(char*);
 	void parse(std::string);
+	std::string getCommand( void );
 };
