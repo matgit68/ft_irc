@@ -1,14 +1,35 @@
 #include "Server.hpp"
 
-
-#include "Server.hpp"
-
 void nick(Client *client, std::string args) {
 	if (args[0] == '#' || args[0] == '$' || args[0] == ':'
 			|| args.find_first_of(" ,*?!@.") != std::string::npos)
-		return ft_send(client, "ERR_ERRONEUSNICKNAME");
+		return ft_send(client, ERR_ERRONEUSNICKNAME(client->getNick(), args));
 	client->setNick(args);
+
+
+	std::string newNick = args;
+	std::string oldNick = client->getNick();
+	
+	std::cout << "new nickname: " << newNick << std::endl;
+	std::cout << "old nickname: " << oldNick << std::endl;
+
+	if(newNick.length() == 0){
+		ft_send(client, ERR_NONICKNAMEGIVEN(client->getNick()));
+		return;
+	}
+	if(client->getServer()->isNickAvailable(newNick)) // I cant check if its working it can be client->getNick() also
+	{
+			ft_send(client, ERR_NICKNAMEINUSE(client->getNick(), newNick));
+			return ;
+	} 
+	if(!is_valid(newNick))
+	{
+		ft_send(client, ERR_ERRONEUSNICKNAME(client->getNick(), newNick));
+		return;
+	}
+	client->setNick(newNick);
 }
+	
 
 // Nicknames are non-empty strings with the following restrictions:
 

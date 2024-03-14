@@ -42,3 +42,4 @@ void join(Client *, std::string);
 void privmsg(Client *, std::string);
 void broad(Client *, std::string);
 void ft_send(Client *, std::string);
+bool is_valid(const std::string nickname);

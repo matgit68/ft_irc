@@ -77,3 +77,15 @@ void Server::broadcast(Client* client, std::string msg) {
 		if (it->second != client)
 			ft_send(it->second, msg);
 }
+
+bool Server::isNickAvailable(std::string& newNick)
+{
+	std::map<int, Client*>::iterator it;
+	for(it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if(it->second->getNick() == newNick)
+			return false;
+	}
+	return true;
+}
+
