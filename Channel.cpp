@@ -25,3 +25,13 @@ void Channel::removeOp(int id) {
 	if (_op.find(id) != _op.end())
 		_op.erase(id);
 }
+
+void Channel::addClient(Client *client) {
+	if (_clients.find(client->getFd()) == _clients.end())
+		_clients.insert(client->getFd());
+}
+
+void Channel::delClient(Client *client) {
+if (_clients.find(client->getFd()) != _clients.end())
+	_clients.erase(client->getFd());
+}

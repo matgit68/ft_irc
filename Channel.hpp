@@ -1,8 +1,5 @@
 #pragma once
-
-#include <string>
-#include <set>
-#include "Client.hpp"
+#include "hpp.hpp"
 
 class Client;
 
@@ -34,4 +31,7 @@ public:
 	bool isOp(int);
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
+
+	void addClient(Client *);
+	void delClient(Client *);
 };

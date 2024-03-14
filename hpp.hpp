@@ -1,5 +1,9 @@
 #pragma once
 
+#define BUFFER 512
+#define MAX_EVENTS 5
+#define FAIL -1
+
 #include <stdio.h>
 #include <string.h>//strlen
 #include <stdlib.h>
@@ -11,19 +15,20 @@
 #include <netinet/in.h>
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
 #include <sys/epoll.h>
+
 #include <string>
 #include <map>
+#include <set>
+#include <vector>
 #include <fcntl.h>
 #include <iostream>
+#include <ctime>
+
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "ErrMessages.hpp"
-#include <ctime>
 
-#define BUFFER 512
-#define MAX_EVENTS 5
-#define FAIL -1
 
 class Client;
 
@@ -41,4 +46,6 @@ void quit(Client *, std::string);
 void join(Client *, std::string);
 void privmsg(Client *, std::string);
 void broad(Client *, std::string);
+void dispChanList(Client *, std::string);
+
 void ft_send(Client *, std::string);
