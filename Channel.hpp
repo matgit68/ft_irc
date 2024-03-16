@@ -23,15 +23,17 @@ private:
 
 public:
 	Channel(std::string); // topic unique name
+	Channel(std::string, std::string); // name + pass
 	~Channel();
 	std::string getName() const;
 	std::string getTopic() const;
+	std::string getPasswd() const;
 	void setTopic(std::string);
 
 	bool isOp(int);
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
 
-	void addClient(Client *);
+	void addClient(Client *, std::string key);
 	void delClient(Client *);
 };

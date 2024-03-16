@@ -52,6 +52,11 @@ void Server::addChannel(std::string channel) {
 		_channels[channel] = new Channel(channel);
 }
 
+void Server::addChannel(std::string channel, std::string key) {
+	if (_channels.find(channel) == _channels.end())
+		_channels[channel] = new Channel(channel, key);
+}
+
 void Server::delChannel(std::string channel) {
 	if (_channels.find(channel) != _channels.end())
 		delete _channels[channel];
