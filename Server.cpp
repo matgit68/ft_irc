@@ -47,14 +47,16 @@ funPtr Server::getCommand(std::string name) {
 return _commands[name];
 }
 
-void Server::addChannel(std::string channel) {
+Channel * Server::addChannel(std::string channel) {
 	if (_channels.find(channel) == _channels.end())
 		_channels[channel] = new Channel(channel);
+	return _channels[channel];
 }
 
-void Server::addChannel(std::string channel, std::string key) {
+Channel * Server::addChannel(std::string channel, std::string key) {
 	if (_channels.find(channel) == _channels.end())
 		_channels[channel] = new Channel(channel, key);
+	return _channels[channel];
 }
 
 void Server::delChannel(std::string channel) {

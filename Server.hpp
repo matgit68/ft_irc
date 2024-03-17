@@ -33,8 +33,8 @@ public:
 	
 	std::string getCreatedTime(void) const;
 
-	void addChannel(std::string);
-	void addChannel(std::string, std::string);
+	Channel * addChannel(std::string);
+	Channel * addChannel(std::string, std::string);
 	void delChannel(std::string);
 	void dispChannels(Client *);
 

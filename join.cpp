@@ -48,12 +48,14 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 //std::cerr << "DEBUG-JOIN : new-channel '" + names[i] + "'"  << std::endl;
 
 			if (i < keys.size()) {
-		 		server->addChannel(names[i], keys[i]); 
+		 		chan = server->addChannel(names[i], keys[i]); 
 			 	server->getChannel(names[i])->addClient(client, keys[i]);
+				chan->giveOp(client->getFd());
 			}
 			else {
-				server->addChannel(names[i]);
+				chan = server->addChannel(names[i]);
 			 	server->getChannel(names[i])->addClient(client, chan_key); // NULL -> empty string -> correct ? 
+				chan->giveOp(client->getFd());
 			}
 		}
 	}
