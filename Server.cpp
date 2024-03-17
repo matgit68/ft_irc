@@ -33,6 +33,15 @@ Client *Server::getClient(int fd) {
 	return _clients[fd];
 }
 
+Client *Server::getClient(std::string target) const {
+	for (std::map<int, Client*>::const_iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->second->getNick() == target)
+			return (it->second);
+	}
+	return NULL;
+}
+
 Channel *Server::getChannel(std::string name) {
 	if (_channels.find(name) == _channels.end())
 		return NULL;

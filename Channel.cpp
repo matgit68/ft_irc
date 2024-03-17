@@ -10,6 +10,8 @@ std::string Channel::getName() const { return _name; }
 
 std::string Channel::getTopic() const { return _topic; }
 
+std::string Channel::getPasswd(void) const { return _passwd; }
+
 void Channel::setTopic(std::string t) { _topic = t; }
 
 bool Channel::isOp(int id) {
@@ -43,4 +45,28 @@ if (_clients.find(client->getFd()) != _clients.end())
 	_clients.erase(client->getFd());
 }
 
-std::string Channel::getPasswd(void) const { return _passwd; }
+bool Channel::isClient(Client *search) const {
+	if (_clients.find(search->getFd()) != _clients.end())
+		return (true);
+	return (false);
+}
+
+void Channel::sendChan(Client *client, std::string msg) const {
+	std::cout << "Send(";
+	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); )
+	{
+		std::cout << *it;
+		it++;
+		if (it != _clients.end())
+			std::cout << ", ";
+	}
+	if (msg[0] != ':')
+		msg = ":" + msg;	// easy syntax from NC but not totaly correct, to discuss
+	msg =  ":" + client->getNick() + " PRIVMSG " + _name + " " + msg + "\r\n";
+	std::cout << ") : " << msg << std::endl;
+	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (*it != client->getFd())
+			send(*it, msg.c_str(), msg.size(), 0);
+	}
+}

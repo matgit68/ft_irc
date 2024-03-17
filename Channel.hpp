@@ -36,4 +36,7 @@ public:
 
 	void addClient(Client *, std::string key);
 	void delClient(Client *);
+	bool isClient(Client *) const;
+
+	void sendChan(Client *client, std::string msg) const;
 };

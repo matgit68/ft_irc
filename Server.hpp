@@ -28,6 +28,7 @@ public:
 	int getPort() const;
 	std::string getPasswd() const;
 	Client *getClient(int);
+	Client *getClient(std::string) const;
 	Channel *getChannel(std::string);
 	funPtr getCommand(std::string);
 	

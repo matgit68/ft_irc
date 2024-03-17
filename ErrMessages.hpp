@@ -51,6 +51,8 @@
 # define ERR_NORECIPIENT(client) ("411 " + client + " No recipient given PRIVMSG\r\n")
 # define ERR_NOTEXTTOSEND(client) (":localhost 412" + client + " :No text to send\r\n")
 # define RPL_PRIVMSG(nick, username, target, message) (":" + nick + "!" + username + "@localhost PRIVMSG " + target + " " + message + "\r\n")
+//# define ERR_CANNOTSENDTOCHAN(client, channel) ("404 " + client + " " + channel + " :Cannot send to channel\r\n")
+# define RPL_AWAY(client, nick, message) ("301 " + client + " " + nick + " :" + message + "\r\n")
 
 //USER
 # define ERR_ALREADYREGISTERED(client) (":localhost 462 " + client + " :You may not reregister.\r\n")
