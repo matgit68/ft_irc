@@ -8,7 +8,7 @@ class Server;
 
 class Client{
 private:
-	std::string _user, _nick, _real, _buffer, _host, _srvaddr;
+	std::string _user, _nick, _real, _buffer, _host, _srvaddr, _oldnick;
 	Server *_server;
 	int _fd;
 	Client(Client const &ref);
@@ -28,8 +28,10 @@ public:
 	std::string getHost() const;
 	std::string getPrefix() const;
 	Server *getServer() const;
+	std::string getOldNick() const;
 	void setUser(std::string);
 	void setNick(std::string);
+	void setOldNick(std::string);
 	void setReal(std::string);
 	void setHost(std::string);
 	void setPasswd(bool);
@@ -37,5 +39,4 @@ public:
 	void setResponse(void);
 	void receive(char*);
 	void parse(std::string);
-	// std::string getCommand( void );
 };

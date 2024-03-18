@@ -10,6 +10,8 @@ std::string Client::getUser() const { return _user; }
 
 std::string Client::getNick() const { return _nick; }
 
+std::string Client::getOldNick() const { return _oldnick; }
+
 Server *Client::getServer() const { return _server; }
 
 void Client::setUser(std::string u) { _user = u; }
@@ -17,6 +19,8 @@ void Client::setUser(std::string u) { _user = u; }
 void Client::setNick(std::string n) { _nick = n; }
 
 void Client::setPasswd(bool b) { _passwd = b; }
+
+void Client::setOldNick(std::string nickname) { _oldnick = nickname; }
 
 // void Client::receive(char* str) {
 // 	_buffer.append(str);
@@ -109,4 +113,4 @@ void Client::setResponse(void) {
 
 void Client::setHost(std::string h) { _host = h; }
 void Client::setReal(std::string r) { _real = r; }
-// std::string Client::getCommand( void ) { return _command;}
+

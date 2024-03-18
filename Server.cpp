@@ -111,3 +111,14 @@ void Server::dispChannels(Client *client) {
 	for(it = _channels.begin(); it != _channels.end(); it++)
 		ft_send(client, it->second->getName());
 }
+bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname has already taken
+{
+	std::map<int, Client*>::iterator it;
+	for(it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if(it->second->getNick() == newNick)
+			return false;
+	}
+	return true;
+}
+
