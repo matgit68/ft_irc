@@ -32,19 +32,17 @@ void Channel::removeOp(int id) {
 
 void Channel::addClient(Client *client, std::string key) {
 	if (_clients.find(client->getFd()) != _clients.end())
-		return ; // ERR client already on chan
+		return ; // client already on chan -> no ERR to send
 	if (_mode.find('i') != std::string::npos && _invite.find(client->getFd()) == _invite.end()) // mode invite_only is set
-		return ; // ERR client not invited
+		return ft_send(client->getFd(), ERR_INVITEONLYCHAN(_name));
 	if ((_passwd.empty() || key == _passwd)) {
 		_clients.insert(client->getFd());
 		ft_send(client->getFd(), RPL_TOPIC);
-		sendChan(client, RPL_NAMREPLY);		
+		ft_send(client->getFd(), RPL_NAMREPLY);
+		sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
 	}
-		// 
-	else if (!key.empty()) {
-		ft_send(client->getFd(), ERR_BADCHANNELKEY);
-		return ; // ERR bad password
-	}
+	else
+		return ft_send(client->getFd(), ERR_BADCHANNELKEY);
 }
 
 void Channel::delClient(Client *client) {

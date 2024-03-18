@@ -20,11 +20,13 @@
 
 //JOIN
 # define RPL_JOIN(user_id, channel) (user_id + " JOIN :#" + channel + "\r\n")
+# define RPL_JOIN_NOTIF(user_id, channel) (":" + user_id + "!~user@localhost JOIN " + channel + "\r\n")
 # define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + client->getNick() + " #" + channel + " :Cannot join channel (+b)\r\n")
 # define ERR_BADCHANNELKEY (":localhost 475 " + client->getNick() + " #" + _name + " :Cannot join channel (+k)\r\n")
 # define ERR_INVITEONLYCHAN(channel) (":localhost 473 " + client->getNick() + " " + channel + " :Cannot join channel (i)\r\n")
 # define ERR_CHANNELISFULL(channel) (":localhost 471 " + client->getNick() + " " + channel + " :Cannot join channel (+l)\r\n")
 # define RPL_ENDOFNAMES(channel) (":localhost 366" + client->getNick() + " #" + channel + " :End of /NAMES list.\r\n")
+
 
 //KICK
 # define ERR_USERNOTINCHANNEL (client, nickname, channel) (":localhost 441" + client + " " + nickname + " #" +channel + " :They aren't on that channel\r\n")
