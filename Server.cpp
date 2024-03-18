@@ -123,3 +123,5 @@ bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname ha
 	return true;
 }
 
+std::map<std::string, Channel*> Server::getChannelMap(void) const { return _channels; }
+

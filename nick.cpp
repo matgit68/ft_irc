@@ -31,6 +31,20 @@ void nick(Client *client, std::string args) {
 		client->setNick(newNick);
 		std::cout << client->getOldNick() << " changed his nickname to " << newNick << "." << std::endl;
 	}
+
+	std::map<std::string, Channel*> chan = client->getServer()->getChannelMap();
+	std::set<int>	dest;
+	for (std::map<std::string, Channel*>::iterator it = chan.begin(); it != chan.end(); it++)
+	{
+		if (it->second->getName() != ":" && it->second->isClient(client))
+		{
+			std::set<int> tmp = it->second->getClientList();
+			for (std::set<int>::iterator add = tmp.begin(); add != tmp.end(); add++)
+				dest.insert(*add);
+		}
+	}
+	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
+		ft_send(*it, RPL_NICK(oldNick, newNick, client->getNick()));
 }
 	
 

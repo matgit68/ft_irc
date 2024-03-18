@@ -12,6 +12,9 @@ std::string Channel::getTopic() const { return _topic; }
 
 std::string Channel::getPasswd(void) const { return _passwd; }
 
+std::set<int> Channel::getClientList(void) const { return _clients; }
+
+
 void Channel::setTopic(std::string t) { _topic = t; }
 
 bool Channel::isOp(int id) {

@@ -29,6 +29,7 @@ public:
 	std::string getName() const;
 	std::string getTopic() const;
 	std::string getPasswd() const;
+	std::set<int> getClientList(void) const;
 	void setTopic(std::string);
 
 	bool isOp(int);

@@ -30,6 +30,7 @@ public:
 	Client *getClient(int);
 	Client *getClient(std::string) const;
 	Channel *getChannel(std::string);
+	std::map<std::string, Channel*> getChannelMap(void) const;
 	funPtr getCommand(std::string);
 	
 	std::string getCreatedTime(void) const;
