@@ -25,17 +25,3 @@ void Channel::removeOp(int id) {
 	if (_op.find(id) != _op.end())
 		_op.erase(id);
 }
-
-std::string Channel::getChangedNick(int id, std::string user)
-{
-	if(isOp(id))
-		return ("@" + user);
-	else
-		return (user);
-}
-
-void Channel::changeNick(std::string oldNick, std::string newNick){
-	(void)oldNick;
-	(void)newNick;
-	//to be continued
-}

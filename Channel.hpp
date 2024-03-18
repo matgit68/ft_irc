@@ -34,6 +34,4 @@ public:
 	bool isOp(int);
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
-	std::string getChangedNick(int id, std::string user); //changin the nickname of user by the operator
-	void changeNick(std::string oldNick, std::string newNick);
 };

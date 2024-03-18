@@ -37,7 +37,6 @@ public:
 	void init();
 	void run();
 	void broadcast(Client*, std::string);
-
 	void sendRegistration(Client *);
 	bool isNickAvailable(std::string& newNick);
 };

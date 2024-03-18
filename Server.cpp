@@ -78,7 +78,7 @@ void Server::broadcast(Client* client, std::string msg) {
 			ft_send(it->second, msg);
 }
 
-bool Server::isNickAvailable(std::string& newNick)
+bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname has already taken
 {
 	std::map<int, Client*>::iterator it;
 	for(it = _clients.begin(); it != _clients.end(); it++)

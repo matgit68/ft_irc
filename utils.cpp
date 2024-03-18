@@ -8,7 +8,7 @@ void ft_send(Client *client, std::string msg) {
 bool is_valid(const std::string nickname){
 	if(nickname.length() < 1 || nickname.length() > 32)
 		return false;
-	const std::string validChars = "ABCDEFGHIJKLMNOPQRSTUVWYZabcdefghijklmnopqrstuvwyz0123456789_[]{}\\|";
+	const std::string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_[]{}\\|";
 	for (size_t i = 0; i < nickname.length(); i++)
 	{
 		char c = nickname[i];
