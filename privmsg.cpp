@@ -38,13 +38,13 @@ void privmsg(Client *client, std::string args) {
 					chan->sendChan(client, args);
 			}
 			else // chan doesn't exist
-				ft_send(client,ERR_NOSUCHNICK(client->getUser(), dest[i]));
+				ft_send(client, ERR_NOSUCHNICK(client->getUser(), dest[i]));
 		}
 		else // USER
 		{
 			Client* target;
 			if ((target = client->getServer()->getClient(dest[i])))
-				ft_send(client, ":" + client->getNick() + " PRIVMSG " + dest[i] + " " + args + "\r\n");
+				ft_send(target, ":" + client->getNick() + " PRIVMSG " + dest[i] + " " + args + "\r\n");
 			else // ERR msg RPL_AWAY ? ERR_NOSUCHNICK ? 
 				ft_send(client, RPL_AWAY(client->getUser(), client->getNick(), args)); // If <target> is a user and that user has been set as away, the server may reply with an RPL_AWAY (301) numeric and the command will continue.
 		}

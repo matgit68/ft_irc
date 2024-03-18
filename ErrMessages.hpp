@@ -20,17 +20,17 @@
 
 //JOIN
 # define RPL_JOIN(user_id, channel) (user_id + " JOIN :#" + channel + "\r\n")
-# define ERR_BANNEDFROMCHAN( channel) (":localhost 474 " + client->getNick() + " #" + channel + " :Cannot join channel (+b)\r\n")
-# define ERR_BADCHANNELKEY( channel) (":localhost 475 " + client->getNick() + " #" + channel + " :Cannot join channel (+k)\r\n")
-# define ERR_INVITEONLYCHAN ( channel) (":localhost 473 " + client->getNick() + " " + channel + " :Cannot join channel (i)\r\n")
-# define ERR_CHANNELISFULL ( channel) (":localhost 471 " + client->getNick() + " " + channel + " :Cannot join channel (+l)\r\n")
-# define RPL_ENDOFNAMES (channel) (":localhost 366" + client->getNick() + " #" + channel + " :End of /NAMES list.\r\n")
+# define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + client->getNick() + " #" + channel + " :Cannot join channel (+b)\r\n")
+# define ERR_BADCHANNELKEY (":localhost 475 " + client->getNick() + " #" + _name + " :Cannot join channel (+k)\r\n")
+# define ERR_INVITEONLYCHAN(channel) (":localhost 473 " + client->getNick() + " " + channel + " :Cannot join channel (i)\r\n")
+# define ERR_CHANNELISFULL(channel) (":localhost 471 " + client->getNick() + " " + channel + " :Cannot join channel (+l)\r\n")
+# define RPL_ENDOFNAMES(channel) (":localhost 366" + client->getNick() + " #" + channel + " :End of /NAMES list.\r\n")
 
 //KICK
 # define ERR_USERNOTINCHANNEL (client, nickname, channel) (":localhost 441" + client + " " + nickname + " #" +channel + " :They aren't on that channel\r\n")
 
 //TOPIC
-# define RPL_TOPIC (client, channel, topic) (":localhost 332 " + client + " #" + channel + " " + topic +"\r\n")
+# define RPL_TOPIC (":localhost 332 " + client->getNick() + " " + _name + " " + _topic +"\r\n")
 # define RPL_NOTOPIC(client, channel) (":localhost 331 " + client + " #" + channel + " :No topic is set\r\n")
 
 //NICK
@@ -74,6 +74,6 @@
 # define RPL_ADDVOICE(nickname, username, channel, mode, param) (":" + nickname + "!" + username + "@localhost MODE #" + channel + " " + mode + " " + param + "\r\n")
 
 //NAMES
-# define RPL_NAMREPLY(client, symbol, channel, list_of_nicks) (":localhost 353 " + client + " " + symbol + " #" + channel + " :" + list_of_nicks + "\r\n")
+# define RPL_NAMREPLY (":localhost 353 " + client->getNick() + " = " + _name + " :" + client->getNick() + "\r\n")
 
 #endif

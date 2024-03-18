@@ -74,3 +74,6 @@ http://sdz.tdct.org/sdz/les-sockets.html
 https://github.com/marineks/Ft_irc
 http://chi.cs.uchicago.edu/chirc/irc.html
 https://irc.dalexhd.dev/index.html
+
+doc la plus complete ?
+https://datatracker.ietf.org/doc/html/rfc1459#section-4.1

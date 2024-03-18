@@ -18,6 +18,7 @@ private:
 	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkol"
 	std::set <int> _clients; // list of clients using the channel
 	std::set <int> _op; // list of clients ops on the channel
+	std::set <int> _invite; // list of clients invited 
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
 

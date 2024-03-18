@@ -30,8 +30,6 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 		keys.push_back(chan_key.substr(0, pos));
 		chan_key.erase(0, pos);
 	}
-	// (void) chan;
-	// (void) server;
 
 //std::cerr << "DEBUG-JOIN : " << names.size() << std::endl;
 
