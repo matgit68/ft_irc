@@ -91,10 +91,11 @@ void Server::initFunPtr() {
 }
 
 void Server::sendRegistration(Client *client) {
-	ft_send(client, ":localhost 001 " + client->getNick() + " :Welcome to the 42Mulhouse Network, " + client->getPrefix() + "\r\n");
-	ft_send(client, ":localhost 002 " + client->getNick() + " :Your host is "+ _hostname + ", running version WTF\r\n");
-	ft_send(client, ":localhost 003 " + client->getNick() + " :This server was created " + _createdTime + "\r\n");
-//	 "004 <client> <servername> <version> o itklo [<channel modes with a parameter>]"
+	ft_send(client->getFd(), ":localhost 001 " + client->getNick() + " :Welcome to the 42Mulhouse Network, " + client->getNick() + "\r\n");
+	ft_send(client->getFd(), ":localhost 002 " + client->getNick() + " :Your host is "+ _hostname + ", running version WTF\r\n");
+	ft_send(client->getFd(), ":localhost 003 " + client->getNick() + " :This server was created " + _createdTime + "\r\n");
+	ft_send(client->getFd(), ":localhost 004 " + client->getNick() + _hostname + " WTF o itkl\r\n");
+//	 "004 <client> <servername> <version> o itkl [<channel modes with a parameter>]"
 	client->setResponse(); // if we need to confirm the protocol
 }
 
@@ -102,14 +103,14 @@ void Server::broadcast(Client* client, std::string msg) {
 	std::map<int, Client*>::iterator it;
 	for(it = _clients.begin(); it != _clients.end(); it++)
 		if (it->second != client)
-			ft_send(it->second, msg);
+			ft_send(it->first, msg);
 }
 
 void Server::dispChannels(Client *client) {
 	//std::cout << "disp chan list" << std::endl;
 	std::map<std::string, Channel*>::iterator it;
 	for(it = _channels.begin(); it != _channels.end(); it++)
-		ft_send(client, it->second->getName());
+		ft_send(client->getFd(), it->second->getName());
 }
 bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname has already taken
 {

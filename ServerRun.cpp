@@ -99,8 +99,10 @@ void Server::run() {
 						exit(EXIT_FAILURE);
 					}
 					else {
-						if (_clients.find(_events[n].data.fd) != _clients.end()) // remove Client from map
+						if (_clients.find(_events[n].data.fd) != _clients.end()) {// delete Client and remove Client from map
+							delete _clients[_events[n].data.fd];
 							_clients.erase(_events[n].data.fd);
+						}
 						else
 							std::cerr << "Couldnt find client of fd " << _events[n].data.fd << std::endl;
 						if (close(_events[n].data.fd) == FAIL) // close fd

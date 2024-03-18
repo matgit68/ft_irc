@@ -37,12 +37,12 @@ void Channel::addClient(Client *client, std::string key) {
 		return ; // ERR client not invited
 	if ((_passwd.empty() || key == _passwd)) {
 		_clients.insert(client->getFd());
-		ft_send(client, RPL_TOPIC);
+		ft_send(client->getFd(), RPL_TOPIC);
 		sendChan(client, RPL_NAMREPLY);		
 	}
 		// 
 	else if (!key.empty()) {
-		ft_send(client, ERR_BADCHANNELKEY);
+		ft_send(client->getFd(), ERR_BADCHANNELKEY);
 		return ; // ERR bad password
 	}
 }
@@ -59,21 +59,22 @@ bool Channel::isClient(Client *search) const {
 }
 
 void Channel::sendChan(Client *client, std::string msg) const {
-	std::cout << "Send(";
-	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); )
-	{
-		std::cout << *it;
-		it++;
-		if (it != _clients.end())
-			std::cout << ", ";
-	}
-	if (msg[0] != ':')
-		msg = ":" + msg;	// easy syntax from NC but not totaly correct, to discuss
-	msg =  ":" + client->getNick() + " PRIVMSG " + _name + " " + msg + "\r\n";
-	std::cout << ") : " << msg << std::endl;
+	// std::cout << "Sent(";
+	// for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); )
+	// {
+	// 	std::cout << *it;
+	// 	it++;
+	// 	if (it != _clients.end())
+	// 		std::cout << ", ";
+	// }
+	// if (msg[0] != ':')
+	// 	msg = ":" + msg;	// easy syntax from NC but not totaly correct, to discuss
+	// msg =  ":" + client->getNick() + " PRIVMSG " + _name + " " + msg + "\r\n";
+	// std::cout << ") : " << msg << std::endl;
 	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
 		if (*it != client->getFd())
-			send(*it, msg.c_str(), msg.size(), 0);
+			ft_send(*it, msg);
+			// send(*it, msg.c_str(), msg.size(), 0);
 	}
 }

@@ -19,11 +19,11 @@ ERR_PASSWDMISMATCH (464)
 
 void pass(Client *client, std::string args) {
 	if (client->getStatus()) {
-		ft_send(client, "ERR_ALREADYREGISTERED\r\n");
+		ft_send(client->getFd(), "ERR_ALREADYREGISTERED\r\n");
 		return;
 	}
 	if (args != client->getServer()->getPasswd()) {
-		ft_send(client, "ERR_PASSWDMISMATCH\r\n");
+		ft_send(client->getFd(), "ERR_PASSWDMISMATCH\r\n");
 		return;
 	}
 	client->setPasswd(true);
