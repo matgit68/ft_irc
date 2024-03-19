@@ -3,6 +3,7 @@
 #define BUFFER 512
 #define MAX_EVENTS 5
 #define FAIL -1
+#define NPOS std::string::npos
 
 #include <stdio.h>
 #include <string.h>//strlen

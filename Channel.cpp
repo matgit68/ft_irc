@@ -10,12 +10,47 @@ std::string Channel::getName() const { return _name; }
 
 std::string Channel::getTopic() const { return _topic; }
 
+std::string Channel::getMode() const { return _mode; }
+
 std::string Channel::getPasswd(void) const { return _passwd; }
+
+Server *Channel::getServer() { return _server; }
 
 std::set<int> Channel::getClientList(void) const { return _clients; }
 
-
 void Channel::setTopic(std::string t) { _topic = t; }
+
+void Channel::addMode(char mode) {
+	std::cout << "MODE +" << mode << std::cout;
+	if (_mode.find(mode) == NPOS)
+		_mode += mode;
+}
+
+void Channel::addMode(char mode, std::string str) {
+	std::cout << "MODE +" << mode << " " << str << std::cout;
+	if (_mode.find(mode) != NPOS)
+		return;
+	_mode += mode;
+	if (mode == 'k')
+		_passwd = str;
+	if (mode == 'o')
+		giveOp(getServer()->getClient(str)->getFd());
+}
+
+void Channel::addMode(char mode, int limit) {
+	std::cout << "MODE +" << mode << " " << limit << std::cout;
+	if (_mode.find(mode) == NPOS) {
+		_mode += mode;
+		_limit = limit;
+	}
+}
+
+void Channel::unMode(char mode) {
+	std::cout << "MODE -" << mode << std::cout;
+	size_t pos = _mode.find(mode);
+	if (pos != NPOS)
+		_mode.erase(pos, 1);
+}
 
 bool Channel::isOp(int id) {
 	if (_op.find(id) != _op.end())

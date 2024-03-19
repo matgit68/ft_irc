@@ -1,5 +1,7 @@
 #include "hpp.hpp"
 
+// /!\ if client is invited, no need of a pass (+i mode overrides +k mode)
+
 void join(Client *client, std::string args) { // simplistic version /!\ not handling yet : modes, invite, password
 	size_t pos, space;
 	std::string chan_name, chan_key;
@@ -18,7 +20,7 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 //std::cerr << "DEBUG-JOIN : '" + chan_name + "' '" + chan_key + "'"  << std::endl;
 
 /*	 /!\ TO VERIF	*/
-	while (!chan_name.empty()) {// now we recover the channel names
+	while (!chan_name.empty()) { // now we recover the channel names
 		if ((pos = chan_name.find_first_of(",")) == std::string::npos) // if there are no ',' or ' ' separator, we take the entire string
 			pos = chan_name.size();
 		names.push_back(chan_name.substr(0, pos));
@@ -33,8 +35,7 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 
 //std::cerr << "DEBUG-JOIN : " << names.size() << std::endl;
 
-	for (size_t i = 0; i < names.size(); i++)
-	{
+	for (size_t i = 0; i < names.size(); i++) {
 		if ((chan = server->getChannel(names[i]))) { // if channel already exists, add the client to its client list
 //std::cerr << "DEBUG-JOIN : existing channel '" + names[i] + "'"  << std::endl;
 			if (i < keys.size())
@@ -46,7 +47,7 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 //std::cerr << "DEBUG-JOIN : new-channel '" + names[i] + "'"  << std::endl;
 
 			if (i < keys.size()) {
-		 		chan = server->addChannel(names[i], keys[i]); 
+		 		chan = server->addChannel(names[i], keys[i]);
 			 	server->getChannel(names[i])->addClient(client, keys[i]);
 				chan->giveOp(client->getFd());
 			}

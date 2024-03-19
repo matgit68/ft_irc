@@ -46,4 +46,6 @@ public:
 	void broadcast(Client*, std::string);
 	void sendRegistration(Client *);
 	bool isNickAvailable(std::string& newNick);
+
+	bool userOnChannel(int, std::string);
 };

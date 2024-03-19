@@ -62,7 +62,7 @@
 //MODE
 /* user mode */
 # define MODE_USERMSG(client, mode) (":" + client + " MODE " + client + " :" + mode + "\r\n")
-# define ERR_UMODEUNKNOWNFLAG(client) (":localhost 501 " + client + " :Unknown MODE flag\r\n")
+# define ERR_UMODEUNKNOWNFLAG() (":localhost 501 " + client->getNick() + " :Unknown MODE flag\r\n")
 # define ERR_USERSDONTMATCH(client) ("502 " + client + " :Cant change mode for other users\r\n")
 # define RPL_UMODEIS(client, mode) (":localhost 221 " + client + " " + mode + "\r\n")
 /* channel mode */

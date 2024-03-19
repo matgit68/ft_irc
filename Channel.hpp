@@ -1,6 +1,7 @@
 #pragma once
 #include "hpp.hpp"
 
+class Server;
 class Client;
 
 class Channel{
@@ -15,12 +16,14 @@ private:
 	regular channel - which is known to all servers that are connected to the network- prefix character for this type of channel is ('#', 0x23)
 	local channels - where the clients connected can only see and talk to other clients on the same server - prefix character for this type of channel is ('&', 0x26)
 */
-	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkol"
+	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkl"
+	int _limit;
 	std::set <int> _clients; // list of clients using the channel
 	std::set <int> _op; // list of clients ops on the channel
 	std::set <int> _invite; // list of clients invited 
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
+	Server *_server;
 
 public:
 	Channel(std::string); // topic unique name
@@ -29,9 +32,16 @@ public:
 	std::string getName() const;
 	std::string getTopic() const;
 	std::string getPasswd() const;
+	Server *getServer();
 	std::set<int> getClientList(void) const;
 	void setTopic(std::string);
 
+	std::string getMode() const;
+	void addMode(char);
+	void addMode(char, std::string);
+	void addMode(char, int);
+
+	void unMode(char);
 	bool isOp(int);
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
