@@ -34,11 +34,10 @@ Client *Server::getClient(int fd) {
 }
 
 Client *Server::getClient(std::string target) const {
-	for (std::map<int, Client*>::const_iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
+	std::map<int, Client*>::const_iterator it;
+	for (it = _clients.begin(); it != _clients.end(); it++) // SEGFAULT ?! _client.begin()
 		if (it->second->getNick() == target)
 			return (it->second);
-	}
 	return NULL;
 }
 

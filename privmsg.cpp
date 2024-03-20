@@ -1,9 +1,6 @@
 #include "Server.hpp"
 
 void privmsg(Client *client, std::string args) {
-	(void) client;
-	(void) args;
-
 	std::string	destlist = args.substr(0, args.find_first_of(" "));
 	std::vector<std::string>	dest;
 

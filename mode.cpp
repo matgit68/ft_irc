@@ -41,10 +41,14 @@ void mode(Client *client, std::string args) {
 		}
 		if (!modeset)
 			return ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
-		if (modeset == '+')
+		if (modeset == '+') {
+			puts("add mode");
 			chan->addMode(client, modestring[0], modeargs);
-		if (modeset == '-')
+		}
+		if (modeset == '-') {
+			puts("remove mode");
 			chan->unMode(client, modestring[0], modeargs);
+		}
 		modestring.erase(0, 1);
 	}
 }
