@@ -10,6 +10,8 @@ std::string Channel::getName() const { return _name; }
 
 std::string Channel::getTopic() const { return _topic; }
 
+std::string Channel::getMode() const { return _mode; }
+
 std::string Channel::getPasswd(void) const { return _passwd; }
 
 std::set<int> Channel::getClientList(void) const { return _clients; }
@@ -22,7 +24,7 @@ bool Channel::isOp(int id) {
 		return true;
 	return false;
 }
-
+ 
 void Channel::giveOp(int id) {
 	if (_op.find(id) == _op.end())
 		_op.insert(id);
@@ -48,13 +50,40 @@ void Channel::addClient(Client *client, std::string key) {
 		return ft_send(client->getFd(), ERR_BADCHANNELKEY);
 }
 
+void Channel::addClientInvite(Client *client) {
+	if (!this->isInvite(client->getFd()))
+		return ;
+	if (_clients.find(client->getFd()) != _clients.end())
+		return ;
+	_clients.insert(client->getFd());
+	ft_send(client->getFd(), RPL_TOPIC);
+	ft_send(client->getFd(), RPL_NAMREPLY);
+	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
+	this->delInvite(client->getFd());
+}
+
 void Channel::delClient(Client *client) {
-if (_clients.find(client->getFd()) != _clients.end())
-	_clients.erase(client->getFd());
+	if (_clients.find(client->getFd()) != _clients.end())
+		_clients.erase(client->getFd());
+}
+
+void Channel::addInvite(int fd) {
+	_invite.insert(fd);
+}
+
+void Channel::delInvite(int fd) {
+	if (_invite.find(fd) != _invite.end())
+		_invite.erase(fd);
 }
 
 bool Channel::isClient(Client *search) const {
 	if (_clients.find(search->getFd()) != _clients.end())
+		return (true);
+	return (false);
+}
+
+bool Channel::isInvite(int search) const {
+	if (_invite.find(search) != _invite.end())
 		return (true);
 	return (false);
 }

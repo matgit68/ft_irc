@@ -17,6 +17,9 @@
 # define ERR_USERONCHANNEL(nick, channel) (":localhost 443 " + client->getNick() + " " + nick + " #" + channel + " :Is already on channel\r\n")
 # define RPL_INVITING(user_id, nick, channel) (user_id  + " 341 " + client->getNick() + " " + nick + " #" + channel + "\r\n")
 # define RPL_INVITE(user_id, invited, channel) (user_id + " INVITE " + invited + " #" + channel + "\r\n")
+# define RPL_INVITELIST(client, channel) (":localhost 336 " + client + " " + channel + "\r\n") // 346 or 336
+# define RPL_ENDOFINVITELIST(client) (":localhost 337 " + client + " :End of /INVITE list")
+
 
 //JOIN
 # define RPL_JOIN(user_id, channel) (user_id + " JOIN :#" + channel + "\r\n")
