@@ -29,7 +29,7 @@ public:
 	std::string getPrefix() const;
 	Server *getServer() const;
 	std::string getOldNick() const;
-	//std::string getCommand() const;
+	std::string getCommand() const;
 	void setUser(std::string);
 	void setNick(std::string);
 	void setOldNick(std::string);

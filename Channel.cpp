@@ -1,6 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string n): _name(n), _topic("TopicTest") {}
+Channel::Channel(std::string n): _name(n), _topic("TopicTest") {
+	isTopicProtected = false;
+}
 
 Channel::Channel(std::string n, std::string w): _name(n), _passwd(w) {}
 
@@ -9,6 +11,9 @@ Channel::~Channel() {}
 std::string Channel::getName() const { return _name; }
 
 std::string Channel::getTopic() const { return _topic; }
+
+
+std::string Channel::getMode() const { return _mode; }
 
 std::string Channel::getPasswd(void) const { return _passwd; }
 
@@ -37,7 +42,7 @@ void Channel::addClient(Client *client, std::string key) {
 		return ; // ERR client not invited
 	if ((_passwd.empty() || key == _passwd)) {
 		_clients.insert(client->getFd());
-		ft_send(client, RPL_TOPIC);
+		//ft_send(client, RPL_TOPIC);
 		sendChan(client, RPL_NAMREPLY);		
 	}
 		// 

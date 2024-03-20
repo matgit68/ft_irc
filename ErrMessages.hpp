@@ -13,7 +13,7 @@
 //INVITE
 # define ERR_NEEDMOREPARAMS(command) (":localhost 461 " + client->getNick() + " " + command + " :Not enough parameters.\r\n")
 # define ERR_NOSUCHCHANNEL(channel) (":localhost 403 " + client->getNick() + " #" + channel + " :No such channel\r\n")
-# define ERR_NOTONCHANNEL(channel) (":localhost 442 " + client->getNick() + " #" + channel + ": The user is not on this channel.\r\n")
+# define ERR_NOTONCHANNEL(nickname, channel) (":localhost 442 " + client->getNick() + " #" + channel + ": The user is not on this channel.\r\n")
 # define ERR_USERONCHANNEL(nick, channel) (":localhost 443 " + client->getNick() + " " + nick + " #" + channel + " :Is already on channel\r\n")
 # define RPL_INVITING(user_id, nick, channel) (user_id  + " 341 " + client->getNick() + " " + nick + " #" + channel + "\r\n")
 # define RPL_INVITE(user_id, invited, channel) (user_id + " INVITE " + invited + " #" + channel + "\r\n")
@@ -30,7 +30,7 @@
 # define ERR_USERNOTINCHANNEL (client, nickname, channel) (":localhost 441" + client + " " + nickname + " #" +channel + " :They aren't on that channel\r\n")
 
 //TOPIC
-# define RPL_TOPIC (":localhost 332 " + client->getNick() + " " + _name + " " + _topic +"\r\n")
+# define RPL_TOPIC(client, channel, topic) (":localhost 332 " + client + " #" + channel + " " + topic + "\r\n")
 # define RPL_NOTOPIC(client, channel) (":localhost 331 " + client + " #" + channel + " :No topic is set\r\n")
 
 //NICK

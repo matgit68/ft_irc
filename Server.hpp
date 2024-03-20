@@ -45,4 +45,6 @@ public:
 	void broadcast(Client*, std::string);
 	void sendRegistration(Client *);
 	bool isNickAvailable(std::string& newNick);
+	bool findChannel(std::string channel);
+	std::map<std::string, Channel*>	getChannels();
 };

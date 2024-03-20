@@ -25,6 +25,7 @@ int Server::getPort() const { return _port; }
 
 std::string Server::getPasswd() const { return _passwd; }
 
+std::map<std::string, Channel*>	Server::getChannels()		{ return (_channels); }
 
 
 Client *Server::getClient(int fd) {
@@ -119,6 +120,13 @@ bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname ha
 		if(it->second->getNick() == newNick)
 			return false;
 	}
+	return true;
+}
+
+bool Server::findChannel(std::string channel)
+{
+	if(_channels.find(channel) == _channels.end())
+		return false;
 	return true;
 }
 

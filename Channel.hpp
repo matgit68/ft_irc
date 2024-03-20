@@ -21,6 +21,7 @@ private:
 	std::set <int> _invite; // list of clients invited 
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
+	bool isTopicProtected;
 
 public:
 	Channel(std::string); // topic unique name
@@ -28,6 +29,8 @@ public:
 	~Channel();
 	std::string getName() const;
 	std::string getTopic() const;
+	std::string getMode() const;
+
 	std::string getPasswd() const;
 	void setTopic(std::string);
 
