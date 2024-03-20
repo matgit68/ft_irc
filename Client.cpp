@@ -25,7 +25,7 @@ void Client::setOldNick(std::string nickname) { _oldnick = nickname; }
 // void Client::receive(char* str) {
 // 	_buffer.append(str);
 // 	size_t pos = _buffer.find("\r\n");
-// 	if (pos != std::string::npos) {
+// 	if (pos != NPOS) {
 // 		parse(_buffer.substr(0, pos + 2));
 // 		_buffer.erase(0, pos + 2);
 // 	}
@@ -41,7 +41,7 @@ void Client::receive(char* str) {
 		_buffer.clear();
 	}
 	size_t pos;
-	while ((pos = _buffer.find("\r\n")) != std::string::npos) {
+	while ((pos = _buffer.find("\r\n")) != NPOS) {
 		parse(_buffer.substr(0, pos));
 		_buffer.erase(0, pos + 2);
 	}
@@ -50,9 +50,9 @@ void Client::receive(char* str) {
 void Client::parse(std::string msg) {
 	Client *client = this;
 	size_t pos;
-	if (msg.find("PING") == std::string::npos && msg.find("PONG") == std::string::npos)
+	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
 		std::cout << "Received(" << _fd << ") : " << msg << std::endl;
-	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
+	if ((pos = msg.find_first_of(' ')) == NPOS) {
 		ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
 		// _server->broadcast(this, msg); // for testing purposes
 		// send an error ERR_NEEDMOREPARAMS (461) ?

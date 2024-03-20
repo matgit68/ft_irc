@@ -2,7 +2,7 @@
 
 void nick(Client *client, std::string args) {
 	if (args[0] == '#' || args[0] == '$' || args[0] == ':'
-			|| args.find_first_of(" ,*?!@.") != std::string::npos)
+			|| args.find_first_of(" ,*?!@.") != NPOS)
 		return ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client->getNick(), args));
 	
 	

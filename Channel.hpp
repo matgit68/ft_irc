@@ -19,8 +19,9 @@ private:
 	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkl"
 	int _limit;
 	std::set <int> _clients; // list of clients using the channel
-	std::set <int> _op; // list of clients ops on the channel
-	std::set <int> _invite; // list of clients invited 
+	std::set <int> _ops; // list of clients ops on the channel
+	std::set <int> _invite; // list of clients invited
+	std::set<int>::iterator _it;
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
 	Server *_server;
@@ -37,18 +38,19 @@ public:
 	void setTopic(std::string);
 
 	std::string getMode() const;
-	void addMode(char);
-	void addMode(char, std::string);
-	void addMode(char, int);
-
-	void unMode(char);
+	void addMode(Client *, char, std::string &);
+	void unMode(Client *, char, std::string &);
 	bool isOp(int);
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
 
-	void addClient(Client *, std::string key);
+	void addClient(Client *, std::string);
 	void delClient(Client *);
 	bool isClient(Client *) const;
 
-	void sendChan(Client *client, std::string msg) const;
+	void sendChan(Client *, std::string) const;
+	void sendClients(std::string msg) const;
+	void sendOps(std::string msg) const;
+	void sendWhenArriving(Client *) const;
+
 };

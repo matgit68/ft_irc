@@ -19,14 +19,13 @@
 # define RPL_INVITE(user_id, invited, channel) (user_id + " INVITE " + invited + " #" + channel + "\r\n")
 
 //JOIN
-# define RPL_JOIN(user_id, channel) (user_id + " JOIN :#" + channel + "\r\n")
+# define RPL_JOIN(user_id, channel) (user_id + " JOIN :" + channel + "\r\n")
 # define RPL_JOIN_NOTIF(user_id, channel) (":" + user_id + "!~user@localhost JOIN " + channel + "\r\n")
-# define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + client->getNick() + " #" + channel + " :Cannot join channel (+b)\r\n")
-# define ERR_BADCHANNELKEY (":localhost 475 " + client->getNick() + " #" + _name + " :Cannot join channel (+k)\r\n")
+# define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + client->getNick() + " " + channel + " :Cannot join channel (+b)\r\n")
+# define ERR_BADCHANNELKEY (":localhost 475 " + client->getNick() + " " + _name + " :Cannot join channel (+k)\r\n")
 # define ERR_INVITEONLYCHAN(channel) (":localhost 473 " + client->getNick() + " " + channel + " :Cannot join channel (i)\r\n")
 # define ERR_CHANNELISFULL(channel) (":localhost 471 " + client->getNick() + " " + channel + " :Cannot join channel (+l)\r\n")
-# define RPL_ENDOFNAMES(channel) (":localhost 366" + client->getNick() + " #" + channel + " :End of /NAMES list.\r\n")
-
+# define RPL_ENDOFNAMES(channel) (":localhost 366" + client->getNick() + " " + channel + " :End of /NAMES list.\r\n")
 
 //KICK
 # define ERR_USERNOTINCHANNEL (client, nickname, channel) (":localhost 441" + client + " " + nickname + " #" +channel + " :They aren't on that channel\r\n")
@@ -66,14 +65,14 @@
 # define ERR_USERSDONTMATCH(client) ("502 " + client + " :Cant change mode for other users\r\n")
 # define RPL_UMODEIS(client, mode) (":localhost 221 " + client + " " + mode + "\r\n")
 /* channel mode */
-# define MODE_CHANNELMSG(channel, mode) (":localhost MODE #" + channel + " " + mode + "\r\n")
-# define MODE_CHANNELMSGWITHPARAM(channel, mode, param) (":localhost MODE #" + channel + " " + mode + " " + param + "\r\n")
-# define RPL_CHANNELMODEIS(client, channel, mode) (":localhost 324 " + client + " #" + channel + " " + mode + "\r\n")
-# define RPL_CHANNELMODEISWITHKEY(client, channel, mode, password) (":localhost 324 " + client + " #" + channel + " " + mode + " " + password + "\r\n")
-# define ERR_CANNOTSENDTOCHAN(client, channel) ("404 " + client + " #" + channel + " :Cannot send to channel\r\n")
-# define ERR_CHANOPRIVSNEEDED(client, channel) (":localhost 482 " + client + " #" + channel + " :You're not channel operator\r\n")
-# define ERR_INVALIDMODEPARAM(client, channel, mode, password) ("696 " + client + " #" + channel + " " + mode + " " + password + " : password must only contained alphabetic character\r\n")
-# define RPL_ADDVOICE(nickname, username, channel, mode, param) (":" + nickname + "!" + username + "@localhost MODE #" + channel + " " + mode + " " + param + "\r\n")
+# define MODE_CHANNELMSG(channel, mode) (":localhost MODE " + channel + " " + mode + "\r\n")
+# define MODE_CHANNELMSGWITHPARAM(channel, mode, param) (":localhost MODE " + channel + " " + mode + " " + param + "\r\n")
+# define RPL_CHANNELMODEIS(client, channel, mode) (":localhost 324 " + client + " " + channel + " " + mode + "\r\n")
+# define RPL_CHANNELMODEISWITHKEY(client, channel, mode, password) (":localhost 324 " + client + " " + channel + " " + mode + " " + password + "\r\n")
+# define ERR_CANNOTSENDTOCHAN(client, channel) ("404 " + client + " " + channel + " :Cannot send to channel\r\n")
+# define ERR_CHANOPRIVSNEEDED(client, channel) (":localhost 482 " + client + " " + channel + " :You're not channel operator\r\n")
+# define ERR_INVALIDMODEPARAM(client, channel, mode, password) ("696 " + client + " " + channel + " " + mode + " " + password + " : password must only contained alphabetic character\r\n")
+# define RPL_ADDVOICE(nickname, username, channel, mode, param) (":" + nickname + "!" + username + "@localhost MODE " + channel + " " + mode + " " + param + "\r\n")
 
 //NAMES
 # define RPL_NAMREPLY (":localhost 353 " + client->getNick() + " = " + _name + " :" + client->getNick() + "\r\n")

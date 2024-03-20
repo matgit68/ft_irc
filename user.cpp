@@ -12,14 +12,14 @@ void user(Client *client, std::string args) {
 	if (client->getStatus()) // is client already registered ?
 		return ft_send(client->getFd(), ERR_ALREADYREGISTERED(client->getNick()));
 	size_t pos = args.find(' ');
-	if (pos == std::string::npos)
+	if (pos == NPOS)
 		return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
 
 	std::string tmpUser = args.substr(0, pos); //get user_name
 	args.erase(0, pos + 1);
 
 	pos = args.find(' '); // double ? seems that irssi does not respect protocol specs
-	if (pos == std::string::npos)	// before, I erased all spaces, so i havn't the pb --> to your choice
+	if (pos == NPOS)	// before, I erased all spaces, so i havn't the pb --> to your choice
 		return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
 
 	if (tmpUser != args.substr(0, pos))

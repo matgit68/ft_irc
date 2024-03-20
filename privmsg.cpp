@@ -8,7 +8,7 @@ void privmsg(Client *client, std::string args) {
 	std::vector<std::string>	dest;
 
 	for (size_t pos = 0; !destlist.empty();) {// decompose the DEST list
-		if ((pos = destlist.find_first_of(",")) == std::string::npos) // if there are no ',' or ' ' separator, we take the entire string
+		if ((pos = destlist.find_first_of(",")) == NPOS) // if there are no ',' or ' ' separator, we take the entire string
 			pos = destlist.size();
 		dest.push_back(destlist.substr(0, pos));
 		destlist.erase(0, pos + 1);

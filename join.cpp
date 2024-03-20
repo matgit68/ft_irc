@@ -9,10 +9,10 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 	std::vector<std::string> names, keys;
 	Server *server = client->getServer();
 //std::cerr << "DEBUG-JOIN : '" << args << "'" << std::endl;
-	if ((space = args.find(' ')) != std::string::npos && space < args.size() - 1) {// space in arg list -> comma separated channels are followed by corresponding comma separated keys -> lets put these keys in a vector
+	if ((space = args.find(' ')) != NPOS && space < args.size() - 1) {// space in arg list -> comma separated channels are followed by corresponding comma separated keys -> lets put these keys in a vector
 		chan_key = args.substr(space + 1, args.size());
 		chan_name = args.substr(0, space);
-		if (chan_key.find(' ') != std::string::npos)
+		if (chan_key.find(' ') != NPOS)
 			return ; // ERR bad format
 	}
 	else
@@ -21,13 +21,13 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 
 /*	 /!\ TO VERIF	*/
 	while (!chan_name.empty()) { // now we recover the channel names
-		if ((pos = chan_name.find_first_of(",")) == std::string::npos) // if there are no ',' or ' ' separator, we take the entire string
+		if ((pos = chan_name.find_first_of(",")) == NPOS) // if there are no ',' or ' ' separator, we take the entire string
 			pos = chan_name.size();
 		names.push_back(chan_name.substr(0, pos));
 		chan_name.erase(0, pos + 1);
 	}
 	while (!chan_key.empty()) {
-		if ((pos = chan_key.find(',')) == std::string::npos)
+		if ((pos = chan_key.find(',')) == NPOS)
 			pos = chan_key.size();
 		keys.push_back(chan_key.substr(0, pos));
 		chan_key.erase(0, pos);
