@@ -13,25 +13,25 @@ void topic(Client *client, std::string args) {
 
 	if(!server->findChannel(chan)) //checking if the channel exists
 	{
-		return ft_send(client, ERR_NOSUCHCHANNEL(chan));
+		return ft_send(client->getFd(), ERR_NOSUCHCHANNEL(chan));
 	}
 	
 	if(!server->getClient(client->getFd()))
-		ft_send(client, ERR_NOTONCHANNEL(client->getNick(), chan));
+		ft_send(client->getFd(), ERR_NOTONCHANNEL(chan));
 	
  	if(topic.empty())
 	{
 		if(channel->getTopic().empty())
-			ft_send(client, RPL_NOTOPIC(client->getNick(), chan));
+			ft_send(client->getFd(), RPL_NOTOPIC(client->getNick(), chan));
 		else
-			ft_send(client, RPL_TOPIC(client->getNick(), chan, channel->getTopic()));
+			ft_send(client->getFd(), RPL_TOPIC(client->getNick(), chan, channel->getTopic()));
 	}
 	else
 	{
 	 if (channel->getMode().find('t') != NPOS && channel->isOp(client->getFd()))
 	 	channel->setTopic(topic);
 	 else
-	 	ft_send(client, ERR_CHANOPRIVSNEEDED(client->getNick(), chan));
+	 	ft_send(client->getFd(), ERR_CHANOPRIVSNEEDED(client->getNick(), chan));
 	
 	}
 	
