@@ -2,6 +2,7 @@
 #include "hpp.hpp"
 
 class Client;
+class Server;
 
 class Channel{
 private:
@@ -21,11 +22,11 @@ private:
 	std::set <int> _invite; // list of clients invited 
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
-	bool isTopicProtected;
+	Server *_server;
 
 public:
-	Channel(std::string); // topic unique name
-	Channel(std::string, std::string); // name + pass
+	Channel(Server *, std::string); // topic unique name
+	Channel(Server *, std::string, std::string); // name + pass
 	~Channel();
 	std::string getName() const;
 	std::string getTopic() const;

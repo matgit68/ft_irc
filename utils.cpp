@@ -23,3 +23,18 @@ bool is_valid(const std::string nickname){
 	}
 	return true;
 }
+
+
+std::string takeNextArg(std::string &str) {
+	std::string res;
+	size_t space = str.find(' ');
+	if (space == NPOS) {
+		res = str;
+		str.clear();
+	}
+	else {
+		res = str.substr(0, space);
+		str.erase(0, space + 1);
+	}
+	return res;
+}

@@ -47,4 +47,5 @@ public:
 	bool isNickAvailable(std::string& newNick);
 	bool findChannel(std::string channel);
 	std::map<std::string, Channel*>	getChannels();
+	bool isClientExists(int);
 };

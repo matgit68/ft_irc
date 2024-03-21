@@ -59,13 +59,13 @@ return _commands[name];
 
 Channel * Server::addChannel(std::string channel) {
 	if (_channels.find(channel) == _channels.end())
-		_channels[channel] = new Channel(channel);
+		_channels[channel] = new Channel(this, channel);
 	return _channels[channel];
 }
 
 Channel * Server::addChannel(std::string channel, std::string key) {
 	if (_channels.find(channel) == _channels.end())
-		_channels[channel] = new Channel(channel, key);
+		_channels[channel] = new Channel(this, channel, key);
 	return _channels[channel];
 }
 
@@ -129,4 +129,12 @@ bool Server::findChannel(std::string channel)
 		return false;
 	return true;
 }
+
+bool Server::isClientExists(int fd)
+{
+	if(_clients.find(fd) == _clients.end())
+		return false;
+	return true;
+}
+
 

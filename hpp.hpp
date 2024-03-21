@@ -28,6 +28,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "ErrMessages.hpp"
+#define NPOS std::string::npos
 
 
 class Client;
@@ -47,6 +48,6 @@ void join(Client *, std::string);
 void privmsg(Client *, std::string);
 void broad(Client *, std::string);
 void dispChanList(Client *, std::string);
-
 void ft_send(Client *, std::string);
 bool is_valid(const std::string nickname);
+std::string takeNextArg(std::string &str);

@@ -8,7 +8,7 @@ class Server;
 
 class Client{
 private:
-	std::string _user, _nick, _real, _buffer, _host, _srvaddr, _oldnick, _command;
+	std::string _user, _nick, _real, _buffer, _host, _srvaddr, _oldnick;
 	Server *_server;
 	int _fd;
 	Client(Client const &ref);

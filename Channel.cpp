@@ -1,10 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string n): _name(n), _topic("TopicTest") {
-	isTopicProtected = false;
-}
+Channel::Channel(Server *s, std::string n): _name(n), _topic("TopicTest"), _server(s) {}
 
-Channel::Channel(std::string n, std::string w): _name(n), _passwd(w) {}
+Channel::Channel(Server *s, std::string n, std::string w): _name(n), _passwd(w), _server(s) {}
 
 Channel::~Channel() {}
 
