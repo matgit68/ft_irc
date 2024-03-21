@@ -38,7 +38,9 @@ void join(Client *client, std::string args) { // simplistic version /!\ not hand
 	for (size_t i = 0; i < names.size(); i++) {
 		if ((chan = server->getChannel(names[i]))) { // if channel already exists, add the client to its client list
 //std::cerr << "DEBUG-JOIN : existing channel '" + names[i] + "'"  << std::endl;
-			if (i < keys.size())
+			if (chan->isInvite(client->getFd()))
+				chan->addClientInvite(client);
+			else if (i < keys.size())
 				chan->addClient(client, keys[i]);
 			else 
 				chan->addClient(client, chan_key);

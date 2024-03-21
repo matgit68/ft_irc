@@ -32,6 +32,7 @@ public:
 	~Channel();
 	std::string getName() const;
 	std::string getTopic() const;
+	std::string getMode() const;
 	std::string getPasswd() const;
 	Server *getServer();
 	std::set<int> getClientList(void) const;
@@ -53,4 +54,11 @@ public:
 	void sendOps(std::string) const;
 	void sendWhenArriving(Client *) const;
 
+	void addClientInvite(Client *);
+
+	void addInvite(int);
+	void delInvite(int);
+	bool isInvite(int) const;
+
+	void sendChan(Client *client, std::string msg) const;
 };

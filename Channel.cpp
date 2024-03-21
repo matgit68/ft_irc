@@ -70,7 +70,7 @@ bool Channel::isOp(int id) {
 		return true;
 	return false;
 }
-
+ 
 void Channel::giveOp(int id) {
 	if (_ops.find(id) == _ops.end())
 		_ops.insert(id);
@@ -108,13 +108,40 @@ void Channel::sendWhenArriving(Client *client) const {
 	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
 }
 
+void Channel::addClientInvite(Client *client) {
+	if (!this->isInvite(client->getFd()))
+		return ;
+	if (_clients.find(client->getFd()) != _clients.end())
+		return ;
+	_clients.insert(client->getFd());
+	ft_send(client->getFd(), RPL_TOPIC);
+	ft_send(client->getFd(), RPL_NAMREPLY);
+	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
+	this->delInvite(client->getFd());
+}
+
 void Channel::delClient(Client *client) {
-if (_clients.find(client->getFd()) != _clients.end())
-	_clients.erase(client->getFd());
+	if (_clients.find(client->getFd()) != _clients.end())
+		_clients.erase(client->getFd());
+}
+
+void Channel::addInvite(int fd) {
+	_invite.insert(fd);
+}
+
+void Channel::delInvite(int fd) {
+	if (_invite.find(fd) != _invite.end())
+		_invite.erase(fd);
 }
 
 bool Channel::isClient(Client *search) const {
 	if (_clients.find(search->getFd()) != _clients.end())
+		return (true);
+	return (false);
+}
+
+bool Channel::isInvite(int search) const {
+	if (_invite.find(search) != _invite.end())
 		return (true);
 	return (false);
 }
@@ -125,7 +152,6 @@ void Channel::sendChan(Client *client, std::string msg) const {
 	int fd = 0;
 	if (client != NULL)
 		fd = client->getFd();
-
 	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++)	{
 		if (*it != fd)
 			ft_send(*it, msg);

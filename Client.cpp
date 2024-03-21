@@ -52,7 +52,7 @@ void Client::parse(std::string msg) {
 	size_t pos;
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
 		std::cout << "Received(" << _fd << ") : " << msg << std::endl;
-	if ((pos = msg.find_first_of(' ')) == NPOS) {
+	if ((pos = msg.find_first_of(' ')) == NPOS && msg.find("INVITE") != NPOS) {
 		ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
 		// _server->broadcast(this, msg); // for testing purposes
 		// send an error ERR_NEEDMOREPARAMS (461) ?
