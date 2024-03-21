@@ -26,7 +26,7 @@ bool is_valid(const std::string nickname){
 	return true;
 }
 
-std::string takeNextArg(std::string &str) {
+std::string takeNextArg(std::string &str) { // USELESS ! -> iStringStream 
 	std::string res;
 	size_t space = str.find(' ');
 	if (space == NPOS) {

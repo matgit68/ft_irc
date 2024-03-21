@@ -57,13 +57,13 @@ return _commands[name];
 
 Channel * Server::addChannel(std::string channel) {
 	if (_channels.find(channel) == _channels.end())
-		_channels[channel] = new Channel(channel);
+		_channels[channel] = new Channel(this, channel);
 	return _channels[channel];
 }
 
 Channel * Server::addChannel(std::string channel, std::string key) {
 	if (_channels.find(channel) == _channels.end())
-		_channels[channel] = new Channel(channel, key);
+		_channels[channel] = new Channel(this, channel, key);
 	return _channels[channel];
 }
 

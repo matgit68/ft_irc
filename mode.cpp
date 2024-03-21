@@ -1,7 +1,6 @@
 #include "Server.hpp"
 
 void mode(Client *client, std::string args) {
-	std::cout << args << std::endl;
 	char modeset = 0;
 	std::string modestring, modeargs;
 
@@ -16,8 +15,10 @@ void mode(Client *client, std::string args) {
 
 	// no args => mode status request
 	if (args.empty()) {
-		chan->sendClients(RPL_CHANNELMODEIS(client->getNick(), chan->getName(), chan->getMode()));
-		chan->sendOps(RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), chan->getPasswd()));
+		if (chan->isClient(client))
+			chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), chan->getPasswd()));
+		else
+			ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), "[key]"));
 		return ;
 	}
 
@@ -25,11 +26,8 @@ void mode(Client *client, std::string args) {
 		modestring = args.substr(0, space);
 		modeargs = args.substr(space + 1, args.size());
 	}
-	else // only modestring
+	else // only modestring, no modeargs
 		modestring = args.substr(0, args.size());
-
-	// if (modestring.find_first_not_of("+-itklo") != NPOS)
-	// 	return ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
 
 	// handling each modestring one by one and taking arguments in modeargs in the same order
 	while (!modestring.empty()) {
@@ -41,14 +39,18 @@ void mode(Client *client, std::string args) {
 		}
 		if (!modeset)
 			return ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
-		if (modeset == '+') {
-			puts("add mode");
+		if (modeset == '+')
 			chan->addMode(client, modestring[0], modeargs);
-		}
-		if (modeset == '-') {
-			puts("remove mode");
+		if (modeset == '-')
 			chan->unMode(client, modestring[0], modeargs);
-		}
 		modestring.erase(0, 1);
+	}
+	if (chan->isClient(client)) {
+		std::cout << "Sending all clients" << std::endl;
+		chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), chan->getPasswd()));
+	}
+	else {
+		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), "[key]"));
+		std::cout << "Sending only to origin" << std::endl;
 	}
 }

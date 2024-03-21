@@ -1,8 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string n): _name(n), _topic("TopicTest") {}
+Channel::Channel(Server * s,std::string n): _name(n), _topic("TopicTest"), _server(s) {}
 
-Channel::Channel(std::string n, std::string w): _name(n), _passwd(w) {}
+Channel::Channel(Server * s,std::string n, std::string w): _name(n), _passwd(w), _server(s) {}
 
 Channel::~Channel() {}
 
@@ -21,12 +21,12 @@ std::set<int> Channel::getClientList(void) const { return _clients; }
 void Channel::setTopic(std::string t) { _topic = t; }
 
 void Channel::addMode(Client *client, char mode, std::string &arg) {
-	std::string authMode = "itklo";
+	std::string authMode = "+-itklo";
 	if (authMode.find(mode) == NPOS)
-		ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
-	if (mode == 'i' && _mode.find('i') == NPOS) //invite mode
+		return ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
+	if (mode == 'i' && _mode.find('i') == NPOS) // invite mode
 		_mode.append("i");
-	if (mode == 't' && _mode.find('t') == NPOS) // topic protected mode
+	if (mode == 't' && _mode.find('t') == NPOS) // protected topic mode
 		_mode.append("t");
 	if (mode == 'k') { // key protected mode (password)
 		if (_mode.find('k') == NPOS)
@@ -42,13 +42,11 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 		std::string target = takeNextArg(arg);
 		if (target.empty())
 			return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("MODE"));
-		std::cout << "nickname to op : " << target << std::endl;
-		Client *c = _server->getClient(target); // SEGFAULT !
+		Client *c = _server->getClient(target);
 		if (c == NULL)
 			return ft_send(client->getFd(), ERR_NOSUCHNICK(client->getNick(), target));
 		if (_clients.find(c->getFd()) == _clients.end())
-			return ft_send(client->getFd(), "ERR_USERNOTINCHANNEL");
-			// ERR_USERNOTINCHANNEL(client, target, _name));
+			return ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
 		giveOp(c->getFd());
 	}
 }
@@ -121,23 +119,16 @@ bool Channel::isClient(Client *search) const {
 	return (false);
 }
 
+// Send msg to all clients connected to the chan except the sender
+// If client* is NULL, will send to ALL clients, even the sender
 void Channel::sendChan(Client *client, std::string msg) const {
-	// std::cout << "Sent(";
-	// for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); )
-	// {
-	// 	std::cout << *it;
-	// 	it++;
-	// 	if (it != _clients.end())
-	// 		std::cout << ", ";
-	// }
-	// if (msg[0] != ':')
-	// 	msg = ":" + msg;	// easy syntax from NC but not totaly correct, to discuss
-	// msg =  ":" + client->getNick() + " PRIVMSG " + _name + " " + msg + "\r\n";
-	// std::cout << ") : " << msg << std::endl;
+	int fd = 0;
+	if (client != NULL)
+		fd = client->getFd();
+
 	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++)	{
-		if (*it != client->getFd())
+		if (*it != fd)
 			ft_send(*it, msg);
-			// send(*it, msg.c_str(), msg.size(), 0);
 	}
 }
 

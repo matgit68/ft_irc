@@ -27,8 +27,8 @@ private:
 	Server *_server;
 
 public:
-	Channel(std::string); // topic unique name
-	Channel(std::string, std::string); // name + pass
+	Channel(Server *, std::string); // topic unique name
+	Channel(Server *, std::string, std::string); // name + pass
 	~Channel();
 	std::string getName() const;
 	std::string getTopic() const;
@@ -49,8 +49,8 @@ public:
 	bool isClient(Client *) const;
 
 	void sendChan(Client *, std::string) const;
-	void sendClients(std::string msg) const;
-	void sendOps(std::string msg) const;
+	void sendClients(std::string) const;
+	void sendOps(std::string) const;
 	void sendWhenArriving(Client *) const;
 
 };
