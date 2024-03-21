@@ -38,7 +38,6 @@ public:
 	std::set<int> getClientList(void) const;
 	void setTopic(std::string);
 
-	std::string getMode() const;
 	void addMode(Client *, char, std::string &);
 	void unMode(Client *, char, std::string &);
 	bool isOp(int);
@@ -59,6 +58,4 @@ public:
 	void addInvite(int);
 	void delInvite(int);
 	bool isInvite(int) const;
-
-	void sendChan(Client *client, std::string msg) const;
 };
