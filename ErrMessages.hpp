@@ -29,7 +29,8 @@
 # define RPL_ENDOFNAMES(channel) (":localhost 366 " + client->getNick() + " " + channel + " :End of /NAMES list.\r\n")
 
 //KICK
-# define ERR_USERNOTINCHANNEL(client, target, channel) (":localhost 441 " + client->getNick() + " " + target + " " + channel + " :They aren't on that channel\r\n")
+# define ERR_USERNOTINCHANNEL(client, target, channel) (":localhost 441 " + client + " " + target + " " + channel + " :They aren't on that channel\r\n")
+# define RPL_KICK(client, channel, target, reason) ("localhost " + client + " KICK " + channel + " " + target + " :" + reason + "\r\n")
 
 //TOPIC
 # define RPL_TOPIC(client, channel, topic) (":localhost 332 " + client + " " + channel + " " + topic + "\r\n")

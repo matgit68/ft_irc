@@ -46,7 +46,7 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 		if (c == NULL)
 			return ft_send(client->getFd(), ERR_NOSUCHNICK(client->getNick(), target));
 		if (_clients.find(c->getFd()) == _clients.end())
-			return ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
+			return ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client->getNick(), target, _name));
 		giveOp(c->getFd());
 	}
 }
