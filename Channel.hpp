@@ -3,6 +3,7 @@
 
 class Server;
 class Client;
+class Server;
 
 class Channel{
 private:

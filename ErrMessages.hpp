@@ -32,7 +32,7 @@
 # define ERR_USERNOTINCHANNEL(client, target, channel) (":localhost 441 " + client->getNick() + " " + target + " " + channel + " :They aren't on that channel\r\n")
 
 //TOPIC
-# define RPL_TOPIC (":localhost 332 " + client->getNick() + " " + _name + " " + _topic +"\r\n")
+# define RPL_TOPIC(client, channel, topic) (":localhost 332 " + client + " " + channel + " " + topic + "\r\n")
 # define RPL_NOTOPIC(client, channel) (":localhost 331 " + client + " " + channel + " :No topic is set\r\n")
 
 //NICK
