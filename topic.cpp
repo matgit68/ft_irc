@@ -28,10 +28,10 @@
 
 void topic(Client *client, std::string args) {
 
-	Server *server = client->getServer();
+	//Server *server = client->getServer();
 	size_t pos = args.find(' ');
 	if(pos == std::string::npos)
-		return ft_send(client, ERR_NEEDMOREPARAMS(client->getCommand()));
+		return ft_send(client, ERR_NEEDMOREPARAMS("TOPIC"));
 	std::string chan = args.substr(0, pos); //get the channel
 	args.erase(0, pos + 1);
 	if(chan[0] == '#')
@@ -44,10 +44,10 @@ void topic(Client *client, std::string args) {
 	if(topic[0] == ':')
 		topic.erase(0, 1);
 	
-	if(!server->findChannel(chan)) //checking if the user is in the channel
-	{
-		ft_send(client, ERR_NOSUCHCHANNEL(chan));
-	}
+	// if(!server->findChannel(chan)) //checking if the channel exists
+	// {
+	// 	ft_send(client, ERR_NOSUCHCHANNEL(chan));
+	// }
 	
 	std::cout << "channel -> " << chan << std::endl;
 	std::cout << "topic -> [" << topic << "]" << std::endl;
@@ -56,13 +56,11 @@ void topic(Client *client, std::string args) {
 	else
 		ft_send(client, RPL_TOPIC(client->getNick(), chan, topic));
 
-	// std::vector<std::string> names;
-	// for(size_t i = 0; i < names.size(); i++){
-	// 	if(Channel *channels = server->getChannel(names[i]))
-	// 	std::cout << "existing channel: " << channels << std::endl;
 
-	// std::map<std::string, Channel*>		 channels = server->getChannels();
-	// std::map<std::string, Channel*>::iterator channel = channels.find(chan);
+
+	Channel	*channel = client->getServer()->getChannel(chan);
+	std::cout << "channel-> " << channel << std::endl;
+
 	//checking if the user exists
 	//is the person operator && mode
 	//setTopic()

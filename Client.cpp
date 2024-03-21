@@ -14,7 +14,7 @@ std::string Client::getOldNick() const { return _oldnick; }
 
 Server *Client::getServer() const { return _server; }
 
-std::string Client::getCommand() const { return _command; }
+
 
 void Client::setUser(std::string u) { _user = u; }
 
