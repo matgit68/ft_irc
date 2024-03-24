@@ -7,7 +7,7 @@ void kick(Client *client, std::string args) {
 	}
 
 	std::string chanName, reason;
-	size_t	pos = args.find_first_of("");
+	size_t	pos = args.find_first_of(" ");
 	if (pos == std::string::npos) {
 		ft_send(client->getFd(), ERR_NEEDMOREPARAMS("KICK"));
 		return ;
@@ -19,7 +19,7 @@ void kick(Client *client, std::string args) {
 		return ;
 	}
 
-	pos = args.find_first_of("");
+	pos = args.find_first_of(" ");
 	if (pos != std::string::npos) {
 		reason = args.substr(pos + 1, args.size());
 		args.erase(pos +1, std::string::npos);
