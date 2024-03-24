@@ -91,4 +91,5 @@ Returned to indicate that the connection could not be registered as the password
 
 --> formatage mess ERR - RPL
 
---> 
+--> JOIN - RPL message to fix
+pb status user irssi on chan
