@@ -3,24 +3,24 @@
 void nick(Client *client, std::string args) {
 	if (args[0] == '#' || args[0] == '$' || args[0] == ':'
 			|| args.find_first_of(" ,*?!@.") != NPOS)
-		return ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client->getNick(), args));
+		return ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client, args));
 	
 	
 	std::string oldNick = client->getNick();
 	std::string newNick = args;
 	
 	if(newNick.length() == 0){
-		ft_send(client->getFd(), ERR_NONICKNAMEGIVEN(client->getNick()));
+		ft_send(client->getFd(), ERR_NONICKNAMEGIVEN(client));
 		return;
 	}
 	if(!client->getServer()->isNickAvailable(newNick)) //checking if there is already that nick
 	{
-			ft_send(client->getFd(), ERR_NICKNAMEINUSE(client->getNick(), newNick));
+			ft_send(client->getFd(), ERR_NICKNAMEINUSE(client, newNick));
 			return ;
 	} 
 	if(!is_valid(newNick)) //is_valid() func is in the utils.cpp
 	{
-		ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client->getNick(), newNick));
+		ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client, newNick));
 		return;
 	}
 	if(oldNick.empty()) {  //changin the oldNick with the newNick
@@ -44,7 +44,7 @@ void nick(Client *client, std::string args) {
 		}
 	}
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
-		ft_send(*it, RPL_NICK(oldNick, newNick, client->getNick()));
+		ft_send(*it, RPL_NICK(oldNick, newNick, client));
 }
 	
 

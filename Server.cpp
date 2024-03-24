@@ -1,6 +1,10 @@
 #include "hpp.hpp"
 
 Server::Server(int p, std::string pass): _port(p), _passwd(pass), _hostname("localhost"), _createdTime(timestring()) {
+	char hostname[256];
+    if (!gethostname(hostname, sizeof(hostname))) {
+        _hostname.assign(hostname);
+	}
 	initFunPtr();
 }
 
@@ -25,7 +29,9 @@ int Server::getPort() const { return _port; }
 
 std::string Server::getPasswd() const { return _passwd; }
 
+std::string Server::getHostname() const { return _hostname; }
 
+void Server::setHostname(std::string str) { _hostname = str; }
 
 Client *Server::getClient(int fd) {
 	if (_clients.find(fd) == _clients.end())
@@ -90,12 +96,12 @@ void Server::initFunPtr() {
 }
 
 void Server::sendRegistration(Client *client) {
-	ft_send(client->getFd(), ":localhost 001 " + client->getNick() + " :Welcome to the 42Mulhouse Network, " + client->getNick() + "\r\n");
-	ft_send(client->getFd(), ":localhost 002 " + client->getNick() + " :Your host is "+ _hostname + ", running version WTF\r\n");
-	ft_send(client->getFd(), ":localhost 003 " + client->getNick() + " :This server was created " + _createdTime + "\r\n");
-	ft_send(client->getFd(), ":localhost 004 " + client->getNick() + _hostname + " WTF o itkl\r\n");
-//	 "004 <client> <servername> <version> o itkl [<channel modes with a parameter>]"
-	client->setResponse(); // if we need to confirm the protocol
+	ft_send(client->getFd(), RPL_WELCOME(client));
+	ft_send(client->getFd(), RPL_YOURHOST(client));
+	ft_send(client->getFd(), RPL_CREATED(client, client->getServer()->getCreatedTime()));
+	ft_send(client->getFd(), RPL_MYINFO(client, USERMODES, CHANMODES, ""));
+	ft_send(client->getFd(), RPL_ISUPPORT(client, ""));
+	// client->setResponse(); // if we need to confirm the protocol
 }
 
 void Server::broadcast(Client* client, std::string msg) {

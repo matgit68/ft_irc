@@ -7,7 +7,7 @@ void list_invite(Server *serv, Client *client, int fd)
 			it != chan.end(); it++)
 	{
 		if (it->second->isInvite(fd))
-			ft_send(fd, RPL_INVITELIST(client->getNick(), it->second->getName()));
+			ft_send(fd, RPL_INVITELIST(client, it->second->getName()));
 			/*
 				Some rare implementations use numerics 346/347 instead of 336/337 as 
 				`RPL_INVITELIST`/`RPL_ENDOFINVITELIST`. You should check the server 
@@ -17,7 +17,7 @@ void list_invite(Server *serv, Client *client, int fd)
 				used for invite-exception list.
 			*/
 	}
-	ft_send(fd, RPL_ENDOFINVITELIST(client->getNick()));
+	ft_send(fd, RPL_ENDOFINVITELIST(client));
 }
 
 void invite(Client *client, std::string args) 

@@ -10,7 +10,7 @@
 
 void user(Client *client, std::string args) {
 	if (client->getStatus()) // is client already registered ?
-		return ft_send(client->getFd(), ERR_ALREADYREGISTERED(client->getNick()));
+		return ft_send(client->getFd(), ERR_ALREADYREGISTERED(client));
 	size_t pos = args.find(' ');
 	if (pos == NPOS)
 		return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));

@@ -16,9 +16,9 @@ void mode(Client *client, std::string args) {
 	// no args => mode status request
 	if (args.empty()) {
 		if (chan->isClient(client))
-			chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), chan->getPasswd()));
+			chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client, chan, chan->getPasswd()));
 		else
-			ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), "[key]"));
+			ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, chan, "[key]"));
 		return ;
 	}
 
@@ -27,12 +27,12 @@ void mode(Client *client, std::string args) {
 		modeargs = args.substr(space + 1, args.size());
 	}
 	else // only modestring, no modeargs
-		modestring = args.substr(0, args.size());
+		modestring = args;
 
 	// handling each modestring one by one and taking arguments in modeargs in the same order
 	while (!modestring.empty()) {
 		if (!chan->isOp(client->getFd())) // checking client op privileges
-			return ft_send(client->getFd(), ERR_CHANOPRIVSNEEDED(client->getNick(), chan->getName()));
+			return ft_send(client->getFd(), ERR_CHANOPRIVSNEEDED(client, chan));
 		while (modestring[0] == '+' || modestring[0] == '-') {
 			modeset = modestring[0];
 			modestring.erase(0, 1);
@@ -47,10 +47,10 @@ void mode(Client *client, std::string args) {
 	}
 	if (chan->isClient(client)) {
 		std::cout << "Sending all clients" << std::endl;
-		chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), chan->getPasswd()));
+		chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client, chan, chan->getPasswd()));
 	}
 	else {
-		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client->getNick(), chan->getName(), chan->getMode(), "[key]"));
+		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, chan, "[key]"));
 		std::cout << "Sending only to origin" << std::endl;
 	}
 }

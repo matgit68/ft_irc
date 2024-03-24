@@ -4,24 +4,25 @@
 #define MAX_EVENTS 5
 #define FAIL -1
 #define NPOS std::string::npos
+#define VERSION "ft_irc 0.5"
+#define USERMODES ""
+#define CHANMODES "itklo"
 
-#include <stdio.h>
-#include <string.h>//strlen
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>//close
-#include <arpa/inet.h>//close
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
+#include <sys/time.h>
 #include <sys/epoll.h>
 
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 #include <map>
 #include <set>
 #include <vector>
-#include <fcntl.h>
 #include <iostream>
 #include <ctime>
 
@@ -29,7 +30,6 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "ErrMessages.hpp"
-
 
 class Client;
 

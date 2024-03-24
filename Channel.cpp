@@ -36,7 +36,7 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 	if (mode == 'l') { // user limit
 		if (_mode.find('l') == NPOS)
 			_mode.append("l");
-		_limit = atoi(takeNextArg(arg).c_str());
+		_limit = std::atoi(takeNextArg(arg).c_str());
 	}
 	if (mode == 'o') { // give op privileges
 		std::string target = takeNextArg(arg);
@@ -44,7 +44,7 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 			return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("MODE"));
 		Client *c = _server->getClient(target);
 		if (c == NULL)
-			return ft_send(client->getFd(), ERR_NOSUCHNICK(client->getNick(), target));
+			return ft_send(client->getFd(), ERR_NOSUCHNICK(client, target));
 		if (_clients.find(c->getFd()) == _clients.end())
 			return ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
 		giveOp(c->getFd());
@@ -58,7 +58,7 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 		if (c != NULL)
 			removeOp(c->getFd());
 		else
-			ft_send(client->getFd(), ERR_NOSUCHNICK(client->getNick(), arg));
+			ft_send(client->getFd(), ERR_NOSUCHNICK(client, arg));
 	}
 	else
 		if ((pos = _mode.find(mode)) != NPOS)
@@ -96,7 +96,7 @@ void Channel::addClient(Client *client, std::string key) {
 			return sendWhenArriving(client);
 		}
 		else
-			return ft_send(client->getFd(), ERR_BADCHANNELKEY); // wrong password
+			return ft_send(client->getFd(), ERR_BADCHANNELKEY(client)); // wrong password
 	}
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
 	return sendWhenArriving(client);

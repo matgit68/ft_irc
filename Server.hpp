@@ -30,6 +30,8 @@ public:
 	Client *getClient(int);
 	Client *getClient(std::string) const;
 	Channel *getChannel(std::string);
+	std::string getHostname() const;
+	void setHostname(std::string);
 	std::map<std::string, Channel*> getChannelMap(void) const;
 	funPtr getCommand(std::string);
 	

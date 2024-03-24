@@ -33,7 +33,7 @@ OBJ = $(SRC:.cpp=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CXX) $(CPPFLAGS) -o $(NAME) $(OBJ)
+	@$(CXX) $(CPPFLAGS) -o $(NAME) $(OBJ)
 	@printf '$(RED)- $(NAME) done -$(RESET)\n'
 
 clean:

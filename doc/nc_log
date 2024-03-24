@@ -1,0 +1,89 @@
+CAP LS
+NICK user
+USER mdjemaa mdjemaa 127.0.0.1 :pfff
+CAP END
+
+mdjemaa@k2r1p1:~ $ nc -C irc.resel.fr 6667
+:irc.telecom-bretagne.rezosup.org NOTICE Auth :*** Looking up your hostname...
+:irc.telecom-bretagne.rezosup.org NOTICE Auth :*** Could not resolve your hostname: Domain name not found; using your IP address (45.148.156.203) instead.
+CAP LS
+NICK user
+USER mdjemaa mdjemaa 127.0.0.1 :pfff
+CAP END
+:irc.telecom-bretagne.rezosup.org CAP 371AAZJ4T LS :away-notify extended-join account-notify sasl tls
+PING :WApPZuXBfn
+:irc.telecom-bretagne.rezosup.org NOTICE user :*** If you are having problems connecting due to ping timeouts, please type /quote PONG WApPZuXBfn or /raw PONG WApPZuXBfn now.
+PONG WApPZuXBfn
+:irc.telecom-bretagne.rezosup.org NOTICE Auth :Welcome to RezoSup!
+:irc.telecom-bretagne.rezosup.org 001 user :Welcome to the RezoSup IRC Network user!mdjemaa@45.148.156.203
+:irc.telecom-bretagne.rezosup.org 002 user :Your host is irc.telecom-bretagne.rezosup.org, running version InspIRCd-2.0
+:irc.telecom-bretagne.rezosup.org 003 user :This server was created 13:24:13 Jan  7 2022
+:irc.telecom-bretagne.rezosup.org 004 user irc.telecom-bretagne.rezosup.org InspIRCd-2.0 BHIRSWhikorswx CHIKMOQRSYabefhijklmnopqrstuvz HIYabefhjkloqv
+:irc.telecom-bretagne.rezosup.org 005 user AWAYLEN=200 CASEMAPPING=rfc1459 CHANMODES=Ibe,k,Hfjl,CKMOQRSimnprstuz CHANNELLEN=64 CHANTYPES=# CHARSET=ascii ELIST=MU ESILENCE EXCEPTS=e EXTBAN=,COQRSUz FNC INVEX=I KICKLEN=255 :are supported by this server
+:irc.telecom-bretagne.rezosup.org 005 user MAP MAXBANS=60 MAXCHANNELS=40 MAXPARA=32 MAXTARGETS=20 MODES=20 NETWORK=RezoSup NICKLEN=31 PREFIX=(Yqaohv)!~&@%+ SECURELIST SILENCE=32 SSL=[::]:6697 STARTTLS :are supported by this server
+:irc.telecom-bretagne.rezosup.org 005 user STATUSMSG=!~&@%+ TOPICLEN=307 USERIP VBANLIST WALLCHOPS WALLVOICES WATCH=32 :are supported by this server
+:irc.telecom-bretagne.rezosup.org 042 user 371AAZJ4T :your unique ID
+:irc.telecom-bretagne.rezosup.org 375 user :irc.telecom-bretagne.rezosup.org message of the day
+:irc.telecom-bretagne.rezosup.org 372 user :-       ____                _____
+:irc.telecom-bretagne.rezosup.org 372 user :-      / __ \___ ____ ____ / ___/__  ______
+:irc.telecom-bretagne.rezosup.org 372 user :-     / /_/ / _ Y_  // __ \\__ \/ / / / __ \ 
+:irc.telecom-bretagne.rezosup.org 372 user :-    / _, _/  __// // /_/ /__/ / /_/ / /_/ /
+:irc.telecom-bretagne.rezosup.org 372 user :-   /_/ |_|\___//___|____/____/\__,_/ .___/
+:irc.telecom-bretagne.rezosup.org 372 user :-                                  /_/
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Bienvenue sur le réseau IRC académique RezoSup.
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- En vous connectant à ce réseau, vous devez en accepter
+:irc.telecom-bretagne.rezosup.org 372 user :- la charte de bonne conduite en vigueur qui se trouve sur :
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :-  http://www.rezosup.org/
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Si vous ne l'acceptez pas, déconnectez-vous immédiatement.
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Le site des utilisateurs de RezoSup est :
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :-  http://www.rezosup.net/
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Les Opérateurs ne sont pas là pour régler les conflits
+:irc.telecom-bretagne.rezosup.org 372 user :- entre utilisateurs, mais pour assurer le bon fonctionnement
+:irc.telecom-bretagne.rezosup.org 372 user :- du réseau. Nous n'interviendrons que dans le cadre du
+:irc.telecom-bretagne.rezosup.org 372 user :- respect de nos obligations légales en vigueur en France.
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Le canal d'aide officiel est : 
+:irc.telecom-bretagne.rezosup.org 372 user :-  #help (pour toute aide sur IRC, Unix, etc.)
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Le charset préconisé sur RézoSup est l'UTF-8,
+:irc.telecom-bretagne.rezosup.org 372 user :- mais chaque canal est libre du choix de son charset.
+:irc.telecom-bretagne.rezosup.org 372 user :- Plus d'infos : http://www.rezosup.org/charset.phtml
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Pour toute aide sur les Commandes, tapez la commande :
+:irc.telecom-bretagne.rezosup.org 372 user :-  /helpop
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Pour toute aide sur les Services, tapez la commande :
+:irc.telecom-bretagne.rezosup.org 372 user :-  /msg helpserv help
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- -----------------------------------------------------------
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Vous êtes sur le serveur de Télécom Bretagne.
+:irc.telecom-bretagne.rezosup.org 372 user :- - Port standard : 6667
+:irc.telecom-bretagne.rezosup.org 372 user :- - Ports sécurisés : 6697 et 6767 (SSL/TLS)
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Les Opérateurs sont :
+:irc.telecom-bretagne.rezosup.org 372 user :- - Twister (twister@rezosup.net)
+:irc.telecom-bretagne.rezosup.org 372 user :- - Nono` (nono@rezosup.net)
+:irc.telecom-bretagne.rezosup.org 372 user :- 
+:irc.telecom-bretagne.rezosup.org 372 user :- Les canaux officiels sont : 
+:irc.telecom-bretagne.rezosup.org 372 user :- - #tb (pour les discussions entre élèves de Telecom Bretagne),
+:irc.telecom-bretagne.rezosup.org 372 user :- - #resel (pour tout ce qui concerne le ResEl (services Internet sur le campus))
+:irc.telecom-bretagne.rezosup.org 376 user :End of message of the day.
+:irc.telecom-bretagne.rezosup.org 251 user :There are 436 users and 69 invisible on 6 servers
+:irc.telecom-bretagne.rezosup.org 252 user 15 :operator(s) online
+:irc.telecom-bretagne.rezosup.org 254 user 337 :channels formed
+:irc.telecom-bretagne.rezosup.org 255 user :I have 4 clients and 1 servers
+:irc.telecom-bretagne.rezosup.org 265 user :Current Local Users: 4  Max: 5
+:irc.telecom-bretagne.rezosup.org 266 user :Current Global Users: 505  Max: 545
+:irc.telecom-bretagne.rezosup.org 396 user RZ-8gm.037.148.45.IP :is now your displayed host
+:user!mdjemaa@RZ-8gm.037.148.45.IP MODE user +x
+PING :irc.telecom-bretagne.rezosup.org
+ERROR :Closing link: (mdjemaa@45.148.156.203) [Ping timeout: 121 seconds]

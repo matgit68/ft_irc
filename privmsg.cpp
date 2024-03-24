@@ -12,13 +12,13 @@ void privmsg(Client *client, std::string args) {
 	}
 	if (dest.empty())
 	{
-		ft_send(client->getFd(), ERR_NORECIPIENT(client->getUser()));
+		ft_send(client->getFd(), ERR_NORECIPIENT(client));
 		return ;
 	}
 	args.erase(0, args.find_first_of(" ") + 1);
 	if (args.empty())
 	{
-		ft_send(client->getFd(), ERR_NOTEXTTOSEND(client->getUser()));
+		ft_send(client->getFd(), ERR_NOTEXTTOSEND(client));
 		return ;
 	}
 	if (args[0] != ':')
@@ -30,12 +30,12 @@ void privmsg(Client *client, std::string args) {
 			if ((chan = client->getServer()->getChannel(dest[i])))
 			{
 				if (!chan->getPasswd().empty() && !chan->isClient(client)) // user's right
-					ft_send(client->getFd(), ERR_CANNOTSENDTOCHAN(client->getUser(), dest[i]));
+					ft_send(client->getFd(), ERR_CANNOTSENDTOCHAN(client, dest[i]));
 				else
-					chan->sendChan(client, RPL_PRIVMSG(client->getNick(), chan->getName(), args));
+					chan->sendChan(client, RPL_PRIVMSG(client, chan, args));
 			}
 			else // chan doesn't exist
-				ft_send(client->getFd(), ERR_NOSUCHNICK(client->getUser(), dest[i]));
+				ft_send(client->getFd(), ERR_NOSUCHNICK(client, dest[i]));
 		}
 		else // USER
 		{
@@ -43,7 +43,7 @@ void privmsg(Client *client, std::string args) {
 			if ((target = client->getServer()->getClient(dest[i])))
 				ft_send(target->getFd(), ":" + client->getNick() + " PRIVMSG " + dest[i] + " " + args + "\r\n");
 			else // ERR msg RPL_AWAY ? ERR_NOSUCHNICK ? 
-				ft_send(client->getFd(), ERR_NOSUCHNICK(client->getNick(), dest[i])); // If <target> is a user and that user has been set as away, the server may reply with an RPL_AWAY (301) numeric and the command will continue.
+				ft_send(client->getFd(), ERR_NOSUCHNICK(client, dest[i])); // If <target> is a user and that user has been set as away, the server may reply with an RPL_AWAY (301) numeric and the command will continue.
 		}
 		/*
 		  :Angel PRIVMSG Wiz :Hello are you receiving this message ?
