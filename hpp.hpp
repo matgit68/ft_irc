@@ -30,6 +30,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "ErrMessages.hpp"
+#define NPOS std::string::npos
 
 class Client;
 
@@ -52,4 +53,3 @@ void dispChanList(Client *, std::string);
 void ft_send(int, std::string);
 bool is_valid(const std::string nickname);
 std::string takeNextArg(std::string &str);
-

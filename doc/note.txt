@@ -77,3 +77,19 @@ https://irc.dalexhd.dev/index.html
 
 doc la plus complete ?
 https://datatracker.ietf.org/doc/html/rfc1459#section-4.1
+
+
+--> password : implement
+ERR_PASSWDMISMATCH (464)
+
+  "<client> :Password incorrect"
+
+Returned to indicate that the connection could not be registered as the password was either incorrect or not supplied. The text used in the last param of this message may vary.
+
+--> CTRL-Z => gestion signal - epoll-wait() ?
+--> CTRL-C
+
+--> formatage mess ERR - RPL
+
+--> JOIN - RPL message to fix
+pb status user irssi on chan

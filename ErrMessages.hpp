@@ -37,8 +37,8 @@
 # define ERR_USERNOTINCHANNEL(c, target, channel) 	(":" + client->getServer()->getHostname() + " 441 " + c->getNick() + " " + target + " " + channel + " :They aren't on that channel\r\n")
 
 //TOPIC
-# define RPL_TOPIC 									(":" + client->getServer()->getHostname() + " 332 " + client->getNick() + " " + _name + " " + _topic +"\r\n")
-# define RPL_NOTOPIC(client, channel) 				(":" + client->getServer()->getHostname() + " 331 " + client + " " + channel + " :No topic is set\r\n")
+# define RPL_TOPIC(client, channel)					(":" + client->getServer()->getHostname() + " 332 " + client->getNick() + " " + channel->getName() + " " + channel->getTopic() +"\r\n")
+# define RPL_NOTOPIC(client, channel) 				(":" + client->getServer()->getHostname() + " 331 " + client->getNick() + " " + channel->getName() + " :No topic is set\r\n")
 
 //NICK
 # define ERR_NONICKNAMEGIVEN(client) 				(":" + client->getServer()->getHostname() + " 431 " + client->getNick() + " :There is no nickname.\r\n")

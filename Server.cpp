@@ -31,6 +31,8 @@ std::string Server::getPasswd() const { return _passwd; }
 
 std::string Server::getHostname() const { return _hostname; }
 
+std::map<std::string, Channel*>	Server::getChannels()		{ return (_channels); }
+
 void Server::setHostname(std::string str) { _hostname = str; }
 
 Client *Server::getClient(int fd) {
@@ -129,4 +131,19 @@ bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname ha
 }
 
 std::map<std::string, Channel*> Server::getChannelMap(void) const { return _channels; }
+
+bool Server::findChannel(std::string channel)
+{
+	if(_channels.find(channel) == _channels.end())
+		return false;
+	return true;
+}
+
+bool Server::isClientExists(int fd)
+{
+	if(_clients.find(fd) == _clients.end())
+		return false;
+	return true;
+}
+
 

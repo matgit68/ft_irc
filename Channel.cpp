@@ -1,8 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(Server * s,std::string n): _name(n), _topic("TopicTest"), _server(s) {}
+Channel::Channel(Server *s, std::string n): _name(n), _topic("TopicTest"), _server(s) {}
 
-Channel::Channel(Server * s,std::string n, std::string w): _name(n), _passwd(w), _server(s) {}
+Channel::Channel(Server *s, std::string n, std::string w): _name(n), _passwd(w), _server(s) {}
 
 Channel::~Channel() {}
 
@@ -89,6 +89,8 @@ void Channel::addClient(Client *client, std::string key) {
 	if (_mode.find('i') != NPOS && _invite.find(client->getFd()) != _invite.end()) { // mode invite_only is set and client is invited (overriding passwd verif)
 		_clients.insert(client->getFd());
 		return sendWhenArriving(client);
+		//ft_send(client, RPL_TOPIC);
+		sendChan(client, RPL_NAMREPLY);		
 	}
 	if (_mode.find('k') != NPOS) { // mode key protected channel is set
 		if (_passwd.empty() || key == _passwd) {
@@ -103,7 +105,7 @@ void Channel::addClient(Client *client, std::string key) {
 }
 
 void Channel::sendWhenArriving(Client *client) const {
-	ft_send(client->getFd(), RPL_TOPIC);
+	//ft_send(client->getFd(), RPL_TOPIC);
 	ft_send(client->getFd(), RPL_NAMREPLY);
 	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
 }
@@ -114,7 +116,7 @@ void Channel::addClientInvite(Client *client) {
 	if (_clients.find(client->getFd()) != _clients.end())
 		return ;
 	_clients.insert(client->getFd());
-	ft_send(client->getFd(), RPL_TOPIC);
+	//ft_send(client->getFd(), RPL_TOPIC);
 	ft_send(client->getFd(), RPL_NAMREPLY);
 	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
 	this->delInvite(client->getFd());
