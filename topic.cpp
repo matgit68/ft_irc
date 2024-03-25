@@ -23,7 +23,7 @@ void topic(Client *client, std::string args) {
  	if(topic.empty())
 	{
 		if(channel->getTopic().empty())
-			ft_send(client, RPL_NOTOPIC(client->getNick(), chan));
+			ft_send(client->getFd(), RPL_NOTOPIC(client, channel));
 		else
 			ft_send(client->getFd(), RPL_TOPIC(client, channel));
 	}
@@ -32,8 +32,8 @@ void topic(Client *client, std::string args) {
 	 if (channel->getMode().find('t') != NPOS && channel->isOp(client->getFd()))
 	 	channel->setTopic(topic);
 	 else
-	 	ft_send(client, ERR_CHANOPRIVSNEEDED(client->getNick(), chan));
+	 	ft_send(client->getFd(), ERR_CHANOPRIVSNEEDED(client, channel));
 	
 	}
-	server->broadcast(client, RPL_TOPIC(client->getNick(), chan, channel->getTopic()));
+	server->broadcast(client, RPL_TOPIC(client, channel));
 }
