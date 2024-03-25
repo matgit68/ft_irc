@@ -28,11 +28,10 @@ void topic(Client *client, std::string args) {
 	}
 	else
 	{
-	 if (channel->getMode().find('t') != NPOS && channel->isOp(client->getFd()))
-	 	channel->setTopic(topic);
-	 else
+	 if (channel->getMode().find('t') != NPOS && channel->isOp(client->getFd()) == false)
 	 	ft_send(client, ERR_CHANOPRIVSNEEDED(client->getNick(), chan));
-	
+	else
+		channel->setTopic(topic);
 	}
-	
 }
+
