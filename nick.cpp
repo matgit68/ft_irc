@@ -45,5 +45,6 @@ void nick(Client *client, std::string args) {
 	}
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 		ft_send(*it, RPL_NICK(oldNick, newNick, client));
+	client->getServer()->broadcast(client,RPL_NICK(oldNick, newNick, client));
 }
 	

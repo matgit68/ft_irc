@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 
+
 void topic(Client *client, std::string args) {
 
 	Server *server = client->getServer();
@@ -34,5 +35,5 @@ void topic(Client *client, std::string args) {
 	 	ft_send(client->getFd(), ERR_CHANOPRIVSNEEDED(client, channel));
 	
 	}
-	
+	server->broadcast(client, RPL_TOPIC(client, channel));
 }
