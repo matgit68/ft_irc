@@ -20,8 +20,11 @@ TODO :
 	pb status user irssi on chan
 	Welcome message not complete (should reveive 332, 333, 353 (preifxed) and 366, and :user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
 
-* NICK (or USER ?)
+* USER (or USER ?)
 	If nick is already in use, give an alternate nick (ie : user -> user_)
+	
+* NICK
+	Bad RPL ? nickname not changed on local client (works for other users)
 
 * MODE
 	If second paramater is not a channel, we send RPL_NOSUCHCHANNEL, but this arg could be a user and the client doesnt expect this RPL (like the MODE user +i of each starting connexion). We could check if this parameter is in the user list or ignore it (as we do now)

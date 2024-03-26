@@ -6,7 +6,7 @@ void list_invite(Server *serv, Client *client, int fd)
 	for (std::map<std::string, Channel*>::iterator it = chan.begin();
 			it != chan.end(); it++)
 	{
-		if (it->second->isInvite(fd))
+		if (it->second->isInvited(fd))
 			ft_send(fd, RPL_INVITELIST(client, it->second->getName()));
 			/*
 				Some rare implementations use numerics 346/347 instead of 336/337 as 

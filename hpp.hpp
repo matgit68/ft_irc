@@ -52,4 +52,5 @@ void dispChanList(Client *, std::string);
 
 void ft_send(int, std::string);
 bool is_valid(const std::string nickname);
-std::string takeNextArg(std::string &str);
+std::string takeNextArg(std::string &);
+std::string takeNextArg(char, std::string &);

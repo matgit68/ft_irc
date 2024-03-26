@@ -26,7 +26,7 @@
 
 //JOIN
 # define ERR_BANNEDFROMCHAN(channel) 				(":" + client->getServer()->getHostname() + " 474 " + client->getNick() + " " + channel + " :Cannot join channel (+b)\r\n")
-# define ERR_BADCHANNELKEY(client) 					(":" + client->getServer()->getHostname() + " 475 " + client->getNick() + " " + _name + " :Cannot join channel (+k)\r\n")
+# define ERR_BADCHANNELKEY(client, channel) 		(":" + client->getServer()->getHostname() + " 475 " + client->getNick() + " " + channel->getName() + " :Cannot join channel (+k)\r\n")
 # define ERR_INVITEONLYCHAN(channel) 				(":" + client->getServer()->getHostname() + " 473 " + client->getNick() + " " + channel + " :Cannot join channel (i)\r\n")
 # define ERR_CHANNELISFULL(channel) 				(":" + client->getServer()->getHostname() + " 471 " + client->getNick() + " " + channel + " :Cannot join channel (+l)\r\n")
 # define RPL_ENDOFNAMES(channel) 					(":" + client->getServer()->getHostname() + " 366 " + client->getNick() + " " + channel + " :End of /NAMES list.\r\n")

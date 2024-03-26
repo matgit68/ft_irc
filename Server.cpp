@@ -63,17 +63,22 @@ funPtr Server::getCommand(std::string name) {
 return _commands[name];
 }
 
+void Server::createChannel(std::string chanName, Client *creator) {
+	if (_channels.find(chanName) != _channels.end())
+		return;
+	std::string s; // no use, just to call addMode method
+	_channels[chanName] = new Channel(this, chanName);
+	_channels[chanName]->addClient(creator);
+	_channels[chanName]->giveOp(creator->getFd());
+	_channels[chanName]->addMode(creator, 't', s); // topic protected is the default mode
+}
+
 Channel * Server::addChannel(std::string channel) {
 	if (_channels.find(channel) == _channels.end())
 		_channels[channel] = new Channel(this, channel);
 	return _channels[channel];
 }
 
-Channel * Server::addChannel(std::string channel, std::string key) {
-	if (_channels.find(channel) == _channels.end())
-		_channels[channel] = new Channel(this, channel, key);
-	return _channels[channel];
-}
 
 void Server::delChannel(std::string channel) {
 	if (_channels.find(channel) != _channels.end())

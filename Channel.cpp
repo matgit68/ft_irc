@@ -81,45 +81,42 @@ void Channel::removeOp(int id) {
 		_ops.erase(id);
 }
 
-void Channel::addClient(Client *client, std::string key) {
-	if (_clients.find(client->getFd()) != _clients.end())
-		return ; // client already on chan -> nothing to do
-	if (_mode.find('i') != NPOS && _invite.find(client->getFd()) == _invite.end()) // mode invite_only is set and client is not invited
-		return ft_send(client->getFd(), ERR_INVITEONLYCHAN(_name));
-	if (_mode.find('i') != NPOS && _invite.find(client->getFd()) != _invite.end()) { // mode invite_only is set and client is invited (overriding passwd verif)
-		_clients.insert(client->getFd());
-		return sendWhenArriving(client);
-		//ft_send(client, RPL_TOPIC);
-		sendChan(client, RPL_NAMREPLY);		
-	}
-	if (_mode.find('k') != NPOS) { // mode key protected channel is set
-		if (_passwd.empty() || key == _passwd) {
-			_clients.insert(client->getFd());
-			return sendWhenArriving(client);
-		}
-		else
-			return ft_send(client->getFd(), ERR_BADCHANNELKEY(client)); // wrong password
-	}
+void Channel::addClient(Client *client) {
+	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
+		return ;
+	if (_mode.find('l') != NPOS && _clients.size() >= _limit)
+		return ft_send(client->getFd(), ERR_CHANNELISFULL(_name));
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
-	return sendWhenArriving(client);
+	sendWhenArriving(client);
+}
+
+void Channel::addClientInvite(Client *client) { // GERER LES LIMITES DE CHAN !
+	if (_clients.find(client->getFd()) != _clients.end()) // client is already on the channel
+		return ;
+	if (!this->isInvited(client->getFd())) // client is not on the list
+		return ft_send(client->getFd(), ERR_INVITEONLYCHAN(_name));
+	_clients.insert(client->getFd());
+	sendWhenArriving(client);
+	this->delInvite(client->getFd());
+}
+
+void Channel::addClientPass(Client *client, std::string key) {
+	std::cout << "KEY JOIN" << std::endl;
+	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
+		return ; 
+	if (_mode.find('l') != NPOS && _clients.size() >= _limit )
+		return ft_send(client->getFd(), ERR_CHANNELISFULL(_name));
+	if (key != _passwd)
+		return ft_send(client->getFd(), ERR_BADCHANNELKEY(client)); // wrong password
+	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
+	sendWhenArriving(client);
 }
 
 void Channel::sendWhenArriving(Client *client) const {
-	//ft_send(client->getFd(), RPL_TOPIC);
+	ft_send(client->getFd(), RPL_TOPIC(client, this));
 	ft_send(client->getFd(), RPL_NAMREPLY);
+	//user list !!
 	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
-}
-
-void Channel::addClientInvite(Client *client) {
-	if (!this->isInvite(client->getFd()))
-		return ;
-	if (_clients.find(client->getFd()) != _clients.end())
-		return ;
-	_clients.insert(client->getFd());
-	//ft_send(client->getFd(), RPL_TOPIC);
-	ft_send(client->getFd(), RPL_NAMREPLY);
-	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
-	this->delInvite(client->getFd());
 }
 
 void Channel::delClient(Client *client) {
@@ -142,7 +139,7 @@ bool Channel::isClient(Client *search) const {
 	return (false);
 }
 
-bool Channel::isInvite(int search) const {
+bool Channel::isInvited(int search) const {
 	if (_invite.find(search) != _invite.end())
 		return (true);
 	return (false);

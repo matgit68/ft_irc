@@ -37,6 +37,7 @@ public:
 	
 	std::string getCreatedTime(void) const;
 
+	void createChannel(std::string, Client *);
 	Channel * addChannel(std::string);
 	Channel * addChannel(std::string, std::string);
 	void delChannel(std::string);

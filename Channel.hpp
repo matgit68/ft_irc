@@ -18,7 +18,7 @@ private:
 	local channels - where the clients connected can only see and talk to other clients on the same server - prefix character for this type of channel is ('&', 0x26)
 */
 	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkl"
-	int _limit;
+	size_t _limit;
 	std::set <int> _clients; // list of clients using the channel
 	std::set <int> _ops; // list of clients ops on the channel
 	std::set <int> _invite; // list of clients invited
@@ -45,7 +45,9 @@ public:
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
 
-	void addClient(Client *, std::string);
+	// void Channel::addClient(Client *client);
+	void addClientPass(Client *, std::string);
+	void addClient(Client *);
 	void delClient(Client *);
 	bool isClient(Client *) const;
 
@@ -58,5 +60,5 @@ public:
 
 	void addInvite(int);
 	void delInvite(int);
-	bool isInvite(int) const;
+	bool isInvited(int) const;
 };

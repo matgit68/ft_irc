@@ -39,3 +39,18 @@ std::string takeNextArg(std::string &str) { // USELESS ! -> iStringStream
 	}
 	return res;
 }
+
+std::string takeNextArg(char sep, std::string &str) { // USELESS ! -> iStringStream 
+	std::string res;
+	size_t space = str.find(sep);
+
+	if (space == NPOS) {
+		res = str;
+		str.clear();
+	}
+	else {
+		res = str.substr(0, space);
+		str.erase(0, space + 1);
+	}
+	return res;
+}
