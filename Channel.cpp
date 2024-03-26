@@ -107,7 +107,7 @@ void Channel::addClientPass(Client *client, std::string key) {
 	if (_mode.find('l') != NPOS && _clients.size() >= _limit )
 		return ft_send(client->getFd(), ERR_CHANNELISFULL(_name));
 	if (key != _passwd)
-		return ft_send(client->getFd(), ERR_BADCHANNELKEY(client)); // wrong password
+		return ft_send(client->getFd(), ERR_BADCHANNELKEY(client, this)); // wrong password
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
 	sendWhenArriving(client);
 }
