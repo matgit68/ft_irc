@@ -1,14 +1,9 @@
-CAP LS
-NICK user
-USER mdjemaa mdjemaa 127.0.0.1 :pfff
-CAP END
-
 mdjemaa@k2r1p1:~ $ nc -C irc.resel.fr 6667
 :irc.telecom-bretagne.rezosup.org NOTICE Auth :*** Looking up your hostname...
 :irc.telecom-bretagne.rezosup.org NOTICE Auth :*** Could not resolve your hostname: Domain name not found; using your IP address (45.148.156.203) instead.
 CAP LS
 NICK user
-USER mdjemaa mdjemaa 127.0.0.1 :pfff
+USER mamat mamat 127.0.0.1 :mamat
 CAP END
 :irc.telecom-bretagne.rezosup.org CAP 371AAZJ4T LS :away-notify extended-join account-notify sasl tls
 PING :WApPZuXBfn
@@ -87,3 +82,11 @@ PONG WApPZuXBfn
 :user!mdjemaa@RZ-8gm.037.148.45.IP MODE user +x
 PING :irc.telecom-bretagne.rezosup.org
 ERROR :Closing link: (mdjemaa@45.148.156.203) [Ping timeout: 121 seconds]
+
+
+JOIN #pouet
+:user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet
+:irc.telecom-bretagne.rezosup.org 332 user #pouet :coincoin
+:irc.telecom-bretagne.rezosup.org 333 user #pouet user_!mamat@RZ-kvk5j7.fr.orangecustomers.net 1711435684
+:irc.telecom-bretagne.rezosup.org 353 user = #pouet :@user_ user 
+:irc.telecom-bretagne.rezosup.org 366 user #pouet :End of /NAMES list.

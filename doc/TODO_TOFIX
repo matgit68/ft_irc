@@ -1,0 +1,29 @@
+TODO :
+
+* PASS 
+	--> password : implement
+	ERR_PASSWDMISMATCH (464)
+	"<client> :Password incorrect"
+	Returned to indicate that the connection could not be registered as the password was either incorrect or not supplied. The text used in the last param of this message may vary.
+
+* Signals
+	CTRL-Z => gestion signal - epoll-wait() ?
+	CTRL-C : leaving properly (close fds, delete clients / chanells / sending SQUIT ?)
+
+* ERR - RPL messages
+	Better format
+	Prefixes ? (! / @)
+	Some ERR msg are displayed in the wrong window (ie when a command fails (ie you dont have op privilige), we leave the channel and the ERR is displayed on default / : / main / window 1 instead of current chan window. And the chan window is closed !)
+
+* JOIN
+	RPL message to fix
+	pb status user irssi on chan
+	Welcome message not complete (should reveive 332, 333, 353 (preifxed) and 366, and :user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
+
+* NICK (or USER ?)
+	If nick is already in use, give an alternate nick (ie : user -> user_)
+
+* MODE
+	If second paramater is not a channel, we send RPL_NOSUCHCHANNEL, but this arg could be a user and the client doesnt expect this RPL (like the MODE user +i of each starting connexion). We could check if this parameter is in the user list or ignore it (as we do now)
+
+DONE :
