@@ -1,7 +1,5 @@
 #include "Server.hpp"
 
-
-
 void topic(Client *client, std::string args) {
 
 	Server *server = client->getServer();
@@ -29,13 +27,19 @@ void topic(Client *client, std::string args) {
 	}
 	else
 	{
-	 if (channel->getMode().find('t') != NPOS && channel->isOp(client->getFd()))
-	 	channel->setTopic(topic);
-	 else
+	 if (channel->getMode().find('t') != NPOS && !channel->isOp(client->getFd())) {
 	 	ft_send(client->getFd(), ERR_CHANOPRIVSNEEDED(client, channel));
+		return;
+	 }
+	 else
+	 {
+		channel->setTopic(topic);
+		server->broadcast(client, RPL_TOPIC(client, channel));
+		channel->sendOps(RPL_TOPIC(client, channel));
+	 }
 	
 	}
-	server->broadcast(client, RPL_TOPIC(client, channel));
+	
 }
 
 
