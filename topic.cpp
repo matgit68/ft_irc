@@ -42,4 +42,7 @@ void topic(Client *client, std::string args) {
 	
 }
 
+//when non-operator user tries to change the topic, he is kicked out from the channel, 
+//but it should send just ERR_CHANOPRIVSNEEDED()
+
 

@@ -61,7 +61,7 @@
 
 //USER
 # define ERR_ALREADYREGISTERED(client) 				(":" + client->getServer()->getHostname() + " 462 " + client->getNick() + " :You may not reregister.\r\n")
-
+# define ERR_PASSWDMISMATCH(client)                 (":" + client->getServer()->getHostname() + " 464 " + client->getNick() + " :Password incorrect.\r\n")
 //MODE
 /* user mode */
 # define MODE_USERMSG(client, mode) 				(":" + client->getNick() + " MODE " + client->getNick() + " :" + mode + "\r\n")
