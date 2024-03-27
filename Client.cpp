@@ -54,7 +54,7 @@ void Client::parse(std::string msg) {
 	size_t pos;
 	std::cout << "Received(" << _fd << ") : " << msg << std::endl;
 	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
-		ft_send(this, ERR_NEEDMOREPARAMS(msg));
+		ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
 		// _server->broadcast(this, msg); // for testing purposes
 		// send an error ERR_NEEDMOREPARAMS (461) ?
 // I think this is the good error cause the irssi like other clients send always precision with msg send before the text

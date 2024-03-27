@@ -1,6 +1,7 @@
 #pragma once
 #include "hpp.hpp"
 
+class Server;
 class Client;
 class Server;
 
@@ -16,10 +17,12 @@ private:
 	regular channel - which is known to all servers that are connected to the network- prefix character for this type of channel is ('#', 0x23)
 	local channels - where the clients connected can only see and talk to other clients on the same server - prefix character for this type of channel is ('&', 0x26)
 */
-	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkol"
+	std::string _name, _topic, _mode, _passwd; // mode could be a string containing "itkl"
+	size_t _limit;
 	std::set <int> _clients; // list of clients using the channel
-	std::set <int> _op; // list of clients ops on the channel
-	std::set <int> _invite; // list of clients invited 
+	std::set <int> _ops; // list of clients ops on the channel
+	std::set <int> _invite; // list of clients invited
+	std::set<int>::iterator _it;
 	Channel(Channel const &ref);
 	Channel &operator=(Channel const &ref);
 	Server *_server;
@@ -31,17 +34,31 @@ public:
 	std::string getName() const;
 	std::string getTopic() const;
 	std::string getMode() const;
-
 	std::string getPasswd() const;
+	Server *getServer();
+	std::set<int> getClientList(void) const;
 	void setTopic(std::string);
 
+	void addMode(Client *, char, std::string &);
+	void unMode(Client *, char, std::string &);
 	bool isOp(int);
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
 
-	void addClient(Client *, std::string key);
+	// void Channel::addClient(Client *client);
+	void addClientPass(Client *, std::string);
+	void addClient(Client *);
 	void delClient(Client *);
 	bool isClient(Client *) const;
 
-	void sendChan(Client *client, std::string msg) const;
+	void sendChan(Client *, std::string) const;
+	void sendClients(std::string) const;
+	void sendOps(std::string) const;
+	void sendWhenArriving(Client *) const;
+
+	void addClientInvite(Client *);
+
+	void addInvite(int);
+	void delInvite(int);
+	bool isInvited(int) const;
 };

@@ -1,8 +1,9 @@
 #include "hpp.hpp"
 
-void ft_send(Client *client, std::string msg) {
-	std::cout << "Sent(" << client->getFd() << ") : " << msg << std::endl;
-	send(client->getFd(), msg.c_str(), msg.size(), 0);
+void ft_send(int fd, std::string msg) {
+	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
+		std::cout << "Sent(" << fd << ") : " << msg << std::endl;
+	send(fd, msg.c_str(), msg.size(), 0);
 }
 
 void dispChanList(Client *client, std::string str) {
@@ -28,6 +29,22 @@ bool is_valid(const std::string nickname){
 std::string takeNextArg(std::string &str) {
 	std::string res;
 	size_t space = str.find(' ');
+	if (space == NPOS) {
+		res = str;
+		str.clear();
+	}
+	else {
+		res = str.substr(0, space);
+		str.erase(0, space + 1);
+	}
+	return res;
+}
+
+
+std::string takeNextArg(char sep, std::string &str) { // USELESS ! -> iStringStream 
+	std::string res;
+	size_t space = str.find(sep);
+
 	if (space == NPOS) {
 		res = str;
 		str.clear();

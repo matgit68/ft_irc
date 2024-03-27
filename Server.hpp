@@ -30,10 +30,14 @@ public:
 	Client *getClient(int);
 	Client *getClient(std::string) const;
 	Channel *getChannel(std::string);
+	std::string getHostname() const;
+	void setHostname(std::string);
+	std::map<std::string, Channel*> getChannelMap(void) const;
 	funPtr getCommand(std::string);
 	
 	std::string getCreatedTime(void) const;
 
+	void createChannel(std::string, Client *);
 	Channel * addChannel(std::string);
 	Channel * addChannel(std::string, std::string);
 	void delChannel(std::string);
@@ -45,6 +49,8 @@ public:
 	void broadcast(Client*, std::string);
 	void sendRegistration(Client *);
 	bool isNickAvailable(std::string& newNick);
+
+	bool userOnChannel(int, std::string);
 	bool findChannel(std::string channel);
 	std::map<std::string, Channel*>	getChannels();
 	bool isClientExists(int);
