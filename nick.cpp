@@ -41,8 +41,6 @@ void nick(Client *client, std::string args) {
 			std::set<int> tmp = it->second->getClientList();
 			for (std::set<int>::iterator add = tmp.begin(); add != tmp.end(); add++)
 				dest.insert(*add);
-			// it->second->sendClients(RPL_NICK(oldNick, newNick, client));
-			// it->second->sendOps(RPL_NICK(oldNick, newNick, client));
 		}
 		
 		
@@ -52,8 +50,4 @@ void nick(Client *client, std::string args) {
 		ft_send(*it, RPL_NICK(oldNick, newNick, client));
 		
 	}	 
-	
 }
-
-//There is a problem here, when operator changed his nick it doesnt send to the channel about that, 
-//but when other users change it publishes the message
