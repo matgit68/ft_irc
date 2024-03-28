@@ -47,6 +47,7 @@ void user(Client *, std::string);
 void quit(Client *, std::string);
 void join(Client *, std::string);
 void privmsg(Client *, std::string);
+void part(Client *, std::string); 
 void broad(Client *, std::string);
 void dispChanList(Client *, std::string);
 

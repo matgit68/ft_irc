@@ -100,6 +100,7 @@ void Server::initFunPtr() {
 	_commands["PRIVMSG"] = &privmsg;
 	_commands["BROAD"] = &broad;
 	_commands["DCL"] = &dispChanList; // debug
+	_commands["PART"] = &part;
 }
 
 void Server::sendRegistration(Client *client) {
@@ -144,9 +145,3 @@ bool Server::findChannel(std::string channel)
 	return true;
 }
 
-bool Server::isClientExists(int fd)
-{
-	if(_clients.find(fd) == _clients.end())
-		return false;
-	return true;
-}

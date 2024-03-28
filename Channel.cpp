@@ -112,11 +112,13 @@ void Channel::addClientPass(Client *client, std::string key) {
 	sendWhenArriving(client);
 }
 
+//I had to modify this function because it was not seeing that users in the channel, i added the second line 
+//and put the sendChan() on the top
 void Channel::sendWhenArriving(Client *client) const {
+	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
+	ft_send(client->getFd(),RPL_JOIN_NOTIF(client->getNick(), _name));
 	ft_send(client->getFd(), RPL_TOPIC(client, this));
 	ft_send(client->getFd(), RPL_NAMREPLY);
-	//user list !!
-	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
 }
 
 void Channel::delClient(Client *client) {
@@ -167,4 +169,10 @@ void Channel::sendClients(std::string msg) const { // send msg to all clients ex
 void Channel::sendOps(std::string msg) const { // send msg to all ops
 	for (std::set<int>::iterator it = _ops.begin(); it != _ops.end(); it++)
 		ft_send(*it, msg);
+}
+
+void Channel::removeUser( Client *client ){
+	delInvite(client->getFd());
+	removeOp(client->getFd());
+	_clients.erase(client->getFd());
 }

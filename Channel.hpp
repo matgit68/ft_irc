@@ -61,4 +61,6 @@ public:
 	void addInvite(int);
 	void delInvite(int);
 	bool isInvited(int) const;
+
+	void removeUser( Client * );
 };

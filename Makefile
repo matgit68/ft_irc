@@ -21,6 +21,7 @@ SRC =	cap.cpp\
 		ping.cpp\
 		privmsg.cpp\
 		quit.cpp\
+		part.cpp \
 		Server.cpp\
 		ServerRun.cpp\
 		time.cpp\

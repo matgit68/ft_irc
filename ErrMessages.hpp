@@ -79,3 +79,5 @@
 
 //NAMES
 # define RPL_NAMREPLY 								(":" + client->getServer()->getHostname() + " 353 " + client->getNick() + " = " + _name + " :" + client->getNick() + "\r\n")
+//PART
+# define RPL_PART(user_id, channel, reason) (":" + client->getNick() + "@localhost PART " + channel + " : " + reason  + "\r\n")
