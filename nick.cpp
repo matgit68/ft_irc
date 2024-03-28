@@ -18,7 +18,7 @@ void nick(Client *client, std::string args) {
 			ft_send(client->getFd(), ERR_NICKNAMEINUSE(client, newNick));
 			return ;
 	} 
-	if(!is_valid(newNick)) //is_valid() func is in the utils.cpp
+	if(!is_valid(newNick)) 
 	{
 		ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client, newNick));
 		return;
@@ -42,9 +42,12 @@ void nick(Client *client, std::string args) {
 			for (std::set<int>::iterator add = tmp.begin(); add != tmp.end(); add++)
 				dest.insert(*add);
 		}
+		
+		
 	}
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
+	{
 		ft_send(*it, RPL_NICK(oldNick, newNick, client));
-	client->getServer()->broadcast(client,RPL_NICK(oldNick, newNick, client));
+		
+	}	 
 }
-	

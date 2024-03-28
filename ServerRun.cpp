@@ -107,7 +107,7 @@ void Server::run() {
 							std::cerr << "Couldnt find client of fd " << _events[n].data.fd << std::endl;
 						if (close(_events[n].data.fd) == FAIL) // close fd
 							std::cerr << "couldnt close fd " << _events[n].data.fd << std::endl;
-						std::cout << "Client " << _events[n].data.fd << " disconnected" << std::endl;
+						std::cout << "\e[0;31mClient " << _events[n].data.fd << " disconnected\e[0m" << std::endl;
 					}
 					continue;
 				}

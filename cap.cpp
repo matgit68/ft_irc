@@ -1,5 +1,6 @@
 #include "Server.hpp"
 
+
 void cap(Client *client, std::string args) {
 	std::string str = takeNextArg(args);
 	std::cout << "CAP arg: " << str << std::endl;

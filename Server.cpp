@@ -150,5 +150,3 @@ bool Server::isClientExists(int fd)
 		return false;
 	return true;
 }
-
-
