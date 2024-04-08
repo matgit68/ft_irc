@@ -1,12 +1,18 @@
 #pragma once
 
+#define GREEN "\e[0;32m"
+#define RED "\e[0;31m"
+#define YELLOW "\e[0;33m"
+#define RESET "\e[0m"
+
 #define BUFFER 512
 #define MAX_EVENTS 5
 #define FAIL -1
 #define NPOS std::string::npos
-#define VERSION "ft_irc 0.5"
+#define VERSION "ft_irc 0.0.5"
 #define USERMODES ""
-#define CHANMODES "itklo"
+#define CHANMODES "iklot"
+#define ISUPPORT ""
 
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -30,7 +36,6 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "ErrMessages.hpp"
-#define NPOS std::string::npos
 
 class Client;
 

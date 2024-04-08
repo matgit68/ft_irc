@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(Server *s, std::string n): _name(n), _topic("TopicTest"), _server(s) {}
+Channel::Channel(Server *s, std::string n): _name(n), _topic(""), _server(s) {}
 
 Channel::Channel(Server *s, std::string n, std::string w): _name(n), _passwd(w), _server(s) {}
 
@@ -31,7 +31,8 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 	if (mode == 'k') { // key protected mode (password)
 		if (_mode.find('k') == NPOS)
 			_mode.append("k");
-		_passwd = takeNextArg(arg);
+		if (!arg.empty())
+			_passwd = takeNextArg(arg);
 	}
 	if (mode == 'l') { // user limit
 		if (_mode.find('l') == NPOS)
@@ -63,6 +64,26 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 	else
 		if ((pos = _mode.find(mode)) != NPOS)
 			_mode.erase(pos, 1);
+}
+
+// send mode infos to specific client
+void Channel::sendModeInfo(Client *client) const {
+	if (_mode.find('k') == NPOS)
+		ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getMode()));
+	else if (isClient(client))
+		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, this, getPasswd()));
+	else
+		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, this, "[key]"));
+}
+
+void Channel::sendModeInfo() const {
+	std::set<int>::iterator it;
+	for (it = _clients.begin(); it != _clients.end(); it++) {
+		if (_mode.find('k') == NPOS)
+			ft_send(*it, RPL_CHANNELMODEIS(_server->getClient(*it), this, getMode()));
+		else
+			ft_send(*it, RPL_CHANNELMODEISWITHKEY(_server->getClient(*it), this, getPasswd()));
+	}
 }
 
 bool Channel::isOp(int id) {
@@ -112,11 +133,11 @@ void Channel::addClientPass(Client *client, std::string key) {
 	sendWhenArriving(client);
 }
 
-//I had to modify this function because it was not seeing that users in the channel, i added the second line 
-//and put the sendChan() on the top
+// I had to modify this function because it was not seeing that users in the channel, i added the second line 
+// and put the sendChan() on the top
 void Channel::sendWhenArriving(Client *client) const {
 	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
-	ft_send(client->getFd(),RPL_JOIN_NOTIF(client->getNick(), _name));
+	ft_send(client->getFd(), RPL_JOIN_NOTIF(client->getNick(), _name));
 	ft_send(client->getFd(), RPL_TOPIC(client, this));
 	ft_send(client->getFd(), RPL_NAMREPLY);
 }
@@ -147,8 +168,8 @@ bool Channel::isInvited(int search) const {
 	return (false);
 }
 
-// Send msg to all clients connected to the chan except the sender
-// If client* is NULL, will send to ALL clients, even the sender
+// If client is set, send msg to all clients connected to the chan except the sender
+// If client is NULL, send to ALL clients, even the sender
 void Channel::sendChan(Client *client, std::string msg) const {
 	int fd = 0;
 	if (client != NULL)

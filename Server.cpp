@@ -108,7 +108,8 @@ void Server::sendRegistration(Client *client) {
 	ft_send(client->getFd(), RPL_YOURHOST(client));
 	ft_send(client->getFd(), RPL_CREATED(client, client->getServer()->getCreatedTime()));
 	ft_send(client->getFd(), RPL_MYINFO(client, USERMODES, CHANMODES, ""));
-	ft_send(client->getFd(), RPL_ISUPPORT(client, ""));
+	ft_send(client->getFd(), RPL_ISUPPORT(client, ISUPPORT));
+
 	// client->setResponse(); // if we need to confirm the protocol
 }
 

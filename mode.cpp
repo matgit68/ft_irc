@@ -9,20 +9,19 @@ void mode(Client *client, std::string args) {
 		space = args.size();
 
 	Channel *chan = client->getServer()->getChannel(args.substr(0, space)); // recovering channel (eg #channel)
-	if (chan == NULL)
+	if (chan == NULL) {
+		if (client->getServer()->getClient(args.substr(0, space)))
+			return ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
 		return ft_send(client->getFd(), ERR_NOSUCHCHANNEL(args.substr(0, space)));
+	}
 	args.erase(0, space + 1);
 
 	// no args => mode status request
-	if (args.empty()) {
-		if (chan->isClient(client))
-			chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client, chan, chan->getPasswd()));
-		else
-			ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, chan, "[key]"));
-		return ;
-	}
+	if (args.empty())
+		return chan->sendModeInfo(client);
 
-	if ((space = args.find(' ')) != NPOS) { // recovering modestring (eg -k or +it) and modeargs
+	// recovering modestring (eg -k or +it) and modeargs
+	if ((space = args.find(' ')) != NPOS) {
 		modestring = args.substr(0, space);
 		modeargs = args.substr(space + 1, args.size());
 	}
@@ -45,12 +44,5 @@ void mode(Client *client, std::string args) {
 			chan->unMode(client, modestring[0], modeargs);
 		modestring.erase(0, 1);
 	}
-	if (chan->isClient(client)) {
-		std::cout << "Sending all clients" << std::endl;
-		chan->sendChan(0, RPL_CHANNELMODEISWITHKEY(client, chan, chan->getPasswd()));
-	}
-	else {
-		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, chan, "[key]"));
-		std::cout << "Sending only to origin" << std::endl;
-	}
+	chan->sendModeInfo(); // Send all connected clients the new modes
 }

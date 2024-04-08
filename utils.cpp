@@ -2,7 +2,7 @@
 
 void ft_send(int fd, std::string msg) {
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << "\e[0;33mSent(" << fd << ") : \e[0m" << msg << std::endl;
+		std::cout << YELLOW "Sent(" << fd << ") : " RESET << msg << std::endl;
 	send(fd, msg.c_str(), msg.size(), 0);
 }
 

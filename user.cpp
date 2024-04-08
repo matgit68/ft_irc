@@ -34,7 +34,8 @@ void user(Client *client, std::string args) {
 	client->setReal(tmpReal);
 	client->setUser(tmpUser);
 //	std::cout << "UserName: _" << client->getUser() << "_ RealName: _" << client->getReal() << '_' << std::endl;
-	client->getServer()->sendRegistration(client);
+	if (client->getStatus())
+		client->getServer()->sendRegistration(client);
 		// are you sure that you always reveive the USER request like the last one ? this was the reason of the _response bool
 		// -> always w/ irssi client ¯\_(ツ)_/¯/quit
 		

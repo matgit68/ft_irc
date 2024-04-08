@@ -55,6 +55,8 @@ public:
 	void sendClients(std::string) const;
 	void sendOps(std::string) const;
 	void sendWhenArriving(Client *) const;
+	void sendModeInfo() const;
+	void sendModeInfo(Client *) const;
 
 	void addClientInvite(Client *);
 

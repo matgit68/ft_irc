@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false) {}
+Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(true) {}
 
 Client::~Client() {}
 
@@ -52,7 +52,8 @@ void Client::receive(char* str) {
 void Client::parse(std::string msg) {
 	Client *client = this;
 	size_t pos;
-	std::cout << "\e[0;32mReceived(" << _fd << ") : \e[0m" << msg << std::endl;
+	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
+		std::cout << GREEN "Received(" << _fd << ") : " RESET << msg << std::endl;
 	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
 		ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
 		// _server->broadcast(this, msg); // for testing purposes

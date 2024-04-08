@@ -27,23 +27,23 @@ void Server::init() {
 	std::cout << "Waiting for connections ..." << std::endl;
 }
 
-static int setnonblocking(int sfd) {
-	int flags, s;
-	flags = fcntl(sfd, F_GETFL, 0);
-	if (flags == FAIL)
-	{
-		perror("fcntl");
-		return FAIL;
-	}
-	flags |= O_NONBLOCK;
-	s = fcntl(sfd, F_SETFL, flags);
-	if (s == FAIL)
-	{
-		perror("fcntl");
-		return FAIL;
-	}
-	return 0;
-}
+// static int setnonblocking(int sfd) {
+// 	int flags, s;
+// 	flags = fcntl(sfd, F_GETFL, 0);
+// 	if (flags == FAIL)
+// 	{
+// 		perror("fcntl");
+// 		return FAIL;
+// 	}
+// 	flags |= O_NONBLOCK;
+// 	s = fcntl(sfd, F_SETFL, flags);
+// 	if (s == FAIL)
+// 	{
+// 		perror("fcntl");
+// 		return FAIL;
+// 	}
+// 	return 0;
+// }
 
 void Server::run() {
 	int valread, epollfd, nfds, newFd, addrlen = sizeof(_address);
@@ -73,7 +73,7 @@ void Server::run() {
 					perror("accept");
 					exit(EXIT_FAILURE);
 				}
-				setnonblocking(newFd);
+				// setnonblocking(newFd);
 				// fcntl(newFd, F_SETFL, O_NONBLOCK);
 				_ev.events = EPOLLIN;
 				_ev.data.fd = newFd;
@@ -107,7 +107,7 @@ void Server::run() {
 							std::cerr << "Couldnt find client of fd " << _events[n].data.fd << std::endl;
 						if (close(_events[n].data.fd) == FAIL) // close fd
 							std::cerr << "couldnt close fd " << _events[n].data.fd << std::endl;
-						std::cout << "\e[0;31mClient " << _events[n].data.fd << " disconnected\e[0m" << std::endl;
+						std::cout << RED "Client " << _events[n].data.fd << " disconnected" RESET << std::endl;
 					}
 					continue;
 				}

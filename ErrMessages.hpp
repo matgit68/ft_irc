@@ -11,8 +11,8 @@
 # define ERR_UNKNOWNCOMMAND(client, command) 		(":" + client->getServer()->getHostname() + " 421 " + client->getNick() + " " + command + " :Unknown command\r\n")
 
 //CAP
-# define RPL_CAPLS(server)							(":" + server + " CAP * LS:\r\n")
-# define RPL_CAPEND(server) 						(":" + server + " CAP * END\r\n")
+# define RPL_CAPLS(client)							(":" + client->getServer()->getHostname() + " CAP * LS :\r\n")
+# define RPL_CAPEND(client) 						(":" + client->getServer()->getHostname() + " CAP * END\r\n")
 
 //INVITE
 # define ERR_NEEDMOREPARAMS(command) 				(":" + client->getServer()->getHostname() + " 461 " + client->getNick() + " " + command + " :Not enough parameters.\r\n")
@@ -44,7 +44,9 @@
 # define ERR_NONICKNAMEGIVEN(client) 				(":" + client->getServer()->getHostname() + " 431 " + client->getNick() + " :There is no nickname.\r\n")
 # define ERR_NICKNAMEINUSE(client, nickname) 		(":" + client->getServer()->getHostname() + " 433 " + client->getNick() + " " + nickname + " :Nickname is already in use.\r\n")
 # define ERR_ERRONEUSNICKNAME(client, nickname) 	(":" + client->getServer()->getHostname() + " 432 " + client->getNick() + " " + nickname + " :Erroneus nickname\r\n")
-# define RPL_NICK(oclient, uclient, client) 		(":" + oclient + "!" + uclient + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
+# define RPL_NICK(oclient, client) 					(":" + oclient + "!" + client->getNick() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
+//:oldnick!realname@hostname NICK newnick
+
 //NOTICE
 # define RPL_NOTICE(nick, username, target, msg) 	(":" + nick + "!" + username + "@localhost NOTICE " + target + " " + msg + "\r\n")
 
