@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(true) {}
+Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false) {}
 
 Client::~Client() {}
 

@@ -12,6 +12,9 @@ void dispChanList(Client *client, std::string str) {
 }
 
 bool is_valid(const std::string nickname){
+	if (nickname[0] == '#' || nickname[0] == '$' || nickname[0] == ':'
+			|| nickname.find(" ,*?!@.") != NPOS)
+		return false;
 	if(nickname.length() < 1 || nickname.length() > 32)
 		return false;
 	const std::string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_[]{}\\|";
