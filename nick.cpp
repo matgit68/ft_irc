@@ -1,14 +1,13 @@
 #include "Server.hpp"
 
 void nick(Client *client, std::string args) {
-	if (args[0] == '#' || args[0] == '$' || args[0] == ':'
-			|| args.find_first_of(" ,*?!@.") != NPOS)
-		return ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client, args));
-	
 	
 	std::string oldNick = client->getNick();
 	std::string newNick = args;
-	
+
+	if (client->getPasswd() == false) {
+		return;
+	}
 	if(newNick.length() == 0){
 		ft_send(client->getFd(), ERR_NONICKNAMEGIVEN(client));
 		return;
@@ -23,7 +22,7 @@ void nick(Client *client, std::string args) {
 		ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client, newNick));
 		return;
 	}
-	if(oldNick.empty()) {  //changin the oldNick with the newNick
+	if(oldNick.empty()) { 
 		client->setNick(newNick);
 		std::cout << "Requesting the new nick \"" <<  newNick << "\"." << std::endl;
 	}else {
@@ -46,6 +45,5 @@ void nick(Client *client, std::string args) {
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 	{
 		ft_send(*it, RPL_NICK(client));
-		
 	}	 
 }

@@ -1,10 +1,6 @@
 TODO :
 
-* PASS 
-	--> password : implement
-	ERR_PASSWDMISMATCH (464)
-	"<client> :Password incorrect"
-	Returned to indicate that the connection could not be registered as the password was either incorrect or not supplied. The text used in the last param of this message may vary.
+
 
 * Signals
 	CTRL-Z => gestion signal - epoll-wait() ?
@@ -24,15 +20,24 @@ TODO :
 	Bad behaviour when +o a user in a chan with multiple users
 
 * USER 
-	If nick is already in use, give an alternate nick (ie : user -> user_)
+	-If nick is already in use, give an alternate nick (ie : user -> user_)
+	-when another user is being operator, we don't see the changes from the channel
+
+* NICK (or USER ?)
+	client see when they change their nick --> need to be tested
+
 
 DONE :
 
 * MODE
 	If second parameter is a nickname, appropriate ERR is sent
 
-* NICK (or USER ?)
-	client see when they change their nick
 
 * TOPIC
 	client changing the topic now see the new topic
+
+* PASS 
+	--> password : implement
+	ERR_PASSWDMISMATCH (464)
+	"<client> :Password incorrect"
+	Returned to indicate that the connection could not be registered as the password was either incorrect or not supplied. The text used in the last param of this message may vary.

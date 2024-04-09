@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(true) {}
+Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false) {}
 
 Client::~Client() {}
 
@@ -14,7 +14,21 @@ std::string Client::getOldNick() const { return _oldnick; }
 
 Server *Client::getServer() const { return _server; }
 
+std::string Client::getReal() const { return _real; }
 
+bool Client::getResponse() const { return _response; }
+
+bool Client::getPasswd() const { return _passwd; }
+
+bool Client::getStatus(void) const { return _passwd && !_nick.empty() && !_real.empty() && !_user.empty(); }
+
+std::string Client::getHost() const { return _host; }
+
+std::string Client::getPrefix() const { 
+	return (_nick.empty() ? "*" \
+		: (_nick + (_user.empty() ? "" : "!" + _user) +
+		(_host.empty() ? "" : "@" + _host)));
+}
 
 void Client::setUser(std::string u) { _user = u; }
 
@@ -23,6 +37,12 @@ void Client::setNick(std::string n) { _nick = n; }
 void Client::setPasswd(bool b) { _passwd = b; }
 
 void Client::setOldNick(std::string nickname) { _oldnick = nickname; }
+
+void Client::setHost(std::string h) { _host = h; }
+void Client::setReal(std::string r) { _real = r; }
+
+
+void Client::setStatus(void) { _clientReady = !_clientReady; }
 
 // void Client::receive(char* str) {
 // 	_buffer.append(str);
@@ -75,45 +95,3 @@ void Client::parse(std::string msg) {
 // the broadcast should be use since _server->client ?
 // but exclude the current fd-client like now
 }
-
-bool Client::getStatus(void) const { return _passwd && !_nick.empty() && !_real.empty() && !_user.empty(); }
-
-std::string Client::getHost() const { return _host; }
-
-std::string Client::getPrefix() const { 
-	return (_nick.empty() ? "*" \
-		: (_nick + (_user.empty() ? "" : "!" + _user) +
-		(_host.empty() ? "" : "@" + _host)));
-}
-
-std::string Client::getReal() const { return _real; }
-
-bool Client::getResponse() const { return _response; }
-
-bool Client::getPasswd() const { return _passwd; }
-
-void Client::setStatus(void) { _clientReady = !_clientReady; }
-
-void Client::setResponse(void) {
-	_response = !_response;
-/*	if (_response)// choose ur message
-	{
-// 		std::string end = "001 " + _user + " " + _nick + " :Welcome to the Internet Relay Network " + _nick + "\r\n";
-// std::cerr << "debug CAP END : " + end;
-// 		if (send(_fd, end.c_str(), end.size(), 0) != (ssize_t) end.size())
-// 			std::cerr << "Error sending msg" << std::endl;
-		std::string wel = "001 " + _nick + " :Welcome to the <networkname> Network, " + this->getPrefix() + "\r\n";
-		std::cerr << "debug CAP END : " + wel;
-		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
-			std::cerr << "Error sending msg" << std::endl;
-
-//   "002 <client> :Your host is <servername>, running version <version>"
-		wel = "003 " + _nick + " :This server was created " + _server->getCreatedTime() + "\r\n";
-		if (send(_fd, wel.c_str(), wel.size(), 0) != (ssize_t) wel.size())
-			std::cerr << "Error sending msg" << std::endl;
-	}*/
-}
-
-void Client::setHost(std::string h) { _host = h; }
-void Client::setReal(std::string r) { _real = r; }
-
