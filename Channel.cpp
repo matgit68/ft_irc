@@ -195,5 +195,5 @@ void Channel::sendOps(std::string msg) const { // send msg to all ops
 void Channel::removeUser( Client *client ){
 	delInvite(client->getFd());
 	removeOp(client->getFd());
-	_clients.erase(client->getFd());
+	delClient(client);
 }

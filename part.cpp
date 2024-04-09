@@ -32,11 +32,8 @@ void part(Client *client, std::string args) {
 		ft_send(client->getFd(), ERR_NOTONCHANNEL(chan));
 	else
 	{
-		it->second->delClient(client);
-		//it->second->removeUser(client); i created this function but I dont know if we really need it 
-		//removes invitation and operator also, it can stay for now
+		it->second->removeUser(client); 
 		ft_send(client->getFd(), RPL_PART(nick, chan, reason));
-		server->broadcast(client, RPL_PART(client, chan, reason));
 	}	
 }
 

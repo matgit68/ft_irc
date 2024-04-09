@@ -44,7 +44,7 @@
 # define ERR_NONICKNAMEGIVEN(client) 				(":" + client->getServer()->getHostname() + " 431 " + client->getNick() + " :There is no nickname.\r\n")
 # define ERR_NICKNAMEINUSE(client, nickname) 		(":" + client->getServer()->getHostname() + " 433 " + client->getNick() + " " + nickname + " :Nickname is already in use.\r\n")
 # define ERR_ERRONEUSNICKNAME(client, nickname) 	(":" + client->getServer()->getHostname() + " 432 " + client->getNick() + " " + nickname + " :Erroneus nickname\r\n")
-# define RPL_NICK(oclient, client) 					(":" + oclient + "!" + client->getNick() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
+# define RPL_NICK(client) 					(":" + client->getOldNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
 //:oldnick!realname@hostname NICK newnick
 
 //NOTICE
