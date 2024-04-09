@@ -22,18 +22,23 @@ Server &Server::operator=(Server const &ref) {
 	_channels = ref._channels;
 	return *this;
 }
+void Server::setHostname(std::string str) { _hostname = str; }
 
 int Server::getFd() const { return _fd; }
 
 int Server::getPort() const { return _port; }
 
 std::string Server::getPasswd() const { return _passwd; }
-
 std::string Server::getHostname() const { return _hostname; }
+std::string Server::getCreatedTime(void) const { return _createdTime; }
 
-std::map<std::string, Channel*>	Server::getChannels()		{ return (_channels); }
+std::map<std::string, Channel*> Server::getChannelMap(void) const { return _channels; }
 
-void Server::setHostname(std::string str) { _hostname = str; }
+Channel *Server::getChannel(std::string name) {
+	if (_channels.find(name) == _channels.end())
+		return NULL;
+	return _channels[name];
+}
 
 Client *Server::getClient(int fd) {
 	if (_clients.find(fd) == _clients.end())
@@ -48,14 +53,6 @@ Client *Server::getClient(std::string target) const {
 			return (it->second);
 	return NULL;
 }
-
-Channel *Server::getChannel(std::string name) {
-	if (_channels.find(name) == _channels.end())
-		return NULL;
-	return _channels[name];
-}
-
-std::string Server::getCreatedTime(void) const { return _createdTime; }
 
 funPtr Server::getCommand(std::string name) {
 	if (_commands.find(name) == _commands.end())
@@ -83,6 +80,20 @@ Channel * Server::addChannel(std::string channel) {
 void Server::delChannel(std::string channel) {
 	if (_channels.find(channel) != _channels.end())
 		delete _channels[channel];
+}
+
+bool Server::findChannel(std::string channel)
+{
+	if(_channels.find(channel) == _channels.end())
+		return false;
+	return true;
+}
+
+void Server::dispChannels(Client *client) {
+	//std::cout << "disp chan list" << std::endl;
+	std::map<std::string, Channel*>::iterator it;
+	for(it = _channels.begin(); it != _channels.end(); it++)
+		ft_send(client->getFd(), it->second->getName());
 }
 
 void Server::initFunPtr() {
@@ -120,13 +131,8 @@ void Server::broadcast(Client* client, std::string msg) {
 			ft_send(it->first, msg);
 }
 
-void Server::dispChannels(Client *client) {
-	//std::cout << "disp chan list" << std::endl;
-	std::map<std::string, Channel*>::iterator it;
-	for(it = _channels.begin(); it != _channels.end(); it++)
-		ft_send(client->getFd(), it->second->getName());
-}
-bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname has already taken
+
+bool Server::isNickAvailable(std::string& newNick) 
 {
 	std::map<int, Client*>::iterator it;
 	for(it = _clients.begin(); it != _clients.end(); it++)
@@ -136,13 +142,3 @@ bool Server::isNickAvailable(std::string& newNick) //Checking if the nickname ha
 	}
 	return true;
 }
-
-std::map<std::string, Channel*> Server::getChannelMap(void) const { return _channels; }
-
-bool Server::findChannel(std::string channel)
-{
-	if(_channels.find(channel) == _channels.end())
-		return false;
-	return true;
-}
-
