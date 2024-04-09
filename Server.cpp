@@ -68,9 +68,9 @@ void Server::createChannel(std::string chanName, Client *creator) {
 		return;
 	std::string s; // no use, just to call addMode method
 	_channels[chanName] = new Channel(this, chanName);
-	_channels[chanName]->addClient(creator);
 	_channels[chanName]->giveOp(creator->getFd());
 	_channels[chanName]->addMode(creator, 't', s); // topic protected is the default mode
+	_channels[chanName]->addClient(creator);
 }
 
 Channel * Server::addChannel(std::string channel) {

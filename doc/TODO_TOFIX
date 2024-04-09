@@ -20,6 +20,9 @@ TODO :
 	pb status user irssi on chan
 	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
 
+* MODE
+	Bad behaviour when +o a user in a chan with multiple users
+
 * USER 
 	If nick is already in use, give an alternate nick (ie : user -> user_)
 

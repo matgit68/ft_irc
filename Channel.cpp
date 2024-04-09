@@ -49,6 +49,7 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 		if (_clients.find(c->getFd()) == _clients.end())
 			return ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
 		giveOp(c->getFd());
+		sendChan(NULL, RPL_UMODEINCHANIS(client, this, "+o", c));
 	}
 }
 
@@ -56,8 +57,10 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 	size_t pos;
 	if (mode == 'o') {
 		Client *c = _server->getClient(takeNextArg(arg));
-		if (c != NULL)
+		if (c != NULL) {
 			removeOp(c->getFd());
+			sendChan(NULL, RPL_UMODEINCHANIS(client, this, "-o", c));
+		}
 		else
 			ft_send(client->getFd(), ERR_NOSUCHNICK(client, arg));
 	}
@@ -86,7 +89,7 @@ void Channel::sendModeInfo() const {
 	}
 }
 
-bool Channel::isOp(int id) {
+bool Channel::isOp(int id) const {
 	if (_ops.find(id) != _ops.end())
 		return true;
 	return false;
@@ -106,18 +109,18 @@ void Channel::addClient(Client *client) {
 	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
 		return ;
 	if (_mode.find('l') != NPOS && _clients.size() >= _limit)
-		return ft_send(client->getFd(), ERR_CHANNELISFULL(_name));
+		return ft_send(client->getFd(), ERR_CHANNELISFULL(this));
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
-	sendWhenArriving(client);
+	sendWhenJoining(client);
 }
 
-void Channel::addClientInvite(Client *client) { // GERER LES LIMITES DE CHAN !
+void Channel::addClientInvite(Client *client) { // PAS DE LIMITES DE CHAN !
 	if (_clients.find(client->getFd()) != _clients.end()) // client is already on the channel
 		return ;
 	if (!this->isInvited(client->getFd())) // client is not on the list
-		return ft_send(client->getFd(), ERR_INVITEONLYCHAN(_name));
+		return ft_send(client->getFd(), ERR_INVITEONLYCHAN(this));
 	_clients.insert(client->getFd());
-	sendWhenArriving(client);
+	sendWhenJoining(client);
 	this->delInvite(client->getFd());
 }
 
@@ -126,20 +129,37 @@ void Channel::addClientPass(Client *client, std::string key) {
 	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
 		return ; 
 	if (_mode.find('l') != NPOS && _clients.size() >= _limit )
-		return ft_send(client->getFd(), ERR_CHANNELISFULL(_name));
+		return ft_send(client->getFd(), ERR_CHANNELISFULL(this));
 	if (key != _passwd)
 		return ft_send(client->getFd(), ERR_BADCHANNELKEY(client, this)); // wrong password
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
-	sendWhenArriving(client);
+	sendWhenJoining(client);
 }
 
 // I had to modify this function because it was not seeing that users in the channel, i added the second line 
 // and put the sendChan() on the top
-void Channel::sendWhenArriving(Client *client) const {
-	sendChan(client, RPL_JOIN_NOTIF(client->getNick(), _name));
-	ft_send(client->getFd(), RPL_JOIN_NOTIF(client->getNick(), _name));
-	ft_send(client->getFd(), RPL_TOPIC(client, this));
-	ft_send(client->getFd(), RPL_NAMREPLY);
+void Channel::sendWhenJoining(Client *client) const {
+	sendChan(NULL, RPL_JOIN_NOTIF(client->getNick(), _name)); //send all users
+	if (_topic.empty())
+		ft_send(client->getFd(), RPL_NOTOPIC(client, this));	
+	else
+		ft_send(client->getFd(), RPL_TOPIC(client, this));
+	ft_send(client->getFd(), RPL_NAMREPLY(client, this, getClientListbyName()));
+	ft_send(client->getFd(), RPL_ENDOFNAMES(client, this));
+}
+
+std::string Channel::getClientListbyName() const {
+	std::set<int> list = getClientList();
+	std::set<int>::iterator it;
+	std::string result;
+
+	for (it = list.begin(); it != list.end(); it++) {
+		if (isOp(*it))
+			result = '@' + _server->getClient(*it)->getNick() + ' ' + result;
+		else
+			result += ' ' + _server->getClient(*it)->getNick();
+	}
+	return result;
 }
 
 void Channel::delClient(Client *client) {

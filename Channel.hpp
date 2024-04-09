@@ -35,13 +35,14 @@ public:
 	std::string getTopic() const;
 	std::string getMode() const;
 	std::string getPasswd() const;
+	std::string getClientListbyName() const;
 	Server *getServer();
 	std::set<int> getClientList(void) const;
 	void setTopic(std::string);
 
 	void addMode(Client *, char, std::string &);
 	void unMode(Client *, char, std::string &);
-	bool isOp(int);
+	bool isOp(int) const;
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name
 
@@ -54,7 +55,7 @@ public:
 	void sendChan(Client *, std::string) const;
 	void sendClients(std::string) const;
 	void sendOps(std::string) const;
-	void sendWhenArriving(Client *) const;
+	void sendWhenJoining(Client *) const;
 	void sendModeInfo() const;
 	void sendModeInfo(Client *) const;
 

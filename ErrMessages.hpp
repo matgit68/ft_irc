@@ -25,11 +25,11 @@
 # define RPL_INVITE(user_id, invited, channel) 		(user_id + " INVITE " + invited + " " + channel + "\r\n")
 
 //JOIN
-# define ERR_BANNEDFROMCHAN(channel) 				(":" + client->getServer()->getHostname() + " 474 " + client->getNick() + " " + channel + " :Cannot join channel (+b)\r\n")
+# define ERR_BANNEDFROMCHAN(channel) 				(":" + client->getServer()->getHostname() + " 474 " + client->getNick() + " " + channel->getName() + " :Cannot join channel (+b)\r\n")
 # define ERR_BADCHANNELKEY(client, channel) 		(":" + client->getServer()->getHostname() + " 475 " + client->getNick() + " " + channel->getName() + " :Cannot join channel (+k)\r\n")
-# define ERR_INVITEONLYCHAN(channel) 				(":" + client->getServer()->getHostname() + " 473 " + client->getNick() + " " + channel + " :Cannot join channel (i)\r\n")
-# define ERR_CHANNELISFULL(channel) 				(":" + client->getServer()->getHostname() + " 471 " + client->getNick() + " " + channel + " :Cannot join channel (+l)\r\n")
-# define RPL_ENDOFNAMES(channel) 					(":" + client->getServer()->getHostname() + " 366 " + client->getNick() + " " + channel + " :End of /NAMES list.\r\n")
+# define ERR_INVITEONLYCHAN(channel) 				(":" + client->getServer()->getHostname() + " 473 " + client->getNick() + " " + channel->getName() + " :Cannot join channel (i)\r\n")
+# define ERR_CHANNELISFULL(channel) 				(":" + client->getServer()->getHostname() + " 471 " + client->getNick() + " " + channel->getName() + " :Cannot join channel (+l)\r\n")
+# define RPL_ENDOFNAMES(client, channel) 			(":" + client->getServer()->getHostname() + " 366 " + client->getNick() + " " + channel->getName() + " :End of /NAMES list.\r\n")
 # define RPL_JOIN(user_id, channel) 				(user_id + " JOIN :" + channel + "\r\n")
 # define RPL_JOIN_NOTIF(user_id, channel) 			(":" + user_id + "@localhost JOIN " + channel + "\r\n")
 
@@ -44,7 +44,7 @@
 # define ERR_NONICKNAMEGIVEN(client) 				(":" + client->getServer()->getHostname() + " 431 " + client->getNick() + " :There is no nickname.\r\n")
 # define ERR_NICKNAMEINUSE(client, nickname) 		(":" + client->getServer()->getHostname() + " 433 " + client->getNick() + " " + nickname + " :Nickname is already in use.\r\n")
 # define ERR_ERRONEUSNICKNAME(client, nickname) 	(":" + client->getServer()->getHostname() + " 432 " + client->getNick() + " " + nickname + " :Erroneus nickname\r\n")
-# define RPL_NICK(client) 					(":" + client->getOldNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
+# define RPL_NICK(client) 							(":" + client->getOldNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
 //:oldnick!realname@hostname NICK newnick
 
 //NOTICE
@@ -64,6 +64,7 @@
 //USER
 # define ERR_ALREADYREGISTERED(client) 				(":" + client->getServer()->getHostname() + " 462 " + client->getNick() + " :You may not reregister.\r\n")
 # define ERR_PASSWDMISMATCH(client)                 (":" + client->getServer()->getHostname() + " 464 " + client->getNick() + " :Password incorrect.\r\n")
+
 //MODE
 /* user mode */
 # define MODE_USERMSG(client, mode) 				(":" + client->getNick() + " MODE " + client->getNick() + " :" + mode + "\r\n")
@@ -75,11 +76,15 @@
 # define MODE_CHANNELMSGWITHPARAM(channel, mode, p) (":" + client->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + p + "\r\n")
 # define RPL_CHANNELMODEIS(client, channel, mode) 	(":" + client->getServer()->getHostname() + " 324 " + client->getNick() + " " + channel->getName() + " " + mode + "\r\n")
 # define RPL_CHANNELMODEISWITHKEY(cl, ch, pwd) 		(":" + cl->getServer()->getHostname() + " 324 " + cl->getNick() + " " + ch->getName() + " " + ch->getMode() + " " + pwd + "\r\n")
+# define RPL_UMODEINCHANIS(op, channel, mode, user)	(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + user->getNick() + "\r\n")
+//													  :user1!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +o user2
+//													  :user2!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +k toto
 # define ERR_CANNOTSENDTOCHAN(client, channel) 		("404 " + client->getNick() + " " + channel + " :Cannot send to channel\r\n")
 # define ERR_CHANOPRIVSNEEDED(client, channel) 		(":" + client->getServer()->getHostname() + " 482 " + client->getNick() + " " + channel->getName() + " :You're not channel operator\r\n")
 # define ERR_INVALIDMODEPARAM(cl, ch, mode, pwd) 	("696 " + cl->getNick() + " " + ch->getName() + " " + mode + " " + pwd + " : password must only contained alphabetic character\r\n")
 
 //NAMES
-# define RPL_NAMREPLY 								(":" + client->getServer()->getHostname() + " 353 " + client->getNick() + " = " + _name + " :" + client->getNick() + "\r\n")
+# define RPL_NAMREPLY(client, channel, list) 		(":" + client->getServer()->getHostname() + " 353 " + client->getNick() + " = " + channel->getName() + " :" + list + "\r\n")
+
 //PART
 # define RPL_PART(user_id, channel, reason) (":" + client->getNick() + "@localhost PART " + channel + " : " + reason  + "\r\n")
