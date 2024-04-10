@@ -94,6 +94,7 @@ bool Channel::isOp(int id) const {
 		return true;
 	return false;
 }
+
  
 void Channel::giveOp(int id) {
 	if (_ops.find(id) == _ops.end())
@@ -188,7 +189,7 @@ bool Channel::isInvited(int search) const {
 	return (false);
 }
 
-// If client is set, send msg to all clients connected to the chan except the sender
+// If client is set, send msg to all clients connected to the chan EXCEPT the sender
 // If client is NULL, send to ALL clients, even the sender
 void Channel::sendChan(Client *client, std::string msg) const {
 	int fd = 0;

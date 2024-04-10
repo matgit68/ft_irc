@@ -34,7 +34,8 @@
 # define RPL_JOIN_NOTIF(user_id, channel) 			(":" + user_id + "@localhost JOIN " + channel + "\r\n")
 
 //KICK
-# define ERR_USERNOTINCHANNEL(c, target, channel) 	(":" + client->getServer()->getHostname() + " 441 " + c->getNick() + " " + target + " " + channel + " :They aren't on that channel\r\n")
+# define ERR_USERNOTINCHANNEL(client, target, channel) (":" + client->getNick() + " " + target + " " + channel + " :They aren't on that channel\r\n")
+# define RPL_KICK(client, channel, target, reason) (":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " KICK " + channel + " " + target->getNick() + " :" + reason + "\r\n")
 
 //TOPIC
 # define RPL_TOPIC(client, channel)					(":" + client->getServer()->getHostname() + " 332 " + client->getNick() + " " + channel->getName() + " " + channel->getTopic() +"\r\n")
