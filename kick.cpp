@@ -37,4 +37,5 @@ void kick(Client *client, std::string args) {
 			chan->removeUser(target); // to confirm
 		}
 	}
+	client->getServer()->checkEmptyChannels();
 }

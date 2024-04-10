@@ -100,7 +100,7 @@ void Server::run() {
 					}
 					else {
 						if (_clients.find(_events[n].data.fd) != _clients.end()) {// delete Client and remove Client from map
-							quit(_clients.find(_events[n].data.fd)->second, "Disconnected");
+							// quit(_clients.find(_events[n].data.fd)->second, "Disconnected");
 							delete _clients[_events[n].data.fd];
 						}
 						else
@@ -116,5 +116,4 @@ void Server::run() {
 			}
 		}
 	}
-	std::cout << "boucle" << std::endl;
 }

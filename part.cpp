@@ -30,8 +30,7 @@ void part(Client *client, std::string args) {
 	else
 	{
 		it->second->sendChan(NULL, RPL_PART(client, chan, reason));
-		it->second->removeUser(client); 
-	}	
+		it->second->removeUser(client);
+	}
+	server->checkEmptyChannels();
 }
-
-

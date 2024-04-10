@@ -218,3 +218,7 @@ void Channel::removeUser( Client *client ){
 	removeOp(client->getFd());
 	delClient(client);
 }
+
+bool Channel::empty() {
+	return (_clients.empty());
+}

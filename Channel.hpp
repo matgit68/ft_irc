@@ -39,6 +39,7 @@ public:
 	Server *getServer();
 	std::set<int> getClientList(void) const;
 	void setTopic(std::string);
+	bool empty();
 
 	void addMode(Client *, char, std::string &);
 	void unMode(Client *, char, std::string &);

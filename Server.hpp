@@ -33,6 +33,7 @@ public:
 	std::string getHostname() const;
 	void setHostname(std::string);
 	std::map<std::string, Channel*> getChannelMap(void) const;
+	std::map<std::string, Channel*>	getChannels(); // double ?
 	funPtr getCommand(std::string);
 	
 	std::string getCreatedTime(void) const;
@@ -43,6 +44,7 @@ public:
 	void delChannel(std::string);
 	void dispChannels(Client *);
 	void makeQuit(int);
+	void checkEmptyChannels();
 
 	void initFunPtr();
 	void init();
@@ -53,5 +55,5 @@ public:
 
 	bool userOnChannel(int, std::string);
 	bool findChannel(std::string channel);
-	std::map<std::string, Channel*>	getChannels();
+	
 };

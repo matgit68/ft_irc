@@ -2,8 +2,23 @@
 
 void ft_send(int fd, std::string msg) {
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << YELLOW "Sent(" << fd << ") : " RESET << msg << std::endl;
+		std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
 	send(fd, msg.c_str(), msg.size(), 0);
+}
+
+void sendToClientsInTouch(Client *client, std::string msg) {
+	std::map<std::string, Channel*> chans = client->getServer()->getChannelMap();
+	std::map<std::string, Channel*>::iterator it;
+	std::set<int> dest;
+	for (it = chans.begin(); it != chans.end(); it++) {
+		if (it->second->isClient(client)) {
+			std::set<int> tmp = it->second->getClientList();
+			dest.insert(tmp.begin(), tmp.end());
+		}
+		// dest.insert(client->getFd());
+	}
+	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
+		ft_send(*it, msg);
 }
 
 void dispChanList(Client *client, std::string str) {

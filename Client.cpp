@@ -73,7 +73,7 @@ void Client::parse(std::string msg) {
 	Client *client = this;
 	size_t pos;
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << GREEN "Received(" << _fd << ") : " RESET << msg << std::endl;
+		std::cout << GREEN "<<(" << _fd << ") : " RESET << msg << std::endl;
 	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
 		ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
 		// _server->broadcast(this, msg); // for testing purposes

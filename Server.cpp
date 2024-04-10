@@ -48,7 +48,7 @@ Client *Server::getClient(int fd) {
 
 Client *Server::getClient(std::string target) const {
 	std::map<int, Client*>::const_iterator it;
-	for (it = _clients.begin(); it != _clients.end(); it++) // SEGFAULT ?! _client.begin()
+	for (it = _clients.begin(); it != _clients.end(); it++)
 		if (it->second->getNick() == target)
 			return (it->second);
 	return NULL;
@@ -145,4 +145,16 @@ bool Server::isNickAvailable(std::string& newNick)
 
 void Server::makeQuit(int fd) {
 	ft_send(fd, "QUIT :SIGINT\r\n");
+}
+
+void Server::checkEmptyChannels() {
+	std::map<std::string, Channel*>::iterator it;
+	Channel *chan;
+	for (it = _channels.begin(); it != _channels.end(); it++) {
+		chan = it->second;
+		if (chan->empty()) {
+			std::cout << '#' << chan->getName() << " is empty. Deleting channel" << std::endl;
+			delete chan;
+		}
+	}
 }
