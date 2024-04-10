@@ -25,6 +25,8 @@ TODO :
 
 * NICK (or USER ?)
 	client see when they change their nick --> need to be tested
+	when you try to enter with a nick that already in use, server needs to give message : 
+		 Irssi: Your nick is owned by Damla Erblang [derblang@RZ-8gm.037.148.45.IP]
 
 * ALL LEAVING COMMANDS (PART, QUIT, KICK, DISCONNECTION)
 	check when we leave channels if we are the last user. If so, empty channels should be deleted
