@@ -26,6 +26,11 @@ TODO :
 * NICK (or USER ?)
 	client see when they change their nick --> need to be tested
 
+* ALL LEAVING COMMANDS (PART, QUIT, KICK, DISCONNECTION)
+	check when we leave channels if we are the last user. If so, empty channels should be deleted
+
+* DISCONNECTION
+	send message to users like quit
 
 DONE :
 

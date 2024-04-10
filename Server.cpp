@@ -142,3 +142,7 @@ bool Server::isNickAvailable(std::string& newNick)
 	}
 	return true;
 }
+
+void Server::makeQuit(int fd) {
+	ft_send(fd, "QUIT :SIGINT\r\n");
+}

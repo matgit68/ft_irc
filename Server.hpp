@@ -42,6 +42,7 @@ public:
 	Channel * addChannel(std::string, std::string);
 	void delChannel(std::string);
 	void dispChannels(Client *);
+	void makeQuit(int);
 
 	void initFunPtr();
 	void init();
