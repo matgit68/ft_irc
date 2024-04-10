@@ -38,7 +38,7 @@
 # define RPL_KICK(client, channel, target, reason) (":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " KICK " + channel + " " + target->getNick() + " :" + reason + "\r\n")
 
 //TOPIC
-# define RPL_TOPIC(client, channel)					(":" + client->getServer()->getHostname() + " 332 " + client->getNick() + " " + channel->getName() + " " + channel->getTopic() +"\r\n")
+# define RPL_TOPIC(client, channel)					(":" + client->getServer()->getHostname() + " 332 " + client->getNick() + " " + channel->getName() + " :" + channel->getTopic() +"\r\n")
 # define RPL_NOTOPIC(client, channel) 				(":" + client->getServer()->getHostname() + " 331 " + client->getNick() + " " + channel->getName() + " :No topic is set\r\n")
 
 //NICK
@@ -88,4 +88,4 @@
 # define RPL_NAMREPLY(client, channel, list) 		(":" + client->getServer()->getHostname() + " 353 " + client->getNick() + " = " + channel->getName() + " :" + list + "\r\n")
 
 //PART
-# define RPL_PART(user_id, channel, reason) (":" + client->getNick() + "@localhost PART " + channel + " : " + reason  + "\r\n")
+# define RPL_PART(client, channel, reason) (":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " PART " + channel + " :\"" + reason  + "\"\r\n")

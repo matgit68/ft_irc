@@ -15,14 +15,11 @@ std::string parseReason(std::string msg)
 void part(Client *client, std::string args) {
 	Server *server = client->getServer();
 	std::string chan = takeNextArg(args);
-	std::string msg = takeNextArg(args);
 	std::string nick = client->getNick();
-	std::string reason;
-	
-	if(msg.empty())
+	std::string reason = parseReason(args);
+
+	if(reason.empty())
 		reason = "No reason given";
-	else
-		reason = parseReason(msg);
 	std::map<std::string, Channel*> channels = client->getServer()->getChannelMap();
 	std::map<std::string, Channel*>::iterator it = channels.find(chan);
 
@@ -32,8 +29,8 @@ void part(Client *client, std::string args) {
 		ft_send(client->getFd(), ERR_NOTONCHANNEL(chan));
 	else
 	{
+		it->second->sendChan(NULL, RPL_PART(client, chan, reason));
 		it->second->removeUser(client); 
-		ft_send(client->getFd(), RPL_PART(nick, chan, reason));
 	}	
 }
 

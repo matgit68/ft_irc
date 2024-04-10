@@ -5,7 +5,7 @@ void topic(Client *client, std::string args) {
 	Server *server = client->getServer();
 	Channel *channel;
 	std::string chan = takeNextArg(args);
-	std::string topic = takeNextArg(args); //get the topic
+	std::string topic = args; //get the topic
 	if(topic[0] == ':')
 		topic.erase(0, 1);
 	channel = server->getChannel(chan);
@@ -36,7 +36,5 @@ void topic(Client *client, std::string args) {
 		channel->setTopic(topic);
 		channel->sendChan(NULL, RPL_TOPIC(client, channel));
 	 }
-	
 	}
-	
 }
