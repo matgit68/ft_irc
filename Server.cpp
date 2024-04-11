@@ -160,7 +160,7 @@ void Server::checkEmptyChannels() {
 	}
 }
 
-void Server::sendToClientsInTouch(Client *client, std::string msg) {
+void Server::sendToClientsInTouch(Client *client, std::string msg, bool me) { // bool me = send to me too
 	std::map<std::string, Channel*>::iterator it;
 	std::set<int> dest;
 	for (it = _channels.begin(); it != _channels.end(); it++) {
@@ -169,7 +169,8 @@ void Server::sendToClientsInTouch(Client *client, std::string msg) {
 			dest.insert(tmp.begin(), tmp.end());
 		}
 	}
-	dest.insert(client->getFd());
+	if (me)
+		dest.insert(client->getFd());
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 		ft_send(*it, msg);
 }

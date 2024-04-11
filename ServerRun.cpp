@@ -100,7 +100,7 @@ void Server::run() {
 					}
 					else {
 						if (_clients.find(_events[n].data.fd) != _clients.end()) {// delete Client and remove Client from map
-							sendToClientsInTouch(_clients[_events[n].data.fd], RPL_QUIT(_clients[_events[n].data.fd], "Disconnected"));
+							sendToClientsInTouch(_clients[_events[n].data.fd], RPL_QUIT(_clients[_events[n].data.fd], "Disconnected"), false);
 							removeFromAllChannels(_clients[_events[n].data.fd]);
 							checkEmptyChannels();
 							delete _clients[_events[n].data.fd];

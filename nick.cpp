@@ -31,6 +31,6 @@ void nick(Client *client, std::string args) {
 			client->setOldNick(oldNick);
 			client->setNick(newNick);
 		}
-		server->sendToClientsInTouch(client, RPL_NICK(client));
+		server->sendToClientsInTouch(client, RPL_NICK(client), false);
 	}
 }

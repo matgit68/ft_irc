@@ -59,7 +59,7 @@ void broad(Client *, std::string);
 void dispChanList(Client *, std::string);
 
 void ft_send(int, std::string);
-void sendToClientsInTouch(Client *, std::string);
+// void sendToClientsInTouch(Client *, std::string, bool);
 void checkEmptyChans(Server *);
 bool is_valid(const std::string nickname);
 std::string takeNextArg(std::string &);
