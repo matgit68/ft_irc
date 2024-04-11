@@ -27,23 +27,23 @@ void Server::init() {
 	std::cout << "Waiting for connections ..." << std::endl;
 }
 
-// static int setnonblocking(int sfd) {
-// 	int flags, s;
-// 	flags = fcntl(sfd, F_GETFL, 0);
-// 	if (flags == FAIL)
-// 	{
-// 		perror("fcntl");
-// 		return FAIL;
-// 	}
-// 	flags |= O_NONBLOCK;
-// 	s = fcntl(sfd, F_SETFL, flags);
-// 	if (s == FAIL)
-// 	{
-// 		perror("fcntl");
-// 		return FAIL;
-// 	}
-// 	return 0;
-// }
+static int setnonblocking(int sfd) {
+	int flags, s;
+	flags = fcntl(sfd, F_GETFL, 0);
+	if (flags == FAIL)
+	{
+		perror("fcntl");
+		return FAIL;
+	}
+	flags |= O_NONBLOCK;
+	s = fcntl(sfd, F_SETFL, flags);
+	if (s == FAIL)
+	{
+		perror("fcntl");
+		return FAIL;
+	}
+	return 0;
+}
 
 void Server::run() {
 	int valread, epollfd, nfds, newFd, addrlen = sizeof(_address);
@@ -64,7 +64,7 @@ void Server::run() {
 		nfds = epoll_wait(epollfd, _events, MAX_EVENTS, -1); // number of fds that triggered epoll
 		if (nfds == FAIL) {
 			perror("epoll_wait");
-			exit(EXIT_FAILURE);
+			// exit(EXIT_FAILURE);
 		}
 		for (int n = 0; n < nfds; ++n) { // going through all active fds
 			if (_events[n].data.fd == _fd) { // if active fd is server fd, a new connection is incoming
@@ -73,7 +73,7 @@ void Server::run() {
 					perror("accept");
 					exit(EXIT_FAILURE);
 				}
-				// setnonblocking(newFd);
+				setnonblocking(newFd);
 				// fcntl(newFd, F_SETFL, O_NONBLOCK);
 				_ev.events = EPOLLIN;
 				_ev.data.fd = newFd;
@@ -87,11 +87,10 @@ void Server::run() {
 				}
 			}
 			else { // if active fd is NOT server fd, we're receving a message
-				// std::cout << "\n(Receiving on fd " << _events[n].data.fd << ')' << std::endl;
 				valread = recv(_events[n].data.fd, buf, BUFFER, 0);
 				if (valread == FAIL) {
 					perror("recv");
-					// exit(EXIT_FAILURE);
+					exit(EXIT_FAILURE);
 				}
 				if (valread == 0) { // client disconnected -> remove fd from epoll, delete Client from clients map then close fd
 					if (epoll_ctl(epollfd, EPOLL_CTL_DEL, _events[n].data.fd, &_ev) == FAIL) { // unwatch fd

@@ -147,20 +147,35 @@ void Server::makeQuit(int fd) {
 	ft_send(fd, "QUIT :SIGINT\r\n");
 }
 
-void Server::checkEmptyChannels() {
-	std::map<std::string, Channel*>::iterator it;
-	Channel *chan;
-	for (it = _channels.begin(); it != _channels.end(); it++) {
-		chan = it->second;
-		if (chan->empty()) {
-			std::cout << chan->getName() << " is empty. Deleting channel" << std::endl;
-			_channels.erase(chan->getName());
-			delete chan;
-		}
-	}
+void Server::checkEmptyChannels() { // GPT version :)
+    std::map<std::string, Channel*>::iterator it = _channels.begin();
+    while (it != _channels.end()) {
+        Channel *chan = it->second;
+        if (chan->empty()) {
+            std::cout << chan->getName() << " is empty. Deleting channel" << std::endl;
+            delete chan;
+            std::map<std::string, Channel*>::iterator erase_it = it;
+            ++it; // Move to the next element before erasing the current one
+            _channels.erase(erase_it); // Erase the current element
+        } else {
+            ++it; // Move to the next element
+        }
+    }
 }
+// void Server::checkEmptyChannels() {
+// 	std::map<std::string, Channel*>::iterator it;
+// 	Channel *chan;
+// 	for (it = _channels.begin(); it != _channels.end(); it++) {
+// 		chan = it->second;
+// 		if (chan->empty()) {
+// 			std::cout << chan->getName() << " is empty. Deleting channel" << std::endl;
+// 			_channels.erase(chan->getName());
+// 			delete chan;
+// 		}
+// 	}
+// }
 
-void Server::sendToClientsInTouch(Client *client, std::string msg, bool me) { // bool me = send to me too
+void Server::sendToClientsInTouch(Client *client, std::string msg, bool metoo) { // bool me = send to me too
 	std::map<std::string, Channel*>::iterator it;
 	std::set<int> dest;
 	for (it = _channels.begin(); it != _channels.end(); it++) {
@@ -169,7 +184,7 @@ void Server::sendToClientsInTouch(Client *client, std::string msg, bool me) { //
 			dest.insert(tmp.begin(), tmp.end());
 		}
 	}
-	if (me)
+	if (metoo)
 		dest.insert(client->getFd());
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 		ft_send(*it, msg);

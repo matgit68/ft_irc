@@ -18,7 +18,6 @@ void nick(Client *client, std::string args) {
 		else {
 			while(!client->getServer()->isNickAvailable(newNick))
 				newNick.append("_");
-			std::cout << "alternative nick-> " << newNick << std::endl;
 			client->setOldNick(args);
 			client->setNick(newNick);
 			ft_send(client->getFd(), RPL_NICK(client));
@@ -31,6 +30,6 @@ void nick(Client *client, std::string args) {
 			client->setOldNick(oldNick);
 			client->setNick(newNick);
 		}
-		server->sendToClientsInTouch(client, RPL_NICK(client), false);
+		server->sendToClientsInTouch(client, RPL_NICK(client), true);
 	}
 }
