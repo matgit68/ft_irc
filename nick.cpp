@@ -4,6 +4,7 @@ void nick(Client *client, std::string args) {
 	
 	std::string oldNick = client->getNick();
 	std::string newNick = args;
+	Server *server = client->getServer();
 
 	if (client->getPasswd() == false)
 		return;
@@ -16,26 +17,9 @@ void nick(Client *client, std::string args) {
 
 	if(oldNick.empty())
 		client->setNick(newNick);
-		// std::cout << "Requesting the new nick \"" <<  newNick << "\"." << std::endl;
 	else {
 		client->setOldNick(oldNick);
 		client->setNick(newNick);
-		// std::cout << client->getOldNick() << " changed his nickname to " << newNick << "." << std::endl;
 	}
-	sendToClientsInTouch(client, RPL_NICK(client));
-	// std::map<std::string, Channel*> chan = client->getServer()->getChannelMap();
-	// std::set<int> dest;
-	// for (std::map<std::string, Channel*>::iterator it = chan.begin(); it != chan.end(); it++)
-	// {
-	// 	if (it->second->getName() != ":" && it->second->isClient(client)) {
-	// 		std::set<int> tmp = it->second->getClientList();
-	// 		dest.insert(tmp.begin(), tmp.end());
-	// 	}
-		
-	// dest.insert(client->getFd());
-	// }
-	// for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
-	// {
-	// 	ft_send(*it, RPL_NICK(client));
-	// }	 
+	server->sendToClientsInTouch(client, RPL_NICK(client));
 }

@@ -153,7 +153,8 @@ void Server::checkEmptyChannels() {
 	for (it = _channels.begin(); it != _channels.end(); it++) {
 		chan = it->second;
 		if (chan->empty()) {
-			std::cout << '#' << chan->getName() << " is empty. Deleting channel" << std::endl;
+			std::cout << chan->getName() << " is empty. Deleting channel" << std::endl;
+			_channels.erase(chan->getName());
 			delete chan;
 		}
 	}
@@ -172,3 +173,17 @@ void Server::sendToClientsInTouch(Client *client, std::string msg) {
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 		ft_send(*it, msg);
 }
+
+
+void Server::removeFromAllChannels(Client *client) {
+    std::map<std::string, Channel*>::iterator it;
+    std::string target = client->getNick(); 
+    for (it = _channels.begin(); it != _channels.end(); it++) {
+        Channel *chan = it->second; 
+        if (chan->isClient(client)) { 
+            chan->removeUser(client);
+            std::cout << "Client " << target << " is removed from channel " << it->first << std::endl;
+        }
+    }
+}
+
