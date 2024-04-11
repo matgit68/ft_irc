@@ -102,6 +102,7 @@ void Server::run() {
 						if (_clients.find(_events[n].data.fd) != _clients.end()) {// delete Client and remove Client from map
 							// quit(_clients.find(_events[n].data.fd)->second, "Disconnected");
 							delete _clients[_events[n].data.fd];
+							_clients.erase(_events[n].data.fd);
 						}
 						else
 							std::cerr << "Couldnt find client of fd " << _events[n].data.fd << std::endl;

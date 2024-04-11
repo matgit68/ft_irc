@@ -1,7 +1,9 @@
 #include "Server.hpp"
 
 void quit(Client *client, std::string args) {
-	sendToClientsInTouch(client, RPL_QUIT(client, args));
+	Server *server = client->getServer();
+	server->removeFromAllChannels(client);
+	server->sendToClientsInTouch(client, RPL_QUIT(client, args));
 	client->getServer()->checkEmptyChannels();
 }
 

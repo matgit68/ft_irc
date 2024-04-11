@@ -45,6 +45,7 @@ public:
 	void dispChannels(Client *);
 	void makeQuit(int);
 	void checkEmptyChannels();
+	void sendToClientsInTouch(Client *client, std::string msg);
 
 	void initFunPtr();
 	void init();
