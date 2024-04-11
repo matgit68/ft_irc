@@ -23,16 +23,14 @@ TODO :
 	-If nick is already in use, give an alternate nick (ie : user -> user_)
 	-when another user is being operator, we don't see the changes from the channel
 
-* NICK (or USER ?)
-	client see when they change their nick --> need to be tested
-	when you try to enter with a nick that already in use, server needs to give message : 
-		 Irssi: Your nick is owned by Damla Erblang [derblang@RZ-8gm.037.148.45.IP]
-
 * ALL LEAVING COMMANDS (PART, QUIT, KICK, DISCONNECTION)
 	check when we leave channels if we are the last user. If so, empty channels should be deleted
 
 * DISCONNECTION
 	send message to users like quit
+
+
+
 
 DONE :
 
@@ -48,3 +46,7 @@ DONE :
 	ERR_PASSWDMISMATCH (464)
 	"<client> :Password incorrect"
 	Returned to indicate that the connection could not be registered as the password was either incorrect or not supplied. The text used in the last param of this message may vary.
+
+* NICK (or USER ?)
+	when you try to enter with a nick that already in use, server needs to give message : 
+		 Irssi: Your nick is owned by Damla Erblang [derblang@RZ-8gm.037.148.45.IP]

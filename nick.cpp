@@ -10,16 +10,27 @@ void nick(Client *client, std::string args) {
 		return;
 	if(newNick.length() == 0)
 		return ft_send(client->getFd(), ERR_NONICKNAMEGIVEN(client));
-	if(!client->getServer()->isNickAvailable(newNick)) //checking if there is already that nick
-		return ft_send(client->getFd(), ERR_NICKNAMEINUSE(client, newNick));
-	if(!is_valid(newNick)) 
+	if(!is_valid(newNick))
 		return ft_send(client->getFd(), ERR_ERRONEUSNICKNAME(client, newNick));
-
-	if(oldNick.empty())
-		client->setNick(newNick);
-	else {
-		client->setOldNick(oldNick);
-		client->setNick(newNick);
+	if(!client->getServer()->isNickAvailable(newNick)) {
+		if(!client->getNick().empty())
+			return ft_send(client->getFd(), ERR_NICKNAMEINUSE(client, newNick));
+		else {
+			while(!client->getServer()->isNickAvailable(newNick))
+				newNick.append("_");
+			std::cout << "alternative nick-> " << newNick << std::endl;
+			client->setOldNick(args);
+			client->setNick(newNick);
+			ft_send(client->getFd(), RPL_NICK(client));
+		}
 	}
-	server->sendToClientsInTouch(client, RPL_NICK(client));
+	else {
+		if(oldNick.empty())
+			client->setNick(newNick);
+		else {
+			client->setOldNick(oldNick);
+			client->setNick(newNick);
+		}
+		server->sendToClientsInTouch(client, RPL_NICK(client));
+	}
 }

@@ -168,8 +168,8 @@ void Server::sendToClientsInTouch(Client *client, std::string msg) {
 			std::set<int> tmp = it->second->getClientList();
 			dest.insert(tmp.begin(), tmp.end());
 		}
-		// dest.insert(client->getFd());
 	}
+	dest.insert(client->getFd());
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 		ft_send(*it, msg);
 }

@@ -31,6 +31,7 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
+#include <sstream>
 
 #include "Server.hpp"
 #include "Client.hpp"
