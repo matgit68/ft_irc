@@ -18,7 +18,39 @@ Server *Channel::getServer() { return _server; }
 
 std::set<int> Channel::getClientList(void) const { return _clients; }
 
+std::string Channel::getClientListbyName() const {
+	std::set<int> list = getClientList();
+	std::set<int>::iterator it;
+	std::string result;
+
+	for (it = list.begin(); it != list.end(); it++) {
+		if (isOp(*it))
+			result = '@' + _server->getClient(*it)->getNick() + ' ' + result;
+		else
+			result += ' ' + _server->getClient(*it)->getNick();
+	}
+	return result;
+}
+
 void Channel::setTopic(std::string t) { _topic = t; }
+
+void Channel::delClient(Client *client) {
+	if (_clients.find(client->getFd()) != _clients.end())
+		_clients.erase(client->getFd());
+}
+
+void Channel::addInvite(int fd) { _invite.insert(fd); }
+
+void Channel::delInvite(int fd) {
+	if (_invite.find(fd) != _invite.end())
+		_invite.erase(fd);
+}
+
+bool Channel::isClient(Client *search) const { return (_clients.find(search->getFd()) != _clients.end()); }
+
+bool Channel::isInvited(int search) const {	return (_invite.find(search) != _invite.end()); }
+
+bool Channel::empty() {	return (_clients.empty()); }
 
 void Channel::addMode(Client *client, char mode, std::string &arg) {
 	std::string authMode = "+-itklo";
@@ -69,8 +101,8 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 			_mode.erase(pos, 1);
 }
 
-// send mode infos to specific client
 void Channel::sendModeInfo(Client *client) const {
+// send mode infos to specific client
 	if (_mode.find('k') == NPOS)
 		ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getMode()));
 	else if (isClient(client))
@@ -95,7 +127,6 @@ bool Channel::isOp(int id) const {
 	return false;
 }
 
- 
 void Channel::giveOp(int id) {
 	if (_ops.find(id) == _ops.end())
 		_ops.insert(id);
@@ -137,8 +168,6 @@ void Channel::addClientPass(Client *client, std::string key) {
 	sendWhenJoining(client);
 }
 
-// I had to modify this function because it was not seeing that users in the channel, i added the second line 
-// and put the sendChan() on the top
 void Channel::sendWhenJoining(Client *client) const {
 	sendChan(NULL, RPL_JOIN_NOTIF(client->getNick(), _name)); //send all users
 	if (_topic.empty())
@@ -149,49 +178,9 @@ void Channel::sendWhenJoining(Client *client) const {
 	ft_send(client->getFd(), RPL_ENDOFNAMES(client, this));
 }
 
-std::string Channel::getClientListbyName() const {
-	std::set<int> list = getClientList();
-	std::set<int>::iterator it;
-	std::string result;
-
-	for (it = list.begin(); it != list.end(); it++) {
-		if (isOp(*it))
-			result = '@' + _server->getClient(*it)->getNick() + ' ' + result;
-		else
-			result += ' ' + _server->getClient(*it)->getNick();
-	}
-	return result;
-}
-
-void Channel::delClient(Client *client) {
-	if (_clients.find(client->getFd()) != _clients.end())
-		_clients.erase(client->getFd());
-}
-
-void Channel::addInvite(int fd) {
-	_invite.insert(fd);
-}
-
-void Channel::delInvite(int fd) {
-	if (_invite.find(fd) != _invite.end())
-		_invite.erase(fd);
-}
-
-bool Channel::isClient(Client *search) const {
-	if (_clients.find(search->getFd()) != _clients.end())
-		return (true);
-	return (false);
-}
-
-bool Channel::isInvited(int search) const {
-	if (_invite.find(search) != _invite.end())
-		return (true);
-	return (false);
-}
-
+void Channel::sendChan(Client *client, std::string msg) const {
 // If client is set, send msg to all clients connected to the chan EXCEPT the sender
 // If client is NULL, send to ALL clients, even the sender
-void Channel::sendChan(Client *client, std::string msg) const {
 	int fd = 0;
 	if (client != NULL)
 		fd = client->getFd();
@@ -217,8 +206,4 @@ void Channel::removeUser( Client *client ){
 	delInvite(client->getFd());
 	removeOp(client->getFd());
 	delClient(client);
-}
-
-bool Channel::empty() {
-	return (_clients.empty());
 }

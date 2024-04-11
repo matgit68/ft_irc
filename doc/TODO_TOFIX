@@ -1,42 +1,32 @@
+===================================================================================================
 TODO :
-
-
 
 * Signals
 	CTRL-Z => gestion signal - epoll-wait() ?
 	CTRL-C : leaving properly (close fds, delete clients / chanells / sending SQUIT ?)
 
-* ERR - RPL messages
-	Better format
-	Prefixes ? (! / @)
-	Some ERR msg are displayed in the wrong window (ie when a command fails (ie you dont have op privilige), we leave the channel and the ERR is displayed on default / : / main / window 1 instead of current chan window. And the chan window is closed !)
+===================================================================================================
+
+DONE :
+
+* MODE
+	Bad behaviour when +o a user in a chan with multiple users
+
+* DISCONNECTION
+	send message to users like quit
 
 * JOIN
 	RPL message to fix
 	pb status user irssi on chan
 	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
 
-* MODE
-	Bad behaviour when +o a user in a chan with multiple users
-
-* USER 
-	-If nick is already in use, give an alternate nick (ie : user -> user_)
-	-when another user is being operator, we don't see the changes from the channel
+* ERR - RPL messages
+	Better format
+	Prefixes ? (! / @)
+	Some ERR msg are displayed in the wrong window (ie when a command fails (ie you dont have op privilige), we leave the channel and the ERR is displayed on default / : / main / window 1 instead of current chan window. And the chan window is closed !)
 
 * ALL LEAVING COMMANDS (PART, QUIT, KICK, DISCONNECTION)
 	check when we leave channels if we are the last user. If so, empty channels should be deleted
-
-* DISCONNECTION
-	send message to users like quit
-
-
-
-
-DONE :
-
-* MODE
-	If second parameter is a nickname, appropriate ERR is sent
-
 
 * TOPIC
 	client changing the topic now see the new topic
