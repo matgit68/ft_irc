@@ -16,7 +16,7 @@
 
 //INVITE
 # define ERR_NEEDMOREPARAMS(command) 				(":" + client->getServer()->getHostname() + " 461 " + client->getNick() + " " + command + " :Not enough parameters.\r\n")
-# define ERR_NOSUCHCHANNEL(channel) 				(":" + client->getServer()->getHostname() + " 403 " + client->getNick() + " " + channel + " :No such channel\r\n")
+# define ERR_NOSUCHCHANNEL(client, channel) 		(":" + client->getServer()->getHostname() + " 403 " + client->getNick() + " " + channel + " :No such channel\r\n")
 # define ERR_NOTONCHANNEL(channel) 					(":" + client->getServer()->getHostname() + " 442 " + client->getNick() + " " + channel + ": The user is not on this channel.\r\n")
 # define ERR_USERONCHANNEL(nick, channel) 			(":" + client->getServer()->getHostname() + " 443 " + client->getNick() + " " + nick + " " + channel + " :Is already on channel\r\n")
 # define RPL_INVITELIST(client, channel) 			(":" + client->getServer()->getHostname() + " 336 " + client->getNick() + " " + channel + "\r\n") // 346 or 336

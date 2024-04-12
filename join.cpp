@@ -2,6 +2,7 @@
 
 void join(Client *client, std::string args) {
 	std::string chan_name, chan_key;
+	std::string tmp;
 	Channel *chan;
 	std::vector<std::string> names, keys;
 	Server *server = client->getServer();
@@ -22,7 +23,7 @@ void join(Client *client, std::string args) {
 				chan->addClientInvite(client);
 			else if (chan->getMode().find('k') != NPOS) { // key mode is set
 			 	if (keys.empty())
-					ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
+					server->ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
 				else {
 					chan->addClientPass(client, keys.front()); // try to join with first key
 					keys.erase(keys.begin()); // delete used key

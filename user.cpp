@@ -9,18 +9,20 @@
 // USER user_name user_name 127.0.0.1 :real_name
 
 void user(Client *client, std::string args) {
+	Server *server = client->getServer();
+
 	if (client->getStatus()) // is client already registered ?
-		return ft_send(client->getFd(), ERR_ALREADYREGISTERED(client));
+		return server->ft_send(client->getFd(), ERR_ALREADYREGISTERED(client));
 	size_t pos = args.find(' ');
 	if (pos == NPOS)
-		return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
+		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
 
 	std::string tmpUser = args.substr(0, pos); //get user_name
 	args.erase(0, pos + 1);
 
 	pos = args.find(' '); // double ? seems that irssi does not respect protocol specs
 	if (pos == NPOS)	// before, I erased all spaces, so i havn't the pb --> to your choice
-		return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
+		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
 
 	if (tmpUser != args.substr(0, pos))
 		std::cout << "user_name is not user_same" << std::endl;

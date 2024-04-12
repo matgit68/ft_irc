@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
 	{
 		// changer port ou exit erreur
 	}
+	signal(SIGINT, handle_sigint);
 	Server s(p, argv[2]);
 
 	s.init();

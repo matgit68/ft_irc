@@ -1,11 +1,5 @@
 #include "hpp.hpp"
 
-void ft_send(int fd, std::string msg) {
-	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
-	send(fd, msg.c_str(), msg.size(), 0);
-}
-
 void dispChanList(Client *client, std::string str) {
 	(void) str;
 	client->getServer()->dispChannels(client);
@@ -56,4 +50,11 @@ std::string takeNextArg(char sep, std::string &str) { // USELESS ! -> iStringStr
 		str.erase(0, space + 1);
 	}
 	return res;
+}
+
+void trim(std::string &str) {
+	while(std::isspace(str[0]))
+		str.erase(0, 1);
+	while(std::isspace(str[str.size()]))
+		str.erase(str.size() - 1, 1);
 }

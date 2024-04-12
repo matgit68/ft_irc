@@ -1,13 +1,22 @@
 ===================================================================================================
 TODO :
 
-* Signals
-	CTRL-Z => gestion signal - epoll-wait() ?
-	CTRL-C : leaving properly (close fds, delete clients / chanells / sending SQUIT ?)
+* Parsing
+	Test, test and retest COMMANDS arguments with nc (not formated by irssi)
+
+* USER
+	Clean and verify
+
+* CONNECT
+	Maybe something about fds is wrong when quitting and reconnecting. Test :)
 
 ===================================================================================================
 
 DONE :
+
+* Signals
+	CTRL-Z => gestion signal - epoll-wait() ?
+	CTRL-C : leaving properly (close fds, delete clients / channels / sending SQUIT ?)
 
 * MODE
 	Bad behaviour when +o a user in a chan with multiple users

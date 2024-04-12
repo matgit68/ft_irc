@@ -6,41 +6,44 @@
 #define RESET "\e[0m"
 
 #define BUFFER 512
-#define MAX_EVENTS 5
 #define FAIL -1
+#define MAX_EVENTS 5
 #define NPOS std::string::npos
-#define VERSION "ft_irc 0.0.5"
-#define USERMODES ""
+
 #define CHANMODES "iklot"
 #define ISUPPORT ""
+#define USERMODES ""
+#define VERSION "ft_irc 0.0.5"
 
-#include <unistd.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
-#include <sys/time.h>
+#include <signal.h> 
 #include <sys/epoll.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <unistd.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
-#include <string>
+#include <ctime>
+#include <iostream>
 #include <map>
 #include <set>
-#include <vector>
-#include <iostream>
-#include <ctime>
 #include <sstream>
+#include <string>
+#include <vector>
 
-#include "Server.hpp"
-#include "Client.hpp"
 #include "Channel.hpp"
+#include "Client.hpp"
 #include "ErrMessages.hpp"
+#include "Server.hpp"
 
 class Client;
 
-std::string timestring(void);
+// Function pointers
 void ping(Client *, std::string);
 void kick(Client *, std::string);
 void invite(Client *, std::string);
@@ -58,10 +61,10 @@ void who(Client *, std::string);
 void broad(Client *, std::string);
 void dispChanList(Client *, std::string);
 
-void ft_send(int, std::string);
-// void sendToClientsInTouch(Client *, std::string, bool);
-void checkEmptyChans(Server *);
+// Utils functions
+void handle_sigint(int);
 bool is_valid(const std::string nickname);
+std::string timestring(void);
 std::string takeNextArg(std::string &);
 std::string takeNextArg(char, std::string &);
 std::string parseReason(std::string msg);

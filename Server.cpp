@@ -8,7 +8,16 @@ Server::Server(int p, std::string pass): _port(p), _passwd(pass), _hostname("loc
 	initFunPtr();
 }
 
-Server::~Server() {}
+Server::~Server() {
+	std::map<int, Client*>::iterator it;
+	std::map<std::string, Channel*>::iterator it2;
+	for(it = _clients.begin(); it != _clients.end(); it++)
+		delete it->second;
+	_clients.clear();
+	for(it2 = _channels.begin(); it2 != _channels.end(); it2++)
+		delete it2->second;
+	_channels.clear();
+}
 
 Server::Server(Server const &ref) {
 	*this = ref;
@@ -18,8 +27,10 @@ Server &Server::operator=(Server const &ref) {
 	_fd = ref._fd;
 	_port = ref._port;
 	_passwd = ref._passwd;
+	_hostname = ref._hostname;
 	_clients = ref._clients;
 	_channels = ref._channels;
+	_commands = ref._commands;
 	return *this;
 }
 void Server::setHostname(std::string str) { _hostname = str; }
@@ -63,7 +74,9 @@ return _commands[name];
 void Server::createChannel(std::string chanName, Client *creator) {
 	if (_channels.find(chanName) != _channels.end())
 		return;
-	std::string s; // no use, just to call addMode method
+	if (!chanName.compare("#"))
+		return ft_send(creator->getFd(), ERR_NOSUCHCHANNEL(creator, chanName));
+	std::string s; // no use, just to call addMode ethod
 	_channels[chanName] = new Channel(this, chanName);
 	_channels[chanName]->giveOp(creator->getFd());
 	_channels[chanName]->addMode(creator, 't', s); // topic protected is the default mode
@@ -90,7 +103,6 @@ bool Server::findChannel(std::string channel)
 }
 
 void Server::dispChannels(Client *client) {
-	//std::cout << "disp chan list" << std::endl;
 	std::map<std::string, Channel*>::iterator it;
 	for(it = _channels.begin(); it != _channels.end(); it++)
 		ft_send(client->getFd(), it->second->getName());
@@ -120,8 +132,6 @@ void Server::sendRegistration(Client *client) {
 	ft_send(client->getFd(), RPL_CREATED(client, client->getServer()->getCreatedTime()));
 	ft_send(client->getFd(), RPL_MYINFO(client, USERMODES, CHANMODES, ""));
 	ft_send(client->getFd(), RPL_ISUPPORT(client, ISUPPORT));
-
-	// client->setResponse(); // if we need to confirm the protocol
 }
 
 void Server::broadcast(Client* client, std::string msg) {
@@ -130,7 +140,6 @@ void Server::broadcast(Client* client, std::string msg) {
 		if (it->second != client)
 			ft_send(it->first, msg);
 }
-
 
 bool Server::isNickAvailable(std::string& newNick) 
 {
@@ -147,59 +156,52 @@ void Server::makeQuit(int fd) {
 	ft_send(fd, "QUIT :SIGINT\r\n");
 }
 
-void Server::checkEmptyChannels() { // GPT version :)
-    std::map<std::string, Channel*>::iterator it = _channels.begin();
-    while (it != _channels.end()) {
-        Channel *chan = it->second;
-        if (chan->empty()) {
-            std::cout << chan->getName() << " is empty. Deleting channel" << std::endl;
-            delete chan;
-            std::map<std::string, Channel*>::iterator erase_it = it;
-            ++it; // Move to the next element before erasing the current one
-            _channels.erase(erase_it); // Erase the current element
-        } else {
-            ++it; // Move to the next element
-        }
-    }
+void Server::checkEmptyChannels() {
+	std::map<std::string, Channel*>::iterator erase_it, it = _channels.begin();
+	Channel *chan;
+
+	while (it != _channels.end()) {
+		chan = it->second;
+		if (chan->empty()) {
+			std::cout << "\t" << chan->getName() << " is empty. Deleting channel" RESET << std::endl;
+			delete chan;
+			erase_it = it;
+			++it; // Move to the next element before erasing the current one
+			_channels.erase(erase_it); // Erase the current element
+		}
+		else
+			++it; // Move to the next element
+	}
 }
-// void Server::checkEmptyChannels() {
-// 	std::map<std::string, Channel*>::iterator it;
-// 	Channel *chan;
-// 	for (it = _channels.begin(); it != _channels.end(); it++) {
-// 		chan = it->second;
-// 		if (chan->empty()) {
-// 			std::cout << chan->getName() << " is empty. Deleting channel" << std::endl;
-// 			_channels.erase(chan->getName());
-// 			delete chan;
-// 		}
-// 	}
-// }
 
 void Server::sendToClientsInTouch(Client *client, std::string msg, bool metoo) { // bool me = send to me too
-	std::map<std::string, Channel*>::iterator it;
 	std::set<int> dest;
-	for (it = _channels.begin(); it != _channels.end(); it++) {
+
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++) {
 		if (it->second->isClient(client)) {
 			std::set<int> tmp = it->second->getClientList();
 			dest.insert(tmp.begin(), tmp.end());
 		}
 	}
-	if (metoo)
-		dest.insert(client->getFd());
+	dest.insert(client->getFd());
+	if (!metoo)
+		dest.erase(client->getFd());
+
 	for (std::set<int>::iterator it = dest.begin(); it != dest.end(); it++)
 		ft_send(*it, msg);
 }
 
-
 void Server::removeFromAllChannels(Client *client) {
-    std::map<std::string, Channel*>::iterator it;
-    std::string target = client->getNick(); 
-    for (it = _channels.begin(); it != _channels.end(); it++) {
-        Channel *chan = it->second; 
-        if (chan->isClient(client)) { 
-            chan->removeUser(client);
-            std::cout << "Client " << target << " is removed from channel " << it->first << std::endl;
-        }
-    }
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+		Channel *chan = it->second;
+		if (chan->isClient(client))
+			chan->removeUser(client);
+	}
 }
 
+void Server::ft_send(int fd, std::string msg) {
+	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
+		std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
+	if (_clients.find(fd) != _clients.end())
+		send(fd, msg.c_str(), msg.size(), 0);
+}

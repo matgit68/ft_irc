@@ -9,7 +9,7 @@ typedef void (*funPtr)(Client *, std::string);
 
 class Server {
 private:
-	int _fd, _port;
+	int _fd, _epollfd, _port;
 	std::string _passwd, _hostname, _createdTime;
 	struct sockaddr_in _address;
 	struct epoll_event _ev, _events[MAX_EVENTS];
@@ -38,6 +38,8 @@ public:
 	
 	std::string getCreatedTime(void) const;
 
+	void ft_send(int, std::string);
+	void disconnectClient(int);
 	void createChannel(std::string, Client *);
 	Channel * addChannel(std::string);
 	Channel * addChannel(std::string, std::string);

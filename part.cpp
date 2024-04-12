@@ -24,9 +24,9 @@ void part(Client *client, std::string args) {
 	std::map<std::string, Channel*>::iterator it = channels.find(chan);
 
 	if(it == channels.end()) //checking if the channel exists
-		return ft_send(client->getFd(), ERR_NOSUCHCHANNEL(chan));
+		return server->ft_send(client->getFd(), ERR_NOSUCHCHANNEL(client, chan));
 	else if(!server->getClient(client->getFd())) //checking if the client in the channel
-		ft_send(client->getFd(), ERR_NOTONCHANNEL(chan));
+		server->ft_send(client->getFd(), ERR_NOTONCHANNEL(chan));
 	else
 	{
 		it->second->sendChan(NULL, RPL_PART(client, chan, reason));

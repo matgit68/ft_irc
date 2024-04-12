@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false) {}
+Client::Client(int f, Server *s): _host("localhost"), _server(s), _fd(f), _clientReady(false), _response(false), _passwd(false), _gone(false) {}
 
 Client::~Client() {}
 
@@ -22,6 +22,8 @@ bool Client::getPasswd() const { return _passwd; }
 
 bool Client::getStatus(void) const { return _passwd && !_nick.empty() && !_real.empty() && !_user.empty(); }
 
+bool Client::isGone(void) const { return _gone; }
+
 std::string Client::getHost() const { return _host; }
 
 std::string Client::getPrefix() const { 
@@ -39,8 +41,10 @@ void Client::setPasswd(bool b) { _passwd = b; }
 void Client::setOldNick(std::string nickname) { _oldnick = nickname; }
 
 void Client::setHost(std::string h) { _host = h; }
+
 void Client::setReal(std::string r) { _real = r; }
 
+void Client::setGone(bool g) { _gone = g; }
 
 void Client::setStatus(void) { _clientReady = !_clientReady; }
 
@@ -75,7 +79,7 @@ void Client::parse(std::string msg) {
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
 		std::cout << GREEN "<<(" << _fd << ") : " RESET << msg << std::endl;
 	if ((pos = msg.find_first_of(' ')) == std::string::npos) {
-		ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
+		_server->ft_send(this->getFd(), ERR_NEEDMOREPARAMS(msg));
 		// _server->broadcast(this, msg); // for testing purposes
 		// send an error ERR_NEEDMOREPARAMS (461) ?
 // I think this is the good error cause the irssi like other clients send always precision with msg send before the text
