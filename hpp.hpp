@@ -54,7 +54,7 @@ void quit(Client *, std::string);
 void join(Client *, std::string);
 void privmsg(Client *, std::string);
 void part(Client *, std::string);
-void who(Client *, std::string);
+void whois(Client *, std::string);
 void broad(Client *, std::string);
 void dispChanList(Client *, std::string);
 

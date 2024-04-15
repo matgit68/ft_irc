@@ -5,6 +5,19 @@ TODO :
 	CTRL-Z => gestion signal - epoll-wait() ?
 	CTRL-C : leaving properly (close fds, delete clients / chanells / sending SQUIT ?)
 
+* WHO
+	irssi send us a 'WHO' <channel> 
+	we don't reply to this
+	should we ignore ? 
+	RPL 352 - 315
+
+* JOIN MODE/PREFIX
+	we've got a pb with the prefix of the second and next user on a chan with IRSSI
+	check the reply on JOIN a chan - bad prefix
+
+* PRIVMSG #channel
+	actually an user can send a msg to a channel, without join this, is it correct ?
+	i don't see it on doc -> need test on official irc
 ===================================================================================================
 
 DONE :

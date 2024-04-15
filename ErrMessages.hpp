@@ -89,3 +89,34 @@
 
 //PART
 # define RPL_PART(client, channel, reason) (":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " PART " + channel + " :\"" + reason  + "\"\r\n")
+
+//WHO
+// #define RPL_WHOREPLY (352)
+	// "<client> <channel> <username> <host> <server> <nick> <flags> :<hopcount> <realname>"
+// # define RPL_ENDOFWHO (315)
+	//   "<client> <mask> :End of WHO list"
+/*
+	Examples
+
+Command Examples:
+
+  WHO emersion        ; request information on user "emersion"
+  WHO #ircv3          ; list users in the "#ircv3" channel
+
+Reply Examples:
+
+  :calcium.libera.chat 352 dan #ircv3 ~emersion sourcehut/staff/emersion calcium.libera.chat emersion H :1 Simon Ser
+  :calcium.libera.chat 315 dan emersion :End of WHO list
+                                  ; Reply to WHO emersion
+
+  :calcium.libera.chat 352 dan #ircv3 ~emersion sourcehut/staff/emersion calcium.libera.chat emersion H :1 Simon Ser
+  :calcium.libera.chat 352 dan #ircv3 ~val limnoria/val calcium.libera.chat val H :1 Val
+  :calcium.libera.chat 315 dan #ircv3 :End of WHO list
+                                  ; Reply to WHO #ircv3
+
+*/
+
+
+//WHOIS
+//	"<client> <nick> <username> <host> * :<realname>"
+#define RPL_WHOISUSER(client, target) (":" + client->getServer()->getHostname() + " 311 " + target->getNick() + " " + target->getUser() + " " + target->getHost() + " :" + target->getReal() + "\r\n")

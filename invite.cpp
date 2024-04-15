@@ -22,9 +22,6 @@ void list_invite(Server *serv, Client *client, int fd)
 
 void invite(Client *client, std::string args) 
 {
-	(void)args;
-	(void)client;
-
 	if (args.empty()) 
 	{
 		list_invite(client->getServer(), client, client->getFd());
