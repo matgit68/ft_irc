@@ -11,17 +11,13 @@ void privmsg(Client *client, std::string args) {
 		dest.push_back(destlist.substr(0, pos));
 		destlist.erase(0, pos + 1);
 	}
+
 	if (dest.empty())
-	{
-		server->ft_send(client->getFd(), ERR_NORECIPIENT(client));
-		return ;
-	}
+		return server->ft_send(client->getFd(), ERR_NORECIPIENT(client));
+
 	args.erase(0, args.find_first_of(" ") + 1);
 	if (args.empty())
-	{
-		server->ft_send(client->getFd(), ERR_NOTEXTTOSEND(client));
-		return ;
-	}
+		return server->ft_send(client->getFd(), ERR_NOTEXTTOSEND(client));
 	if (args[0] != ':')
 		args = ":" + args;	// easy syntax from NC but not totaly correct, to discuss
 	for (size_t i = 0; i < dest.size(); i++) {

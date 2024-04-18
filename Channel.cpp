@@ -12,6 +12,25 @@ std::string Channel::getTopic() const { return _topic; }
 
 std::string Channel::getMode() const { return _mode; }
 
+std::string Channel::getRPLMode(int client) const {
+	std::string pass;
+	std::string RPLmode;
+
+	if (_clients.find(client) == _clients.end()) // client is not member of the channel
+		pass = "[key]";
+	else
+		pass = _passwd;
+	RPLmode = _mode;
+	if (RPLmode.find('k') != NPOS)
+		RPLmode += ' ' + pass;
+	if (RPLmode.find('l') != NPOS) {
+		std::stringstream ss;
+		ss << _limit;
+		RPLmode += ' ' + ss.str();
+	}
+	return RPLmode;
+}
+
 std::string Channel::getPasswd(void) const { return _passwd; }
 
 Server *Channel::getServer() { return _server; }
@@ -101,24 +120,17 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 			_mode.erase(pos, 1);
 }
 
+void Channel::sortMode() {	std::sort(_mode.begin(), _mode.end()); }
+
 void Channel::sendModeInfo(Client *client) const {
 // send mode infos to specific client
-	if (_mode.find('k') == NPOS)
-		_server->ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getMode()));
-	else if (isClient(client))
-		_server->ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, this, getPasswd()));
-	else
-		_server->ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, this, "[key]"));
+	_server->ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getRPLMode(client->getFd())));
 }
 
 void Channel::sendModeInfo() const {
 	std::set<int>::iterator it;
-	for (it = _clients.begin(); it != _clients.end(); it++) {
-		if (_mode.find('k') == NPOS)
-			_server->ft_send(*it, RPL_CHANNELMODEIS(_server->getClient(*it), this, getMode()));
-		else
-			_server->ft_send(*it, RPL_CHANNELMODEISWITHKEY(_server->getClient(*it), this, getPasswd()));
-	}
+	for (it = _clients.begin(); it != _clients.end(); it++)
+		sendModeInfo(_server->getClient(*it));
 }
 
 bool Channel::isOp(int id) const {

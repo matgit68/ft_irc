@@ -28,6 +28,7 @@ SRC =	cap.cpp\
 		topic.cpp\
 		user.cpp\
 		utils.cpp\
+		who.cpp\
 
 OBJ = $(SRC:.cpp=.o)
 

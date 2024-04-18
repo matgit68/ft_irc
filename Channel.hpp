@@ -34,6 +34,7 @@ public:
 	std::string getName() const;
 	std::string getTopic() const;
 	std::string getMode() const;
+	std::string getRPLMode(int) const;
 	std::string getPasswd() const;
 	std::string getClientListbyName() const;
 	Server *getServer();
@@ -43,6 +44,7 @@ public:
 
 	void addMode(Client *, char, std::string &);
 	void unMode(Client *, char, std::string &);
+	void sortMode();
 	bool isOp(int) const;
 	void giveOp(int); // give op privilege to a client identified by his name
 	void removeOp(int); // remove op privilege to a client identified by his name

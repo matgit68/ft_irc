@@ -5,7 +5,7 @@
 #define YELLOW "\e[0;33m"
 #define RESET "\e[0m"
 
-#define BUFFER 512
+#define BUFFER 2
 #define FAIL -1
 #define MAX_EVENTS 5
 #define NPOS std::string::npos

@@ -124,6 +124,7 @@ void Server::initFunPtr() {
 	_commands["BROAD"] = &broad;
 	_commands["DCL"] = &dispChanList; // debug
 	_commands["PART"] = &part;
+	_commands["WHO"] = &who;
 }
 
 void Server::sendRegistration(Client *client) {

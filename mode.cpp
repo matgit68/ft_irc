@@ -1,5 +1,9 @@
 #include "Server.hpp"
 
+bool isHandled(char c) {
+	return (c == 'i' || c == 't' || c == 'k' || c == 'l' || c == 'o');
+}
+
 void mode(Client *client, std::string args) {
 	Server *server = client->getServer();
 	char modeset = 0;
@@ -39,11 +43,16 @@ void mode(Client *client, std::string args) {
 		}
 		if (!modeset)
 			return ; //server->ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
-		if (modeset == '+')
-			chan->addMode(client, modestring[0], modeargs);
-		if (modeset == '-')
-			chan->unMode(client, modestring[0], modeargs);
+		if (isHandled(modestring[0])) {
+			if (modeset == '+')
+				chan->addMode(client, modestring[0], modeargs);
+			if (modeset == '-')
+				chan->unMode(client, modestring[0], modeargs);
+		}
+		else
+			server->ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
 		modestring.erase(0, 1);
 	}
+	chan->sortMode();
 	chan->sendModeInfo(); // Send all connected clients the new modes
 }
