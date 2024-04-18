@@ -121,8 +121,6 @@ void Server::initFunPtr() {
 	_commands["QUIT"] = &quit;
 	_commands["JOIN"] = &join;
 	_commands["PRIVMSG"] = &privmsg;
-	_commands["BROAD"] = &broad;
-	_commands["DCL"] = &dispChanList; // debug
 	_commands["PART"] = &part;
 	_commands["WHO"] = &who;
 }
@@ -133,17 +131,22 @@ void Server::sendRegistration(Client *client) {
 	ft_send(client->getFd(), RPL_CREATED(client, client->getServer()->getCreatedTime()));
 	ft_send(client->getFd(), RPL_MYINFO(client, USERMODES, CHANMODES, ""));
 	ft_send(client->getFd(), RPL_ISUPPORT(client, ISUPPORT));
+	client->setResponse(true);
 }
 
-void Server::broadcast(Client* client, std::string msg) {
-	std::map<int, Client*>::iterator it;
-	for(it = _clients.begin(); it != _clients.end(); it++)
-		if (it->second != client)
-			ft_send(it->first, msg);
+void Server::delClient(int fd) {
+	if (_clients.find(fd) != _clients.end()) {
+		ft_send(fd, ERR_QUIT);
+		if (close(fd) == FAIL) // close fd
+			std::cerr << "Could not close fd " << fd << std::endl;
+		else
+			std::cout << RED "Client " << fd << " disconnected" RESET << std::endl;
+		delete _clients[fd];
+		_clients.erase(fd);
+	}
 }
 
-bool Server::isNickAvailable(std::string& newNick) 
-{
+bool Server::isNickAvailable(std::string& newNick) {
 	std::map<int, Client*>::iterator it;
 	for(it = _clients.begin(); it != _clients.end(); it++)
 	{
@@ -151,10 +154,6 @@ bool Server::isNickAvailable(std::string& newNick)
 			return false;
 	}
 	return true;
-}
-
-void Server::makeQuit(int fd) {
-	ft_send(fd, "QUIT :SIGINT\r\n");
 }
 
 void Server::checkEmptyChannels() {
@@ -175,7 +174,8 @@ void Server::checkEmptyChannels() {
 	}
 }
 
-void Server::sendToClientsInTouch(Client *client, std::string msg, bool metoo) { // bool me = send to me too
+// bool = send to client too
+void Server::sendToClientsInTouch(Client *client, std::string msg, bool metoo) { 
 	std::set<int> dest;
 
 	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++) {

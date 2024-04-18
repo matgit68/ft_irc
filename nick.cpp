@@ -1,5 +1,15 @@
 #include "Server.hpp"
 
+static bool is_valid(const std::string nickname){
+	const std::string invalidfirstChars = "#$:0123456789";
+	const std::string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_[]{}\\|";
+	if (invalidfirstChars.find(nickname[0]) != NPOS || nickname.find(" ,*?!@.") != NPOS)
+		return false;
+	if(nickname.length() < 1 || nickname.length() > 32)
+		return false;
+	return (nickname.find_first_not_of(validChars) == NPOS);
+}
+
 void nick(Client *client, std::string args) {
 	
 	std::string oldNick = client->getNick();
@@ -32,4 +42,6 @@ void nick(Client *client, std::string args) {
 		}
 		server->sendToClientsInTouch(client, RPL_NICK(client), true);
 	}
+	if (!client->getResponse() && client->getStatus())
+		client->getServer()->sendRegistration(client);
 }

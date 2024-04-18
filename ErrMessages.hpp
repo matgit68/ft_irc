@@ -54,6 +54,7 @@
 //QUIT
 # define RPL_QUIT(client, reason) 					(":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " QUIT :Quit: " + reason + "\r\n")
 # define RPL_ERROR(user_id, reason) 				(user_id + " ERROR :" + reason + "\r\n")
+# define ERR_QUIT									("ERROR :Closing link\r\n")
 
 //PRIVMSG
 # define ERR_NOSUCHNICK(client, target) 			("401 " + client->getNick() + " " + target + " :No such nick/channel\r\n")

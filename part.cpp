@@ -2,8 +2,7 @@
 
 //With nc it doesnt give the reason but with irssi it gives
 
-std::string parseReason(std::string msg)
-{
+static std::string parseReason(std::string msg) {
 	std::string reason;
 	reason.clear();
 

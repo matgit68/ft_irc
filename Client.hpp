@@ -14,7 +14,7 @@ private:
 	Client(Client const &ref);
 	Client &operator=(Client const &ref);
 	std::set<std::string> _channels;
-	bool _clientReady, _response, _passwd, _gone; // i had a pb with only clientReady, so i added _response, i havn't test again now, so i don't no if ze need to add this again.
+	bool _response, _passwd, _gone; // i had a pb with only clientReady, so i added _response, i havn't test again now, so i don't no if ze need to add this again.
 
 public:
 	Client(int, Server*);
@@ -38,8 +38,7 @@ public:
 	void setHost(std::string);
 	void setPasswd(bool);
 	void setGone(bool);
-	void setStatus(void);
-	void setResponse(void);
+	void setResponse(bool);
 	void receive(char*);
 	void parse(std::string);
 };

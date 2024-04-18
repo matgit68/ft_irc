@@ -39,13 +39,13 @@ public:
 	std::string getCreatedTime(void) const;
 
 	void ft_send(int, std::string);
+	void delClient(int);
 	void disconnectClient(int);
 	void createChannel(std::string, Client *);
 	Channel * addChannel(std::string);
 	Channel * addChannel(std::string, std::string);
 	void delChannel(std::string);
 	void dispChannels(Client *);
-	void makeQuit(int);
 	void checkEmptyChannels();
 	void sendToClientsInTouch(Client *, std::string, bool);
 	void removeFromAllChannels(Client *);
@@ -53,7 +53,6 @@ public:
 	void initFunPtr();
 	void init();
 	void run();
-	void broadcast(Client*, std::string);
 	void sendRegistration(Client *);
 	bool isNickAvailable(std::string& newNick);
 

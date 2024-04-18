@@ -4,6 +4,7 @@
 #define RED "\e[0;31m"
 #define YELLOW "\e[0;33m"
 #define RESET "\e[0m"
+#define SPACES " \t\n\r\f\v"
 
 #define BUFFER 2
 #define FAIL -1
@@ -11,7 +12,7 @@
 #define NPOS std::string::npos
 
 #define CHANMODES "iklot"
-#define ISUPPORT ""
+#define ISUPPORT "NICKLEN=32"
 #define USERMODES ""
 #define VERSION "ft_irc 0.0.5"
 
@@ -58,13 +59,10 @@ void join(Client *, std::string);
 void privmsg(Client *, std::string);
 void part(Client *, std::string);
 void who(Client *, std::string);
-void broad(Client *, std::string);
 void dispChanList(Client *, std::string);
 
 // Utils functions
-void handle_sigint(int);
-bool is_valid(const std::string nickname);
+void trim(std::string &);
 std::string timestring(void);
 std::string takeNextArg(std::string &);
 std::string takeNextArg(char, std::string &);
-std::string parseReason(std::string msg);

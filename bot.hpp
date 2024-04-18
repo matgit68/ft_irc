@@ -7,8 +7,11 @@ class Server;
 
 class Bot: public Client{
 private:
+	std::set<std::string> _persistents;
 
 public:
 	Bot();
 	~Bot();
+
+	void addChannel();
 };

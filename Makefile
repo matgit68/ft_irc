@@ -5,10 +5,9 @@ RESET	:= \033[0m
 NAME = ircserv
 
 CXX = c++
-CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -g3# -fsanitize=address
+CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -g3 -fsanitize=address
 
 SRC =	cap.cpp\
-		broad.cpp\
 		Channel.cpp\
 		Client.cpp\
 		invite.cpp\

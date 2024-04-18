@@ -2,21 +2,28 @@
 TODO :
 
 * Parsing
-	Test, test and retest COMMANDS arguments with nc (not formated by irssi)
-
-* USER
-	Clean and verify
-
-* CONNECT
-	Maybe something about fds is wrong when quitting and reconnecting. Test :)
+	Test, test and retest raw COMMANDS (not formated by a client) -> nc
 
 ===================================================================================================
 
 DONE :
 
+* CONNECT
+	Maybe something about fds is wrong when quitting and reconnecting. Test :)
+
+* REGISTRATION
+	Commands are possible even if were not registered
+
+* QUIT
+	Send ERR msg !
+	Quit dont quit :D
+
 * Signals
 	CTRL-Z => gestion signal - epoll-wait() ?
-	CTRL-C : leaving properly (close fds, delete clients / channels / sending SQUIT ?)
+	CTRL-C : leaving properly (close fds, delete clients / channels)
+
+* USER
+	Clean and verify
 
 * MODE
 	Bad behaviour when +o a user in a chan with multiple users

@@ -11,34 +11,22 @@
 void user(Client *client, std::string args) {
 	Server *server = client->getServer();
 
-	if (client->getStatus()) // is client already registered ?
+	if (client->getStatus()) // can register only once
 		return server->ft_send(client->getFd(), ERR_ALREADYREGISTERED(client));
-	size_t pos = args.find(' ');
-	if (pos == NPOS)
-		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
 
-	std::string tmpUser = args.substr(0, pos); //get user_name
-	args.erase(0, pos + 1);
-
-	pos = args.find(' '); // double ? seems that irssi does not respect protocol specs
-	if (pos == NPOS)	// before, I erased all spaces, so i havn't the pb --> to your choice
-		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
-
-	if (tmpUser != args.substr(0, pos))
-		std::cout << "user_name is not user_same" << std::endl;
-	args.erase(0, pos + 1);
-
-	pos = args.find(' '); // now we go for real_name
-
-	std::string tmpReal = args.substr(pos +1, args.size());
+	std::string tmpUser = takeNextArg(args);
+	std::string tmp1 = takeNextArg(args);
+	std::string tmp2 = takeNextArg(args);
+	std::string tmpReal = args;
 	if (tmpReal[0] == ':')
-		tmpReal.erase(0, 1);
+		tmpReal.erase(0,1);
+
+	if (tmpUser.empty() || tmp1.empty() || tmp2.empty() || tmpReal.empty())
+		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("USER"));
+
 	client->setReal(tmpReal);
 	client->setUser(tmpUser);
-//	std::cout << "UserName: _" << client->getUser() << "_ RealName: _" << client->getReal() << '_' << std::endl;
-	if (client->getStatus())
-		client->getServer()->sendRegistration(client);
-		// are you sure that you always reveive the USER request like the last one ? this was the reason of the _response bool
-		// -> always w/ irssi client ¯\_(ツ)_/¯/quit
-		
+
+	if (!client->getResponse() && client->getStatus())
+		client->getServer()->sendRegistration(client);		
 }

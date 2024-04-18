@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 int g_sig = 1;
-void handle_sigint(int sig) { (void) sig; g_sig = 0; }
+static void handle_sigint(int sig) { (void) sig; g_sig = 0; }
 
 static void setnonblocking(int fd) {
 	int flags;
@@ -14,6 +14,7 @@ static void setnonblocking(int fd) {
 }
 
 void Server::init() {
+	signal(SIGINT, handle_sigint);
 	int opt = 1;
 	if ((_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
 		perror("socket failed");
@@ -78,6 +79,7 @@ void Server::run() {
 				}
 				if (_clients.find(newFd) == _clients.end()) // creates a new Client and adds it to clients map
 					_clients[newFd] = new Client(newFd, this);
+				std::cout << GREEN "Client " << newFd << " connected" RESET << std::endl;
 			}
 			else { // if active fd is NOT server fd, we're receving a message
 				valread = recv(_events[n].data.fd, buf, BUFFER, 0);
