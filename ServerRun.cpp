@@ -1,17 +1,8 @@
 #include "Server.hpp"
+#include "Bot.hpp"
 
 int g_sig = 1;
 static void handle_sigint(int sig) { (void) sig; g_sig = 0; }
-
-static void setnonblocking(int fd) {
-	int flags;
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags == FAIL)
-		perror("fcntl");
-	flags |= O_NONBLOCK;
-	if (fcntl(fd, F_SETFL, flags) == FAIL)
-		perror("fcntl");
-}
 
 void Server::init() {
 	signal(SIGINT, handle_sigint);
@@ -20,6 +11,7 @@ void Server::init() {
 		perror("socket failed");
 		exit(EXIT_FAILURE);
 	}
+	std::cout << "Server fd:" << _fd << std::endl;
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) == FAIL) {
 		perror("setsockopt");
 		exit(EXIT_FAILURE);
@@ -57,6 +49,7 @@ void Server::run() {
 		perror("epoll_ctl: fd");
 		exit(EXIT_FAILURE);
 	}
+	_keeper->connectToServ();
 	while(g_sig) { // SIGINT
 		nfds = epoll_wait(_epollfd, _events, MAX_EVENTS, 0); // number of fds that triggered epoll
 		if (nfds == FAIL && g_sig) {
@@ -71,6 +64,9 @@ void Server::run() {
 					exit(EXIT_FAILURE);
 				}
 				setnonblocking(newFd);
+				if (_keeper->getFd() == 0)
+					_keeper->setFd(newFd);
+				std::cout << "_keeperFd " <<  _keeperFd << std::endl;
 				_ev.events = EPOLLIN;
 				_ev.data.fd = newFd;
 				if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, newFd, &_ev) == FAIL) { // adds newFd to the list of fd under surveillance

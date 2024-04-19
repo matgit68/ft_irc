@@ -37,12 +37,14 @@
 #include <string>
 #include <vector>
 
-#include "Channel.hpp"
-#include "Client.hpp"
-#include "ErrMessages.hpp"
-#include "Server.hpp"
-
+class Server;
+class Channel;
 class Client;
+
+#include "ErrMessages.hpp"
+#include "Client.hpp"
+#include "Channel.hpp"
+#include "Server.hpp"
 
 // Function pointers
 void ping(Client *, std::string);
@@ -62,6 +64,7 @@ void who(Client *, std::string);
 void dispChanList(Client *, std::string);
 
 // Utils functions
+void setnonblocking(int fd);
 void trim(std::string &);
 std::string timestring(void);
 std::string takeNextArg(std::string &);

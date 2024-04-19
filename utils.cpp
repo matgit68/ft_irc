@@ -1,5 +1,16 @@
 #include "hpp.hpp"
 
+void setnonblocking(int fd) {
+	int flags;
+	flags = fcntl(fd, F_GETFL, 0);
+	if (flags == FAIL)
+		perror("fcntl");
+	flags |= O_NONBLOCK;
+	if (fcntl(fd, F_SETFL, flags) == FAIL)
+		perror("fcntl");
+}
+
+
 std::string takeNextArg(std::string &str) { // single argument version uses ' ' as delimiter
 	return takeNextArg(' ', str);
 }

@@ -1,10 +1,13 @@
 #include "hpp.hpp"
+#include "Bot.hpp"
 
 Server::Server(int p, std::string pass): _port(p), _passwd(pass), _hostname("localhost"), _createdTime(timestring()) {
 	char hostname[256];
     if (!gethostname(hostname, sizeof(hostname))) {
         _hostname.assign(hostname);
 	}
+	_keeper = new Bot(this);
+	_keeperFd = 0;
 	initFunPtr();
 }
 
@@ -17,6 +20,7 @@ Server::~Server() {
 	for(it2 = _channels.begin(); it2 != _channels.end(); it2++)
 		delete it2->second;
 	_channels.clear();
+	delete _keeper;
 }
 
 Server::Server(Server const &ref) {
@@ -76,11 +80,15 @@ void Server::createChannel(std::string chanName, Client *creator) {
 		return;
 	if (!chanName.compare("#"))
 		return ft_send(creator->getFd(), ERR_NOSUCHCHANNEL(creator, chanName));
-	std::string s; // no use, just to call addMode ethod
+	std::string s; // no use, just to call addMode method
 	_channels[chanName] = new Channel(this, chanName);
 	_channels[chanName]->giveOp(creator->getFd());
 	_channels[chanName]->addMode(creator, 't', s); // topic protected is the default mode
 	_channels[chanName]->addClient(creator);
+	s = _keeper->getNick();
+	_keeper->sendToServ("JOIN " + chanName);
+	_channels[chanName]->giveOp(_keeper->getFd());
+	ft_send(creator->getFd(), RPL_UMODEINCHANIS(_keeper, _channels[chanName], "+o", _keeper));
 }
 
 Channel * Server::addChannel(std::string channel) {
@@ -203,6 +211,8 @@ void Server::removeFromAllChannels(Client *client) {
 void Server::ft_send(int fd, std::string msg) {
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
 		std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
-	if (_clients.find(fd) != _clients.end())
+	if (fd == _keeper->getFd())
+		_keeper->react(msg);
+	else if (_clients.find(fd) != _clients.end())
 		send(fd, msg.c_str(), msg.size(), 0);
 }

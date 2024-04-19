@@ -60,8 +60,9 @@
 # define ERR_NOSUCHNICK(client, target) 			("401 " + client->getNick() + " " + target + " :No such nick/channel\r\n")
 # define ERR_NORECIPIENT(client) 					("411 " + client->getNick() + " No recipient given PRIVMSG\r\n")
 # define ERR_NOTEXTTOSEND(client) 					(":" + client->getServer()->getHostname() + " 412" + client->getNick() + " :No text to send\r\n")
-# define RPL_PRIVMSG(client, chan, msg)				(":" + client->getNick() + " PRIVMSG " + chan->getName() + " " + msg + "\r\n")
 # define RPL_AWAY(client, nick, message) 			("301 " + client->getNick() + " " + nick + " :" + message + "\r\n")
+# define RPL_PRIVMSG(client, chan, msg)				(":" + client->getNick() + " PRIVMSG " + chan->getName() + " " + msg + "\r\n")
+# define RPL_PRIVUSERMSG(client, target, msg)		(":" + client->getNick() + " PRIVMSG " + target->getNick() + " :" + msg + "\r\n")
 
 //USER
 # define ERR_ALREADYREGISTERED(client) 				(":" + client->getServer()->getHostname() + " 462 " + client->getNick() + " :You may not reregister.\r\n")

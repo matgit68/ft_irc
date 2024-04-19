@@ -7,7 +7,8 @@ NAME = ircserv
 CXX = c++
 CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -g3 -fsanitize=address
 
-SRC =	cap.cpp\
+SRC =	Bot.cpp\
+		cap.cpp\
 		Channel.cpp\
 		Client.cpp\
 		invite.cpp\

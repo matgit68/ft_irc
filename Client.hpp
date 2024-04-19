@@ -1,13 +1,8 @@
 #pragma once
-
-#include <string>
-#include <vector>
-#include "Server.hpp"
-
-class Server;
+#include "hpp.hpp"
 
 class Client{
-private:
+protected:
 	std::string _user, _nick, _real, _buffer, _host, _srvaddr, _oldnick;
 	Server *_server;
 	int _fd;

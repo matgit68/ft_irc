@@ -1,21 +1,21 @@
 #pragma once
-
 #include "hpp.hpp"
-
-class Client;
-class Channel;
 
 typedef void (*funPtr)(Client *, std::string);
 
+class Bot;
+
 class Server {
 private:
-	int _fd, _epollfd, _port;
+	int _fd, _epollfd, _port, _keeperFd;
 	std::string _passwd, _hostname, _createdTime;
 	struct sockaddr_in _address;
 	struct epoll_event _ev, _events[MAX_EVENTS];
 	std::map <int, Client*> _clients;
 	std::map <std::string, Channel*> _channels;
 	std::map <std::string, funPtr> _commands;
+	std::map <std::string, funPtr> _botcmd;
+	Bot *_keeper;
 	Server();
 
 public:
@@ -33,7 +33,6 @@ public:
 	std::string getHostname() const;
 	void setHostname(std::string);
 	std::map<std::string, Channel*> getChannelMap(void) const;
-	std::map<std::string, Channel*>	getChannels(); // double ?
 	funPtr getCommand(std::string);
 	
 	std::string getCreatedTime(void) const;
