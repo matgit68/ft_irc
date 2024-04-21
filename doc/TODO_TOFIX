@@ -1,15 +1,15 @@
 ===================================================================================================
 TODO :
 
-* PART
-	Should leave multiple comma separated channels
-
 * Parsing
 	Test, test and retest raw COMMANDS (not formated by a client) -> nc
 
 ===================================================================================================
 
 DONE :
+
+* PART
+	Should leave multiple comma separated channels
 
 * CONNECT
 	Maybe something about fds is wrong when quitting and reconnecting. Test :)

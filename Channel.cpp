@@ -216,6 +216,6 @@ void Channel::removeUser( Client *client ){
 	delInvite(client->getFd());
 	removeOp(client->getFd());
 	delClient(client);
-	if (_clients.size() <= 1)
+	if (_clients.size() == 1)
 		_server->ft_send(_server->getClient(BOTNAME)->getFd(), "LAST:" + _name + "\r\n");
 }
