@@ -85,8 +85,7 @@ void Server::createChannel(std::string chanName, Client *creator) {
 	_channels[chanName]->giveOp(creator->getFd());
 	_channels[chanName]->addMode(creator, 't', s); // topic protected is the default mode
 	_channels[chanName]->addClient(creator);
-	s = _keeper->getNick();
-	_keeper->sendToServ("JOIN " + chanName);
+	_keeper->join(chanName, creator->getNick());
 	_channels[chanName]->giveOp(_keeper->getFd());
 	ft_send(creator->getFd(), RPL_UMODEINCHANIS(_keeper, _channels[chanName], "+o", _keeper));
 }

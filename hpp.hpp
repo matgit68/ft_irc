@@ -6,6 +6,7 @@
 #define RESET "\e[0m"
 #define SPACES " \t\n\r\f\v"
 
+#define BOTNAME "KeeperBot"
 #define BUFFER 2
 #define FAIL -1
 #define MAX_EVENTS 5

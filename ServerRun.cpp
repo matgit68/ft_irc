@@ -66,7 +66,6 @@ void Server::run() {
 				setnonblocking(newFd);
 				if (_keeper->getFd() == 0)
 					_keeper->setFd(newFd);
-				std::cout << "_keeperFd " <<  _keeperFd << std::endl;
 				_ev.events = EPOLLIN;
 				_ev.data.fd = newFd;
 				if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, newFd, &_ev) == FAIL) { // adds newFd to the list of fd under surveillance

@@ -1,6 +1,9 @@
 ===================================================================================================
 TODO :
 
+* PART
+	Should leave multiple comma separated channels
+
 * Parsing
 	Test, test and retest raw COMMANDS (not formated by a client) -> nc
 

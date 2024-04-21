@@ -13,8 +13,6 @@ Bot::Bot(Server *s): Client(0, s) {
 
 Bot::~Bot() {}
 
-// int Bot::getFd() const { return _fd; }
-
 void Bot::setFd(int f) { _fd = f; }
 
 void Bot::sendToServ(std::string msg) {
@@ -32,6 +30,12 @@ void Bot::connectToServ() {
 	sendToServ("USER " BOTNAME " 0 * " BOTNAME);
 }
 
+void Bot::join(std::string chanName, std::string owner) {
+	sendToServ("JOIN " + chanName);
+	_owner[chanName] = owner;
+	_persistence.insert(chanName);
+}
+
 void Bot::react(std::string str) {
 	_buffer.append(str);
 	if (_buffer.size() > 512 )
@@ -44,10 +48,10 @@ void Bot::react(std::string str) {
 }
 
 void Bot::parse(std::string msg) {
-	std::string poke = "PRIVMSG " BOTNAME;
 	std::string user;
 	Client *target;
-	if (msg.find(poke) != NPOS) { // commands mode
+
+	if (msg.find("PRIVMSG " BOTNAME) != NPOS) { // PRIVMSG == commands
 		user = takeNextArg(msg);
 		user.erase(0, 1);
 		msg.erase(0,1);
@@ -55,40 +59,50 @@ void Bot::parse(std::string msg) {
 		msg.erase(0, msg.find(':') + 1);
 
 		std::string cmd = takeNextArg(msg);
-		if (cmd.compare("!keep") == 0)
-			keep(user, msg, 1);
-		else if (cmd.compare("!nokeep") == 0)
-			keep(user, msg, 0);
-		else if (cmd.compare("!op") == 0)
-			op(user, msg);
+		if (cmd == "!keep")
+			keepMode(target, msg, true);
+		else if (cmd == "!nokeep")
+			keepMode(target, msg, false);
+		else if (cmd == "!op")
+			op(target, msg);
 		else
 			_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, helpMsg()));
 	}
-	else if (msg.find(" 353 " BOTNAME) != NPOS) { // User list, setting owner
-		std::cout << "Looking for owner" << std::endl;
-	}
+	else if (msg.compare(0, 5, "LAST:") == 0) // react to chan events
+		keep(msg.erase(0,5));
 }
 
 std::string Bot::helpMsg() {
-	return "Commands are : !help, !keep <channel>, !nokeep <channel>, !op <channel>";
+	return "Commands are : !keep <channel>, !nokeep <channel>, !op <channel>, !owner <channel>";
 }
 
-void Bot::keep(std::string nick, std::string chanName, bool keeping) {
+void Bot::keepMode(Client *target, std::string chanName, bool keeping) {
 	Channel *channel = _server->getChannel(chanName);
-	Client *client = _server->getClient(nick);
 	if (channel == NULL)
-		_server->ft_send(client->getFd(), RPL_PRIVUSERMSG(this, client, "Channel " + chanName + "not found"));
+		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, "Channel " + chanName + "not found"));
 	else if (keeping) {
 		_persistence.insert(chanName);
-		_server->ft_send(client->getFd(), RPL_PRIVUSERMSG(this, client, "I will keep " + chanName + " from disappearance"));
+		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, "I will keep " + chanName + " from disappearance"));
 	}
 	else if (!keeping && _persistence.find(chanName) != _persistence.end()) {
 		_persistence.erase(chanName);
-		_server->ft_send(client->getFd(), RPL_PRIVUSERMSG(this, client, chanName + " is no longer protected"));
+		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, chanName + " is no longer protected"));
 	}
 }
 
-void Bot::op(std::string nick, std::string chanName) {
-	(void) nick;
-	(void) chanName;
+void Bot::op(Client *target, std::string chanName) {
+	Channel *channel = _server->getChannel(chanName);
+	if (_owner[chanName] == target->getNick()) {
+		channel->giveOp(target->getFd());
+		channel->sendChan(this, RPL_UMODEINCHANIS(this, channel, "+o", target));
+	}
+	else
+		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, "You don't own this channel"));
+}
+
+void Bot::keep(std::string chanName) {
+	if (_persistence.find(chanName) == _persistence.end()) {
+		_owner.erase(chanName);
+		sendToServ("PART " + chanName);
+	}
 }

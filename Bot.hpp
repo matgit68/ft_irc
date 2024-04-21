@@ -1,12 +1,11 @@
 #pragma once
 #include "hpp.hpp"
 
-#define BOTNAME "KeeperBot"
 class Bot: public Client {
 private:
 	struct sockaddr_in _serverAddr;
 	std::set<std::string> _persistence;
-	std::map<std::string, std::string> _owners;
+	std::map<std::string, std::string> _owner;
 	int _sockFd;
 
 public:
@@ -14,12 +13,13 @@ public:
 	~Bot();
 
 	void setFd(int);
-	// int getFd() const;
 	void connectToServ();
 	void sendToServ(std::string);
+	void join(std::string, std::string);
 	void react(std::string);
 	void parse(std::string);
-	void keep(std::string, std::string, bool);
-	void op(std::string, std::string);
+	void keepMode(Client *, std::string, bool);
+	void keep(std::string);
+	void op(Client *, std::string);
 	std::string helpMsg();
 };

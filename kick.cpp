@@ -24,7 +24,6 @@ void kick(Client *client, std::string args) {
 	std::string nick;
 	while (!users.empty()) {
 		nick = takeNextArg(',', users);
-		std::cout << "Nick -> [" << nick << "]"<< std::endl;
 		target = client->getServer()->getClient(nick);
 		if (!target) {
 			std::cout << "Target _" << nick << "_ not found" << std::endl;
