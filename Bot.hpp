@@ -16,6 +16,7 @@ public:
 	void connectToServ();
 	void sendToServ(std::string);
 	void join(std::string, std::string);
+	void selfCheckPrivilege(std::string);
 	void react(std::string);
 	void parse(std::string);
 	void keepMode(Client *, std::string, bool);

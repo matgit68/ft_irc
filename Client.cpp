@@ -64,9 +64,12 @@ void Client::receive(char* str) {
 void Client::parse(std::string msg) {
 	bool authCmd = false;
 	trim(msg);
-	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << GREEN "<<(" << _fd << ") : " RESET << msg << std::endl;
-
+	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
+		if (_fd == _server->getBotFd())
+			std::cout << GREEN "<<(" << _fd << ") : " BLUE << msg << RESET << std::endl;
+		else
+			std::cout << GREEN "<<(" << _fd << ") : " RESET << msg << std::endl;
+	}
 	std::string cmd = takeNextArg(msg);
 	if (!cmd.compare("PASS") || !cmd.compare("NICK") || !cmd.compare("USER") || !cmd.compare("QUIT"))
 		authCmd = true;

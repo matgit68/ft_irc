@@ -11,7 +11,6 @@ void Server::init() {
 		perror("socket failed");
 		exit(EXIT_FAILURE);
 	}
-	std::cout << "Server fd:" << _fd << std::endl;
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) == FAIL) {
 		perror("setsockopt");
 		exit(EXIT_FAILURE);
@@ -49,7 +48,8 @@ void Server::run() {
 		perror("epoll_ctl: fd");
 		exit(EXIT_FAILURE);
 	}
-	_keeper->connectToServ();
+	if (!_botname.empty())
+		_keeper->connectToServ();
 	while(g_sig) { // SIGINT
 		nfds = epoll_wait(_epollfd, _events, MAX_EVENTS, 0); // number of fds that triggered epoll
 		if (nfds == FAIL && g_sig) {
@@ -64,7 +64,7 @@ void Server::run() {
 					exit(EXIT_FAILURE);
 				}
 				setnonblocking(newFd);
-				if (_keeper->getFd() == 0)
+				if (!_botname.empty() && _keeper->getFd() == 0)
 					_keeper->setFd(newFd);
 				_ev.events = EPOLLIN;
 				_ev.data.fd = newFd;

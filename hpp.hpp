@@ -3,10 +3,10 @@
 #define GREEN "\e[0;32m"
 #define RED "\e[0;31m"
 #define YELLOW "\e[0;33m"
+#define BLUE "\e[0;34m"
 #define RESET "\e[0m"
 #define SPACES " \t\n\r\f\v"
 
-#define BOTNAME "KeeperBot"
 #define BUFFER 2
 #define FAIL -1
 #define MAX_EVENTS 5

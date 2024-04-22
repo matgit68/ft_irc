@@ -1,13 +1,16 @@
 #include "hpp.hpp"
 #include "Bot.hpp"
 
-Server::Server(int p, std::string pass): _port(p), _passwd(pass), _hostname("localhost"), _createdTime(timestring()) {
+Server::Server(int p, std::string pass, std::string bot): _port(p), _passwd(pass), _hostname("localhost"),
+														_createdTime(timestring()), _botname(bot) {
 	char hostname[256];
     if (!gethostname(hostname, sizeof(hostname))) {
         _hostname.assign(hostname);
 	}
-	_keeper = new Bot(this);
-	_keeperFd = 0;
+	if (!_botname.empty()) {
+		_keeper = new Bot(this);
+		_keeperFd = 0;
+	}
 	initFunPtr();
 }
 
@@ -20,7 +23,8 @@ Server::~Server() {
 	for(it2 = _channels.begin(); it2 != _channels.end(); it2++)
 		delete it2->second;
 	_channels.clear();
-	delete _keeper;
+	if (!_botname.empty())
+		delete _keeper;
 }
 
 Server::Server(Server const &ref) {
@@ -45,6 +49,8 @@ int Server::getPort() const { return _port; }
 
 std::string Server::getPasswd() const { return _passwd; }
 std::string Server::getHostname() const { return _hostname; }
+std::string Server::getBotname() const {return _botname; }
+int Server::getBotFd() const { return _keeper->getFd(); }
 std::string Server::getCreatedTime(void) const { return _createdTime; }
 
 std::map<std::string, Channel*> Server::getChannelMap(void) const { return _channels; }
@@ -85,9 +91,11 @@ void Server::createChannel(std::string chanName, Client *creator) {
 	_channels[chanName]->giveOp(creator->getFd());
 	_channels[chanName]->addMode(creator, 't', s); // topic protected is the default mode
 	_channels[chanName]->addClient(creator);
-	_keeper->join(chanName, creator->getNick());
-	_channels[chanName]->giveOp(_keeper->getFd());
-	ft_send(creator->getFd(), RPL_UMODEINCHANIS(_keeper, _channels[chanName], "+o", _keeper));
+	if (!_botname.empty()) {
+		_keeper->join(chanName, creator->getNick());
+		_channels[chanName]->giveOp(_keeper->getFd());
+		ft_send(creator->getFd(), RPL_UMODEINCHANIS(_keeper, _channels[chanName], "+o", _keeper));
+	}
 }
 
 Channel * Server::addChannel(std::string channel) {
@@ -208,9 +216,13 @@ void Server::removeFromAllChannels(Client *client) {
 }
 
 void Server::ft_send(int fd, std::string msg) {
-	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
-	if (fd == _keeper->getFd())
+	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
+		if (fd == _keeper->getFd())
+			std::cout << YELLOW ">>(" << fd << ") : " BLUE << msg << RESET;
+		else
+			std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
+	}
+	if (!_botname.empty() && fd == _keeper->getFd())
 		_keeper->react(msg);
 	else if (_clients.find(fd) != _clients.end())
 		send(fd, msg.c_str(), msg.size(), 0);

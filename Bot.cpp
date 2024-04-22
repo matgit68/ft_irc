@@ -5,7 +5,7 @@ Bot::Bot(Server *s): Client(0, s) {
 	if (_sockFd == -1) 
 		std::cerr << "Could not create socket" << std::endl;
 
-	setNick(BOTNAME);
+	setNick(s->getBotname());
 	_serverAddr.sin_family = AF_INET;
 	_serverAddr.sin_port = htons(s->getPort());
 	_serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -26,8 +26,8 @@ void Bot::connectToServ() {
 
 	std::cout << YELLOW "Bot [keeper] connected" RESET << std::endl;
 	sendToServ("PASS " + _server->getPasswd());
-	sendToServ("NICK " BOTNAME);
-	sendToServ("USER " BOTNAME " 0 * " BOTNAME);
+	sendToServ("NICK " + _nick);
+	sendToServ("USER " + _nick + " 0 * " + _nick);
 }
 
 void Bot::join(std::string chanName, std::string owner) {
@@ -47,18 +47,28 @@ void Bot::react(std::string str) {
 	}
 }
 
+void Bot::selfCheckPrivilege(std::string chanName) {
+	Channel *channel = _server->getChannel(chanName);
+
+	if (channel && !channel->isOp(_fd)) {
+		channel->giveOp(_fd);
+		channel->sendChan(this, RPL_UMODEINCHANIS(this, channel, "+o", this));
+	}
+}
+
 void Bot::parse(std::string msg) {
 	std::string user;
 	Client *target;
 
-	if (msg.find("PRIVMSG " BOTNAME) != NPOS) { // PRIVMSG == commands
+	if (msg.find("PRIVMSG " + _nick) != NPOS) { // PRIVMSG == commands
 		user = takeNextArg(msg);
 		user.erase(0, 1);
-		msg.erase(0,1);
+		msg.erase(0, 1);
 		target = _server->getClient(user);
 		msg.erase(0, msg.find(':') + 1);
 
 		std::string cmd = takeNextArg(msg);
+		selfCheckPrivilege(msg);
 		if (cmd == "!keep")
 			keepMode(target, msg, true);
 		else if (cmd == "!nokeep")
@@ -68,36 +78,41 @@ void Bot::parse(std::string msg) {
 		else
 			_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, helpMsg()));
 	}
-	else if (msg.compare(0, 5, "LAST:") == 0) // react to chan events
+	else if (msg.compare(0, 5, "LAST:") == 0) // reacts after someone leave the channel (PART, KICK, QUIT)
 		keep(msg.erase(0,5));
 }
 
 std::string Bot::helpMsg() {
-	return "Commands are : !keep <channel>, !nokeep <channel>, !op <channel>, !owner <channel>";
+	return BLUE "Commands are : !keep <channel>, !nokeep <channel>, !op <channel>" RESET;
 }
 
 void Bot::keepMode(Client *target, std::string chanName, bool keeping) {
 	Channel *channel = _server->getChannel(chanName);
+
 	if (channel == NULL)
-		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, "Channel " + chanName + "not found"));
-	else if (keeping) {
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "Channel " + chanName + "not found" RESET));
+	if (!channel->isClient(this))
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "I'm not a user of channel " + chanName + RESET));
+	if (keeping) {
 		_persistence.insert(chanName);
-		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, "I will keep " + chanName + " from disappearance"));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "I will keep " + chanName + " for you" RESET));
 	}
-	else if (!keeping && _persistence.find(chanName) != _persistence.end()) {
+	if (!keeping && _persistence.find(chanName) != _persistence.end()) {
 		_persistence.erase(chanName);
-		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, chanName + " is no longer protected"));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE + chanName + " is no longer protected" RESET));
 	}
 }
 
 void Bot::op(Client *target, std::string chanName) {
 	Channel *channel = _server->getChannel(chanName);
+	if (channel->isOp(target->getFd()))
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "You already have +o privilege in " + chanName + RESET));
 	if (_owner[chanName] == target->getNick()) {
 		channel->giveOp(target->getFd());
 		channel->sendChan(this, RPL_UMODEINCHANIS(this, channel, "+o", target));
 	}
 	else
-		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, "You don't own this channel"));
+		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "You don't own this channel" RESET));
 }
 
 void Bot::keep(std::string chanName) {
