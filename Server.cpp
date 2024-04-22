@@ -217,7 +217,7 @@ void Server::removeFromAllChannels(Client *client) {
 
 void Server::ft_send(int fd, std::string msg) {
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
-		if (fd == _keeper->getFd())
+		if (!_botname.empty() && fd == _keeper->getFd())
 			std::cout << YELLOW ">>(" << fd << ") : " BLUE << msg << RESET;
 		else
 			std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;

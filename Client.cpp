@@ -65,7 +65,7 @@ void Client::parse(std::string msg) {
 	bool authCmd = false;
 	trim(msg);
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
-		if (_fd == _server->getBotFd())
+		if (!_server->getBotname().empty() && _fd == _server->getBotFd())
 			std::cout << GREEN "<<(" << _fd << ") : " BLUE << msg << RESET << std::endl;
 		else
 			std::cout << GREEN "<<(" << _fd << ") : " RESET << msg << std::endl;
