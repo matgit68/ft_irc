@@ -90,7 +90,7 @@ void Bot::keepMode(Client *target, std::string chanName, bool keeping) {
 	Channel *channel = _server->getChannel(chanName);
 
 	if (channel == NULL)
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "Channel " + chanName + "not found" RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "Channel " + chanName + " not found" RESET));
 	if (!channel->isClient(this))
 		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "I'm not a user of channel " + chanName + RESET));
 	if (keeping) {
@@ -105,6 +105,8 @@ void Bot::keepMode(Client *target, std::string chanName, bool keeping) {
 
 void Bot::op(Client *target, std::string chanName) {
 	Channel *channel = _server->getChannel(chanName);
+	if (!channel)
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "Channel not found" + RESET));
 	if (channel->isOp(target->getFd()))
 		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "You already have +o privilege in " + chanName + RESET));
 	if (_owner[chanName] == target->getNick()) {

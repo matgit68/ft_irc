@@ -2,10 +2,7 @@
 TODO :
 
 * Parsing
-	Test, test and retest raw COMMANDS (not formated by a client) -> nc
-
-* MODE
-	not sending RPL to clients (not RPL 324) :nickName MODE #a :coucou
+	Test, test and retest raw COMMANDS (not formated by a client) -> nc ou /quote
 
 * INVITE
 	what if invited client leave and come back ?
@@ -16,6 +13,9 @@ TODO :
 ===================================================================================================
 
 DONE :
+
+* MODE
+	not sending RPL to clients (not RPL 324) :nickName MODE #a :coucou
 
 * Valgrind
 	when quitting

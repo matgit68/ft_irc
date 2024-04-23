@@ -54,5 +54,5 @@ void mode(Client *client, std::string args) {
 		modestring.erase(0, 1);
 	}
 	chan->sortMode();
-	chan->sendModeInfo(); // Send all connected clients the new modes
+//	chan->sendModeInfo(); // Send all connected clients the new modes
 }

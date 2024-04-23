@@ -7,7 +7,7 @@
 # define RPL_CREATED(client, datetime) 				(":" + client->getServer()->getHostname() + " 003 " + client->getNick() + " :This server was created " + datetime + "\r\n")
 # define RPL_MYINFO(c, u_m, c_m, cp_m) 				(":" + client->getServer()->getHostname() + " 004 " + client->getNick() + " " + client->getServer()->getHostname() + " " + VERSION + " " + u_m + " " + c_m + " " + cp_m + "\r\n")
 # define RPL_ISUPPORT(client, tokens) 				(":" + client->getServer()->getHostname() + " 005 " + client->getNick() + " " + tokens " :are supported by this server\r\n")
-
+//ERR_NOMOTD (422)
 # define ERR_UNKNOWNCOMMAND(client, command) 		(":" + client->getServer()->getHostname() + " 421 " + client->getNick() + " " + command + " :Unknown command\r\n")
 # define ERR_INPUTTOOLONG(client) (":" + client->getServer()->getHostname() + " 417 " + " :Input line was too long\r\n")
 
@@ -81,6 +81,9 @@
 # define RPL_CHANNELMODEIS(client, channel, mode) 	(":" + client->getServer()->getHostname() + " 324 " + client->getNick() + " " + channel->getName() + " " + mode + "\r\n")
 # define RPL_CHANNELMODEISWITHKEY(cl, ch, pwd) 		(":" + cl->getServer()->getHostname() + " 324 " + cl->getNick() + " " + ch->getName() + " " + ch->getMode() + " " + pwd + "\r\n")
 # define RPL_UMODEINCHANIS(op, channel, mode, user)	(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + user->getNick() + "\r\n")
+# define RPL_MODE(op, channel, mode)				(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + "\r\n")
+# define RPL_MODEPWD(op, channel, mode, pwd)		(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + pwd + "\r\n")
+# define RPL_MODELIM(op, channel, mode, lim)		(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + lim + "\r\n")
 //													  :user1!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +o user2
 //													  :user2!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +k toto
 # define ERR_CANNOTSENDTOCHAN(client, channel) 		("404 " + client->getNick() + " " + channel + " :Cannot send to channel\r\n")

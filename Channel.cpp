@@ -75,21 +75,6 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 	std::string authMode = "+-itklo";
 	if (authMode.find(mode) == NPOS)
 		return _server->ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
-	if (mode == 'i' && _mode.find('i') == NPOS) // invite mode
-		_mode.append("i");
-	if (mode == 't' && _mode.find('t') == NPOS) // protected topic mode
-		_mode.append("t");
-	if (mode == 'k') { // key protected mode (password)
-		if (_mode.find('k') == NPOS)
-			_mode.append("k");
-		if (!arg.empty())
-			_passwd = takeNextArg(arg);
-	}
-	if (mode == 'l') { // user limit
-		if (_mode.find('l') == NPOS)
-			_mode.append("l");
-		_limit = std::atoi(takeNextArg(arg).c_str());
-	}
 	if (mode == 'o') { // give op privileges
 		std::string target = takeNextArg(arg);
 		if (target.empty())
@@ -100,7 +85,28 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 		if (_clients.find(c->getFd()) == _clients.end())
 			return _server->ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
 		giveOp(c->getFd());
-		sendChan(NULL, RPL_UMODEINCHANIS(client, this, "+o", c));
+		return sendChan(NULL, RPL_UMODEINCHANIS(client, this, "+o", c));
+	}
+	if (mode == 'i' && _mode.find('i') == NPOS) { // invite mode
+		_mode.append("i");
+		return sendChan(NULL, RPL_MODE(client, this, "+i"));
+	}
+	if (mode == 't' && _mode.find('t') == NPOS) {// protected topic mode
+		_mode.append("t");
+		return sendChan(NULL, RPL_MODE(client, this, "+t"));
+	}
+	if (mode == 'k') { // key protected mode (password)
+		if (_mode.find('k') == NPOS)
+			_mode.append("k");
+		if (!arg.empty())
+			_passwd = takeNextArg(arg);
+		return sendChan(NULL, RPL_MODEPWD(client, this, mode, arg));
+	}
+	if (mode == 'l') { // user limit
+		if (_mode.find('l') == NPOS)
+			_mode.append("l");
+		_limit = std::atoi(takeNextArg(arg).c_str());
+		return sendChan(NULL, RPL_MODELIM(client, this, mode, arg));
 	}
 }
 
@@ -115,9 +121,12 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 		else
 			_server->ft_send(client->getFd(), ERR_NOSUCHNICK(client, arg));
 	}
-	else
-		if ((pos = _mode.find(mode)) != NPOS)
+	else {
+		if ((pos = _mode.find(mode)) != NPOS) {
 			_mode.erase(pos, 1);
+			return sendChan(NULL, RPL_MODE(client, this, "-" + mode));
+		}
+	}
 }
 
 void Channel::sortMode() {	std::sort(_mode.begin(), _mode.end()); }
