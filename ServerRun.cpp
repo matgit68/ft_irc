@@ -3,9 +3,11 @@
 
 int g_sig = 1;
 static void handle_sigint(int sig) { (void) sig; g_sig = 0; }
+static void handle_sigpipe(int sig) { (void) sig; }
 
 void Server::init() {
 	signal(SIGINT, handle_sigint);
+	signal(SIGPIPE, handle_sigpipe);
 	int opt = 1;
 	if ((_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
 		perror("socket failed");
@@ -26,7 +28,7 @@ void Server::init() {
 	}
 	std::cout << "Listening on port " <<  _port << std::endl;
 	
-	if (listen(_fd, 3)  == FAIL)	{
+	if (listen(_fd, 10)  == FAIL)	{
 		perror("listen");
 		exit(EXIT_FAILURE);
 	}
@@ -83,7 +85,8 @@ void Server::run() {
 					continue;
 				}
 				if (valread == 0) { // client disconnected -> remove fd from epoll, delete Client from clients map then close fd
-					disconnectClient(n);
+					//std::cout << "AutoQuit activated(" << _events[n].data.fd << ")" << std::endl;
+					delClient(_events[n].data.fd, "Disconnected");
 					continue;
 				}
 				buf[valread] = '\0';
@@ -93,28 +96,3 @@ void Server::run() {
 	}
 	std::cout << "\nLeaving " << VERSION << std::endl;
 }
-
-void Server::disconnectClient(int n) {
-	if (_clients.find(_events[n].data.fd) != _clients.end()) { // delete Client and remove Client from map
-		Client *client = _clients[_events[n].data.fd];
-		if (!client->isGone()) {
-			std::cout << "AutoQuit activated(" << _events[n].data.fd << ")" << std::endl;
-			sendToClientsInTouch(client, RPL_QUIT(_clients[_events[n].data.fd], "Disconnected"), false);
-			removeFromAllChannels(client);
-			checkEmptyChannels();
-		}
-		delete _clients[_events[n].data.fd];
-		_clients.erase(_events[n].data.fd);
-	}
-	else
-		std::cerr << "Couldnt find client of fd " << _events[n].data.fd << std::endl;
-	if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, _events[n].data.fd, &_ev) == FAIL) { // unwatch fd
-		perror("epoll_ctl: newFd");
-		exit(EXIT_FAILURE);
-	}
-	if (close(_events[n].data.fd) == FAIL) // close fd
-		std::cerr << "couldnt close fd " << _events[n].data.fd << std::endl;
-	else
-		std::cout << RED "Client " << _events[n].data.fd << " disconnected" RESET << std::endl;
-}
-

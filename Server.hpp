@@ -40,7 +40,7 @@ public:
 	std::string getCreatedTime(void) const;
 
 	void ft_send(int, std::string);
-	void delClient(int);
+	void delClient(int, std::string);
 	void disconnectClient(int);
 	void createChannel(std::string, Client *);
 	Channel * addChannel(std::string);

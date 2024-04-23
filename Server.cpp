@@ -149,16 +149,27 @@ void Server::sendRegistration(Client *client) {
 	client->setResponse(true);
 }
 
-void Server::delClient(int fd) {
+void Server::delClient(int fd, std::string reason) {
 	if (_clients.find(fd) != _clients.end()) {
-		ft_send(fd, ERR_QUIT);
+		Client *client = _clients[fd];
+		sendToClientsInTouch(client, RPL_QUIT(client, reason), false);
+		removeFromAllChannels(client);
+		checkEmptyChannels();
+		delete _clients[fd];
+		_clients.erase(fd);
+		//ft_send(fd, ERR_QUIT); // end of IRC suppression part
+
+		if (epoll_ctl(_epollfd, EPOLL_CTL_DEL,fd, &_ev) == FAIL) { // unwatch fd
+			perror("epoll_ctl: DEL");
+			exit(EXIT_FAILURE);
+		}
 		if (close(fd) == FAIL) // close fd
 			std::cerr << "Could not close fd " << fd << std::endl;
 		else
 			std::cout << RED "Client " << fd << " disconnected" RESET << std::endl;
-		delete _clients[fd];
-		_clients.erase(fd);
 	}
+	else
+		std::cout << "No such client(" << fd << ")" << std::endl;
 }
 
 bool Server::isNickAvailable(std::string& newNick) {
@@ -225,5 +236,6 @@ void Server::ft_send(int fd, std::string msg) {
 	if (!_botname.empty() && fd == _keeper->getFd())
 		_keeper->react(msg);
 	else if (_clients.find(fd) != _clients.end())
-		send(fd, msg.c_str(), msg.size(), 0);
+		if (send(fd, msg.c_str(), msg.size(), 0) != msg.size())
+			perror(RED "send" RESET);
 }

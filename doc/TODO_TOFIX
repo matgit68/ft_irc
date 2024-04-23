@@ -6,16 +6,11 @@ TODO :
 
 * INVITE
 	what if invited client leave and come back ?
-
-* QUIT
-	crash with simultaneous kill
+	Crash if user doesnt exist
 
 ===================================================================================================
 
 DONE :
-
-* MODE
-	not sending RPL to clients (not RPL 324) :nickName MODE #a :coucou
 
 * Valgrind
 	when quitting
@@ -32,6 +27,8 @@ DONE :
 * QUIT
 	Send ERR msg !
 	Quit dont quit :D
+	segfault when connecting after quitting (not wild disconnecting)
+	crash with simultaneous kill
 
 * Signals
 	CTRL-Z => gestion signal - epoll-wait() ?
@@ -42,6 +39,7 @@ DONE :
 
 * MODE
 	Bad behaviour when +o a user in a chan with multiple users
+	not sending RPL to clients (not RPL 324) :nickName MODE #a :coucou
 
 * DISCONNECTION
 	send message to users like quit
