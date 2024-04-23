@@ -35,5 +35,5 @@ public:
 	void setGone(bool);
 	void setResponse(bool);
 	void receive(char*);
-	void parse(std::string);
+	int parse(std::string);
 };

@@ -51,17 +51,19 @@ void Client::setGone(bool g) { _gone = g; }
 void Client::receive(char* str) { 
 	_buffer.append(str);
 	if (_buffer.size() > 512 ) { // Servers SHOULD gracefully handle messages over the 512-bytes limit. They may send an error numeric back, preferably ERR_INPUTTOOLONG (417) 
-		send(_fd, "ERR_INPUTTOOLONG\r\n", 18, 0);
+		_server->ft_send(_fd, ERR_INPUTTOOLONG(this));
 		_buffer.clear();
 	}
 	size_t pos;
 	while ((pos = _buffer.find("\r\n")) != NPOS) {
-		parse(_buffer.substr(0, pos));
-		_buffer.erase(0, pos + 2);
+		if (parse(_buffer.substr(0, pos)))
+			_buffer.erase(0, pos + 2);
+		else
+			break;
 	}
 }
 
-void Client::parse(std::string msg) {
+int Client::parse(std::string msg) {
 	bool authCmd = false;
 	trim(msg);
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
@@ -81,4 +83,5 @@ void Client::parse(std::string msg) {
 		else
 			_server->ft_send(_fd, ERR_UNKNOWNCOMMAND(this, cmd));
 	}
+	return (cmd.compare("QUIT"));
 }

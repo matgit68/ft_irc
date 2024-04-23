@@ -11,10 +11,10 @@ static bool is_valid(const std::string nickname){
 }
 
 void nick(Client *client, std::string args) {
-	
-	std::string oldNick = client->getNick();
-	std::string newNick = args;
-	Server *server = client->getServer();
+
+	 std::string oldNick = client->getNick();
+	 std::string newNick = args;
+	 Server *server = client->getServer();
 
 	if (client->getPasswd() == false)
 		return;
@@ -29,8 +29,8 @@ void nick(Client *client, std::string args) {
 			while(!client->getServer()->isNickAvailable(newNick))
 				newNick.append("_");
 			client->setOldNick(args);
-			client->setNick(newNick);
-			server->ft_send(client->getFd(), RPL_NICK(client));
+	 		client->setNick(newNick);
+	 		server->ft_send(client->getFd(), RPL_NICK(client));
 		}
 	}
 	else {

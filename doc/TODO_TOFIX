@@ -12,7 +12,7 @@ DONE :
 	Should leave multiple comma separated channels
 
 * CONNECT
-	Maybe something about fds is wrong when quitting and reconnecting. Test :)
+	Maybe something about fds is wrong when quitting and reconnecting. Test :
 
 * REGISTRATION
 	Commands are possible even if were not registered

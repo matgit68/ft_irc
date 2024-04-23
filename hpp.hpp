@@ -7,7 +7,7 @@
 #define RESET "\e[0m"
 #define SPACES " \t\n\r\f\v"
 
-#define BUFFER 2
+#define BUFFER 512
 #define FAIL -1
 #define MAX_EVENTS 5
 #define NPOS std::string::npos

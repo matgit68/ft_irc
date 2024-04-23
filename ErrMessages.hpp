@@ -9,6 +9,7 @@
 # define RPL_ISUPPORT(client, tokens) 				(":" + client->getServer()->getHostname() + " 005 " + client->getNick() + " " + tokens " :are supported by this server\r\n")
 
 # define ERR_UNKNOWNCOMMAND(client, command) 		(":" + client->getServer()->getHostname() + " 421 " + client->getNick() + " " + command + " :Unknown command\r\n")
+# define ERR_INPUTTOOLONG(client) (":" + client->getServer()->getHostname() + " 417 " + " :Input line was too long\r\n")
 
 //CAP
 # define RPL_CAPLS(client)							(":" + client->getServer()->getHostname() + " CAP * LS :\r\n")
