@@ -7,8 +7,9 @@
 # define RPL_CREATED(client, datetime) 				(":" + client->getServer()->getHostname() + " 003 " + client->getNick() + " :This server was created " + datetime + "\r\n")
 # define RPL_MYINFO(c, u_m, c_m, cp_m) 				(":" + client->getServer()->getHostname() + " 004 " + client->getNick() + " " + client->getServer()->getHostname() + " " + VERSION + " " + u_m + " " + c_m + " " + cp_m + "\r\n")
 # define RPL_ISUPPORT(client, tokens) 				(":" + client->getServer()->getHostname() + " 005 " + client->getNick() + " " + tokens " :are supported by this server\r\n")
-
+//ERR_NOMOTD (422)
 # define ERR_UNKNOWNCOMMAND(client, command) 		(":" + client->getServer()->getHostname() + " 421 " + client->getNick() + " " + command + " :Unknown command\r\n")
+# define ERR_INPUTTOOLONG(client) (":" + client->getServer()->getHostname() + " 417 " + " :Input line was too long\r\n")
 
 //CAP
 # define RPL_CAPLS(client)							(":" + client->getServer()->getHostname() + " CAP * LS :\r\n")
@@ -16,11 +17,11 @@
 
 //INVITE
 # define ERR_NEEDMOREPARAMS(command) 				(":" + client->getServer()->getHostname() + " 461 " + client->getNick() + " " + command + " :Not enough parameters.\r\n")
-# define ERR_NOSUCHCHANNEL(channel) 				(":" + client->getServer()->getHostname() + " 403 " + client->getNick() + " " + channel + " :No such channel\r\n")
+# define ERR_NOSUCHCHANNEL(client, channel) 		(":" + client->getServer()->getHostname() + " 403 " + client->getNick() + " " + channel + " :No such channel\r\n")
 # define ERR_NOTONCHANNEL(channel) 					(":" + client->getServer()->getHostname() + " 442 " + client->getNick() + " " + channel + ": The user is not on this channel.\r\n")
 # define ERR_USERONCHANNEL(nick, channel) 			(":" + client->getServer()->getHostname() + " 443 " + client->getNick() + " " + nick + " " + channel + " :Is already on channel\r\n")
 # define RPL_INVITELIST(client, channel) 			(":" + client->getServer()->getHostname() + " 336 " + client->getNick() + " " + channel + "\r\n") // 346 or 336
-# define RPL_ENDOFINVITELIST(client) 				(":" + client->getServer()->getHostname() + " 337 " + client->getNick() + " :End of /INVITE list")
+# define RPL_ENDOFINVITELIST(client) 				(":" + client->getServer()->getHostname() + " 337 " + client->getNick() + " :End of /INVITE list\r\n")
 # define RPL_INVITING(usr_id, nick, channel) 		(usr_id  + " 341 " + client->getNick() + " " + nick + " " + channel + "\r\n")
 # define RPL_INVITE(user_id, invited, channel) 		(user_id + " INVITE " + invited + " " + channel + "\r\n")
 
@@ -54,13 +55,15 @@
 //QUIT
 # define RPL_QUIT(client, reason) 					(":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " QUIT :Quit: " + reason + "\r\n")
 # define RPL_ERROR(user_id, reason) 				(user_id + " ERROR :" + reason + "\r\n")
+# define ERR_QUIT									("ERROR :Closing link\r\n")
 
 //PRIVMSG
 # define ERR_NOSUCHNICK(client, target) 			("401 " + client->getNick() + " " + target + " :No such nick/channel\r\n")
 # define ERR_NORECIPIENT(client) 					("411 " + client->getNick() + " No recipient given PRIVMSG\r\n")
 # define ERR_NOTEXTTOSEND(client) 					(":" + client->getServer()->getHostname() + " 412" + client->getNick() + " :No text to send\r\n")
-# define RPL_PRIVMSG(client, chan, msg)				(":" + client->getNick() + " PRIVMSG " + chan->getName() + " " + msg + "\r\n")
 # define RPL_AWAY(client, nick, message) 			("301 " + client->getNick() + " " + nick + " :" + message + "\r\n")
+# define RPL_PRIVMSG(client, chan, msg)				(":" + client->getNick() + " PRIVMSG " + chan->getName() + " " + msg + "\r\n")
+# define RPL_PRIVUSERMSG(client, target, msg)		(":" + client->getNick() + " PRIVMSG " + target->getNick() + " :" + msg + "\r\n")
 
 //USER
 # define ERR_ALREADYREGISTERED(client) 				(":" + client->getServer()->getHostname() + " 462 " + client->getNick() + " :You may not reregister.\r\n")
@@ -78,6 +81,9 @@
 # define RPL_CHANNELMODEIS(client, channel, mode) 	(":" + client->getServer()->getHostname() + " 324 " + client->getNick() + " " + channel->getName() + " " + mode + "\r\n")
 # define RPL_CHANNELMODEISWITHKEY(cl, ch, pwd) 		(":" + cl->getServer()->getHostname() + " 324 " + cl->getNick() + " " + ch->getName() + " " + ch->getMode() + " " + pwd + "\r\n")
 # define RPL_UMODEINCHANIS(op, channel, mode, user)	(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + user->getNick() + "\r\n")
+# define RPL_MODE(op, channel, mode)				(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + "\r\n")
+# define RPL_MODEPWD(op, channel, mode, pwd)		(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + pwd + "\r\n")
+# define RPL_MODELIM(op, channel, mode, lim)		(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + lim + "\r\n")
 //													  :user1!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +o user2
 //													  :user2!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +k toto
 # define ERR_CANNOTSENDTOCHAN(client, channel) 		("404 " + client->getNick() + " " + channel + " :Cannot send to channel\r\n")

@@ -1,9 +1,8 @@
 ===================================================================================================
 TODO :
 
-* Signals
-	CTRL-Z => gestion signal - epoll-wait() ?
-	CTRL-C : leaving properly (close fds, delete clients / chanells / sending SQUIT ?)
+* Parsing
+	Test, test and retest raw COMMANDS (not formated by a client) -> nc ou /quote
 
 * WHO
 	irssi send us a 'WHO' <channel> 
@@ -22,8 +21,38 @@ TODO :
 
 DONE :
 
+* INVITE
+	what if invited client leave and come back ?
+	Crash if user doesnt exist
+
+* Valgrind
+	when quitting
+
+* PART
+	Should leave multiple comma separated channels
+
+* CONNECT
+	Maybe something about fds is wrong when quitting and reconnecting. Test :
+
+* REGISTRATION
+	Commands are possible even if were not registered
+
+* QUIT
+	Send ERR msg !
+	Quit dont quit :D
+	segfault when connecting after quitting (not wild disconnecting)
+	crash with simultaneous kill
+
+* Signals
+	CTRL-Z => gestion signal - epoll-wait() ?
+	CTRL-C : leaving properly (close fds, delete clients / channels)
+
+* USER
+	Clean and verify
+
 * MODE
 	Bad behaviour when +o a user in a chan with multiple users
+	not sending RPL to clients (not RPL 324) :nickName MODE #a :coucou
 
 * DISCONNECTION
 	send message to users like quit
@@ -31,7 +60,7 @@ DONE :
 * JOIN
 	RPL message to fix
 	pb status user irssi on chan
-	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
+	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!user@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
 
 * ERR - RPL messages
 	Better format

@@ -5,10 +5,10 @@ RESET	:= \033[0m
 NAME = ircserv
 
 CXX = c++
-CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -g3
+CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -g3# -fsanitize=address
 
-SRC =	cap.cpp\
-		broad.cpp\
+SRC =	Bot.cpp\
+		cap.cpp\
 		Channel.cpp\
 		Client.cpp\
 		invite.cpp\
@@ -28,7 +28,7 @@ SRC =	cap.cpp\
 		topic.cpp\
 		user.cpp\
 		utils.cpp\
-		whois.cpp\
+		who.cpp\
 
 OBJ = $(SRC:.cpp=.o)
 

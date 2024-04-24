@@ -3,11 +3,9 @@
 void ping(Client *client, std::string args) {
 	std::string answer;
 	
-	if (args.empty()) {
-		ft_send(client->getFd(), "ERR_NEEDMOREPARAMS\r\n");
-		return ;
-	}
+	if (args.empty())
+		return client->getServer()->ft_send(client->getFd(), "ERR_NEEDMOREPARAMS\r\n");
 	else
 		answer = "PONG " + args + "\r\n";
-	ft_send(client->getFd(), answer);
+	client->getServer()->ft_send(client->getFd(), answer);
 }

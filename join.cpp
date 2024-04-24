@@ -1,17 +1,27 @@
 #include "hpp.hpp"
 
+static void prefixChan(std::string &name) {
+	if (name[0] != '#')
+		name.insert(name.begin(), '#');
+}
+
 void join(Client *client, std::string args) {
 	std::string chan_name, chan_key;
+	std::string tmp;
 	Channel *chan;
 	std::vector<std::string> names, keys;
 	Server *server = client->getServer();
 
+	if (args.empty())
+		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("JOIN"));
 	chan_name = takeNextArg(args);
 	if (!args.empty())
 		chan_key = takeNextArg(args);
-	while (!chan_name.empty()) // now we recover the channel names
+	while (!chan_name.empty()) { // recovering channel names
+		prefixChan(chan_name);
 		names.push_back(takeNextArg(',', chan_name));
-	while (!chan_key.empty())
+	}
+	while (!chan_key.empty()) // recovering keys
 		keys.push_back(takeNextArg(',', chan_key));
 
 	for (size_t i = 0; i < names.size(); i++) {
@@ -22,7 +32,7 @@ void join(Client *client, std::string args) {
 				chan->addClientInvite(client);
 			else if (chan->getMode().find('k') != NPOS) { // key mode is set
 			 	if (keys.empty())
-					ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
+					server->ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
 				else {
 					chan->addClientPass(client, keys.front()); // try to join with first key
 					keys.erase(keys.begin()); // delete used key

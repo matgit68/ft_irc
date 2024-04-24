@@ -1,36 +1,25 @@
 #include "Server.hpp"
 
-//With nc it doesnt give the reason but with irssi it gives
-
-std::string parseReason(std::string msg)
-{
-	std::string reason;
-	reason.clear();
-
-	if(msg.find(":") != msg.NPOS)
-		reason.append(msg, msg.find(":") + 1, NPOS);
-	return reason;
-}
-
 void part(Client *client, std::string args) {
 	Server *server = client->getServer();
-	std::string chan = takeNextArg(args);
-	std::string nick = client->getNick();
-	std::string reason = parseReason(args);
+	std::string chans = takeNextArg(args);
+	std::string chanName;
+	Channel *channel;
 
-	if(reason.empty())
-		reason = "No reason given";
-	std::map<std::string, Channel*> channels = client->getServer()->getChannelMap();
-	std::map<std::string, Channel*>::iterator it = channels.find(chan);
+	if (args[0] == ':')
+		args.erase(0, 1);
 
-	if(it == channels.end()) //checking if the channel exists
-		return ft_send(client->getFd(), ERR_NOSUCHCHANNEL(chan));
-	else if(!server->getClient(client->getFd())) //checking if the client in the channel
-		ft_send(client->getFd(), ERR_NOTONCHANNEL(chan));
-	else
-	{
-		it->second->sendChan(NULL, RPL_PART(client, chan, reason));
-		it->second->removeUser(client);
+	while (!chans.empty()) {
+		chanName = takeNextArg(',', chans);
+		channel = server->getChannel(chanName);
+		if (channel == NULL)
+			server->ft_send(client->getFd(), ERR_NOSUCHCHANNEL(client, chanName));
+		else if(!channel->isClient(client)) //checking if the client in the channel
+			server->ft_send(client->getFd(), ERR_NOTONCHANNEL(channel->getName()));
+		else {
+			channel->sendChan(NULL, RPL_PART(client, channel->getName(), args));
+			channel->removeUser(client);
+		}
+		server->checkEmptyChannels();
 	}
-	server->checkEmptyChannels();
 }

@@ -1,49 +1,21 @@
 #include "hpp.hpp"
 
-void ft_send(int fd, std::string msg) {
-	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS)
-		std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
-	send(fd, msg.c_str(), msg.size(), 0);
+void setnonblocking(int fd) {
+	int flags;
+	flags = fcntl(fd, F_GETFL, 0);
+	if (flags == FAIL)
+		perror("fcntl");
+	flags |= O_NONBLOCK;
+	if (fcntl(fd, F_SETFL, flags) == FAIL)
+		perror("fcntl");
 }
 
-void dispChanList(Client *client, std::string str) {
-	(void) str;
-	client->getServer()->dispChannels(client);
+// returns the next string delimited by space (or char sep if specified) and remove it from str
+std::string takeNextArg(std::string &str) { // single argument version uses ' ' as delimiter
+	return takeNextArg(' ', str);
 }
 
-bool is_valid(const std::string nickname){
-	if (nickname[0] == '#' || nickname[0] == '$' || nickname[0] == ':'
-			|| nickname.find(" ,*?!@.") != NPOS)
-		return false;
-	if(nickname.length() < 1 || nickname.length() > 32)
-		return false;
-	const std::string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_[]{}\\|";
-	for (size_t i = 0; i < nickname.length(); i++)
-	{
-		char c = nickname[i];
-		if(i == 0 && !isalpha(c))
-			return false;
-		if(i > 1 && validChars.find(c) == NPOS)
-			return false;
-	}
-	return true;
-}
-
-std::string takeNextArg(std::string &str) { // USELESS ! -> iStringStream 
-	std::string res;
-	size_t space = str.find(' ');
-	if (space == NPOS) {
-		res = str;
-		str.clear();
-	}
-	else {
-		res = str.substr(0, space);
-		str.erase(0, space + 1);
-	}
-	return res;
-}
-
-std::string takeNextArg(char sep, std::string &str) { // USELESS ! -> iStringStream 
+std::string takeNextArg(char sep, std::string &str) {
 	std::string res;
 	size_t space = str.find(sep);
 
@@ -56,4 +28,13 @@ std::string takeNextArg(char sep, std::string &str) { // USELESS ! -> iStringStr
 		str.erase(0, space + 1);
 	}
 	return res;
+}
+
+void trim(std::string &str) {
+	str.erase(0, str.find_first_not_of(SPACES));
+	str.erase(str.find_last_not_of(SPACES) + 1);
+	for (size_t i = 0; i < str.size(); i++) {
+		while (std::isspace(str[i]) && std::isspace(str[i + 1]))
+			str.erase(i, 1);
+	}
 }

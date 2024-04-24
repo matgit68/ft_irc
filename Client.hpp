@@ -1,20 +1,15 @@
 #pragma once
-
-#include <string>
-#include <vector>
-#include "Server.hpp"
-
-class Server;
+#include "hpp.hpp"
 
 class Client{
-private:
+protected:
 	std::string _user, _nick, _real, _buffer, _host, _srvaddr, _oldnick;
 	Server *_server;
 	int _fd;
 	Client(Client const &ref);
 	Client &operator=(Client const &ref);
 	std::set<std::string> _channels;
-	bool _clientReady, _response, _passwd; // i had a pb with only clientReady, so i added _response, i havn't test again now, so i don't no if ze need to add this again.
+	bool _response, _passwd, _gone; // i had a pb with only clientReady, so i added _response, i havn't test again now, so i don't no if ze need to add this again.
 
 public:
 	Client(int, Server*);
@@ -22,6 +17,7 @@ public:
 	bool getPasswd() const;
 	bool getStatus() const;
 	bool getResponse() const;
+	bool isGone() const;
 	int getFd() const;
 	std::string getUser() const;
 	std::string getNick() const;
@@ -36,8 +32,8 @@ public:
 	void setReal(std::string);
 	void setHost(std::string);
 	void setPasswd(bool);
-	void setStatus(void);
-	void setResponse(void);
+	void setGone(bool);
+	void setResponse(bool);
 	void receive(char*);
-	void parse(std::string);
+	int parse(std::string);
 };

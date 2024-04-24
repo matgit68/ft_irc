@@ -12,6 +12,25 @@ std::string Channel::getTopic() const { return _topic; }
 
 std::string Channel::getMode() const { return _mode; }
 
+std::string Channel::getRPLMode(int client) const {
+	std::string pass;
+	std::string RPLmode;
+
+	if (_clients.find(client) == _clients.end()) // client is not member of the channel
+		pass = "[key]";
+	else
+		pass = _passwd;
+	RPLmode = _mode;
+	if (RPLmode.find('k') != NPOS)
+		RPLmode += ' ' + pass;
+	if (RPLmode.find('l') != NPOS) {
+		std::stringstream ss;
+		ss << _limit;
+		RPLmode += ' ' + ss.str();
+	}
+	return RPLmode;
+}
+
 std::string Channel::getPasswd(void) const { return _passwd; }
 
 Server *Channel::getServer() { return _server; }
@@ -55,33 +74,39 @@ bool Channel::empty() {	return (_clients.empty()); }
 void Channel::addMode(Client *client, char mode, std::string &arg) {
 	std::string authMode = "+-itklo";
 	if (authMode.find(mode) == NPOS)
-		return ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
-	if (mode == 'i' && _mode.find('i') == NPOS) // invite mode
+		return _server->ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
+	if (mode == 'o') { // give op privileges
+		std::string target = takeNextArg(arg);
+		if (target.empty())
+			return _server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("MODE"));
+		Client *c = _server->getClient(target);
+		if (c == NULL)
+			return _server->ft_send(client->getFd(), ERR_NOSUCHNICK(client, target));
+		if (_clients.find(c->getFd()) == _clients.end())
+			return _server->ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
+		giveOp(c->getFd());
+		return sendChan(NULL, RPL_UMODEINCHANIS(client, this, "+o", c));
+	}
+	if (mode == 'i' && _mode.find('i') == NPOS) { // invite mode
 		_mode.append("i");
-	if (mode == 't' && _mode.find('t') == NPOS) // protected topic mode
+		return sendChan(NULL, RPL_MODE(client, this, "+i"));
+	}
+	if (mode == 't' && _mode.find('t') == NPOS) {// protected topic mode
 		_mode.append("t");
+		return sendChan(NULL, RPL_MODE(client, this, "+t"));
+	}
 	if (mode == 'k') { // key protected mode (password)
 		if (_mode.find('k') == NPOS)
 			_mode.append("k");
 		if (!arg.empty())
 			_passwd = takeNextArg(arg);
+		return sendChan(NULL, RPL_MODEPWD(client, this, mode, arg));
 	}
 	if (mode == 'l') { // user limit
 		if (_mode.find('l') == NPOS)
 			_mode.append("l");
 		_limit = std::atoi(takeNextArg(arg).c_str());
-	}
-	if (mode == 'o') { // give op privileges
-		std::string target = takeNextArg(arg);
-		if (target.empty())
-			return ft_send(client->getFd(), ERR_NEEDMOREPARAMS("MODE"));
-		Client *c = _server->getClient(target);
-		if (c == NULL)
-			return ft_send(client->getFd(), ERR_NOSUCHNICK(client, target));
-		if (_clients.find(c->getFd()) == _clients.end())
-			return ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, target, _name));
-		giveOp(c->getFd());
-		sendChan(NULL, RPL_UMODEINCHANIS(client, this, "+o", c));
+		return sendChan(NULL, RPL_MODELIM(client, this, mode, arg));
 	}
 }
 
@@ -94,31 +119,27 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 			sendChan(NULL, RPL_UMODEINCHANIS(client, this, "-o", c));
 		}
 		else
-			ft_send(client->getFd(), ERR_NOSUCHNICK(client, arg));
+			_server->ft_send(client->getFd(), ERR_NOSUCHNICK(client, arg));
 	}
-	else
-		if ((pos = _mode.find(mode)) != NPOS)
+	else {
+		if ((pos = _mode.find(mode)) != NPOS) {
 			_mode.erase(pos, 1);
+			return sendChan(NULL, RPL_MODE(client, this, "-" + mode));
+		}
+	}
 }
+
+void Channel::sortMode() {	std::sort(_mode.begin(), _mode.end()); }
 
 void Channel::sendModeInfo(Client *client) const {
 // send mode infos to specific client
-	if (_mode.find('k') == NPOS)
-		ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getMode()));
-	else if (isClient(client))
-		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, this, getPasswd()));
-	else
-		ft_send(client->getFd(), RPL_CHANNELMODEISWITHKEY(client, this, "[key]"));
+	_server->ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getRPLMode(client->getFd())));
 }
 
 void Channel::sendModeInfo() const {
 	std::set<int>::iterator it;
-	for (it = _clients.begin(); it != _clients.end(); it++) {
-		if (_mode.find('k') == NPOS)
-			ft_send(*it, RPL_CHANNELMODEIS(_server->getClient(*it), this, getMode()));
-		else
-			ft_send(*it, RPL_CHANNELMODEISWITHKEY(_server->getClient(*it), this, getPasswd()));
-	}
+	for (it = _clients.begin(); it != _clients.end(); it++)
+		sendModeInfo(_server->getClient(*it));
 }
 
 bool Channel::isOp(int id) const {
@@ -141,7 +162,7 @@ void Channel::addClient(Client *client) {
 	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
 		return ;
 	if (_mode.find('l') != NPOS && _clients.size() >= _limit)
-		return ft_send(client->getFd(), ERR_CHANNELISFULL(this));
+		return _server->ft_send(client->getFd(), ERR_CHANNELISFULL(this));
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
 	sendWhenJoining(client);
 }
@@ -150,7 +171,7 @@ void Channel::addClientInvite(Client *client) { // PAS DE LIMITES DE CHAN !
 	if (_clients.find(client->getFd()) != _clients.end()) // client is already on the channel
 		return ;
 	if (!this->isInvited(client->getFd())) // client is not on the list
-		return ft_send(client->getFd(), ERR_INVITEONLYCHAN(this));
+		return _server->ft_send(client->getFd(), ERR_INVITEONLYCHAN(this));
 	_clients.insert(client->getFd());
 	sendWhenJoining(client);
 	this->delInvite(client->getFd());
@@ -161,21 +182,19 @@ void Channel::addClientPass(Client *client, std::string key) {
 	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
 		return ; 
 	if (_mode.find('l') != NPOS && _clients.size() >= _limit )
-		return ft_send(client->getFd(), ERR_CHANNELISFULL(this));
+		return _server->ft_send(client->getFd(), ERR_CHANNELISFULL(this));
 	if (key != _passwd)
-		return ft_send(client->getFd(), ERR_BADCHANNELKEY(client, this)); // wrong password
+		return _server->ft_send(client->getFd(), ERR_BADCHANNELKEY(client, this)); // wrong password
 	_clients.insert(client->getFd()); // no mode is set, just add the client to the channel clients list
 	sendWhenJoining(client);
 }
 
 void Channel::sendWhenJoining(Client *client) const {
 	sendChan(NULL, RPL_JOIN_NOTIF(client->getNick(), _name)); //send all users
-	if (_topic.empty())
-		ft_send(client->getFd(), RPL_NOTOPIC(client, this));	
-	else
-		ft_send(client->getFd(), RPL_TOPIC(client, this));
-	ft_send(client->getFd(), RPL_NAMREPLY(client, this, getClientListbyName()));
-	ft_send(client->getFd(), RPL_ENDOFNAMES(client, this));
+	if (!_topic.empty())
+		_server->ft_send(client->getFd(), RPL_TOPIC(client, this));
+	_server->ft_send(client->getFd(), RPL_NAMREPLY(client, this, getClientListbyName()));
+	_server->ft_send(client->getFd(), RPL_ENDOFNAMES(client, this));
 }
 
 void Channel::sendChan(Client *client, std::string msg) const {
@@ -186,24 +205,26 @@ void Channel::sendChan(Client *client, std::string msg) const {
 		fd = client->getFd();
 	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++)	{
 		if (*it != fd)
-			ft_send(*it, msg);
+			_server->ft_send(*it, msg);
 	}
 }
 
 void Channel::sendClients(std::string msg) const { // send msg to all clients except ops
 	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++) {
 		if (_ops.find(*it) == _ops.end())
-			ft_send(*it, msg);
+			_server->ft_send(*it, msg);
 	}
 }
 
 void Channel::sendOps(std::string msg) const { // send msg to all ops
 	for (std::set<int>::iterator it = _ops.begin(); it != _ops.end(); it++)
-		ft_send(*it, msg);
+		_server->ft_send(*it, msg);
 }
 
 void Channel::removeUser( Client *client ){
 	delInvite(client->getFd());
 	removeOp(client->getFd());
 	delClient(client);
+	if (!_server->getBotname().empty() && _clients.size() == 1)
+		_server->ft_send(_server->getClient(_server->getBotname())->getFd(), "LAST:" + _name + "\r\n");
 }
