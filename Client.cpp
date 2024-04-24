@@ -68,7 +68,7 @@ int Client::parse(std::string msg) {
 	trim(msg);
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
 		if (!_server->getBotname().empty() && _fd == _server->getBotFd())
-			std::cout << GREEN "<<(" << _fd << ") : " BLUE << msg << RESET << std::endl;
+			std::cout << GREEN "<<(" << _fd << ") : " BOT << msg << RESET << std::endl;
 		else
 			std::cout << GREEN "<<(" << _fd << ") : " RESET << msg << std::endl;
 	}

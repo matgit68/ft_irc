@@ -85,38 +85,38 @@ void Bot::parse(std::string msg) {
 }
 
 std::string Bot::helpMsg() {
-	return BLUE "Commands are : !keep <channel>, !nokeep <channel>, !op <channel>" RESET;
+	return BOT "Commands are : !keep <channel>, !nokeep <channel>, !op <channel>" RESET;
 }
 
 void Bot::keepMode(Client *target, std::string chanName, bool keeping) {
 	Channel *channel = _server->getChannel(chanName);
 
 	if (channel == NULL)
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "Channel " + chanName + " not found" RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT "Channel " + chanName + " not found" RESET));
 	if (!channel->isClient(this))
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "I'm not a user of channel " + chanName + RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT "I'm not a user of channel " + chanName + RESET));
 	if (keeping) {
 		_persistence.insert(chanName);
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "I will keep " + chanName + " for you" RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT "I will keep " + chanName + " for you" RESET));
 	}
 	if (!keeping && _persistence.find(chanName) != _persistence.end()) {
 		_persistence.erase(chanName);
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE + chanName + " is no longer protected" RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT + chanName + " is no longer protected" RESET));
 	}
 }
 
 void Bot::op(Client *target, std::string chanName) {
 	Channel *channel = _server->getChannel(chanName);
 	if (!channel)
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "Channel not found" + RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT "Channel not found" + RESET));
 	if (channel->isOp(target->getFd()))
-		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "You already have +o privilege in " + chanName + RESET));
+		return _server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT "You already have +o privilege in " + chanName + RESET));
 	if (_owner[chanName] == target->getNick()) {
 		channel->giveOp(target->getFd());
 		channel->sendChan(this, RPL_UMODEINCHANIS(this, channel, "+o", target));
 	}
 	else
-		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BLUE "You don't own this channel" RESET));
+		_server->ft_send(target->getFd(), RPL_PRIVUSERMSG(this, target, BOT "You don't own this channel" RESET));
 }
 
 void Bot::keep(std::string chanName) {

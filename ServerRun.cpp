@@ -85,7 +85,7 @@ void Server::run() {
 					continue;
 				}
 				if (valread == 0) { // client disconnected -> remove fd from epoll, delete Client from clients map then close fd
-					//std::cout << "AutoQuit activated(" << _events[n].data.fd << ")" << std::endl;
+					std::cout << "AutoQuit activated(" << _events[n].data.fd << ")" << std::endl;
 					delClient(_events[n].data.fd, "Disconnected");
 					continue;
 				}

@@ -232,7 +232,7 @@ void Server::ft_send(int fd, std::string msg) {
 	ssize_t size = msg.size();
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
 		if (!_botname.empty() && fd == _keeper->getFd())
-			std::cout << YELLOW ">>(" << fd << ") : " BLUE << msg << RESET;
+			std::cout << YELLOW ">>(" << fd << ") : " BOT << msg << RESET;
 		else
 			std::cout << YELLOW ">>(" << fd << ") : " RESET << msg;
 	}
