@@ -223,10 +223,13 @@ void Server::removeFromAllChannels(Client *client) {
 		Channel *chan = it->second;
 		if (chan->isClient(client))
 			chan->removeUser(client);
+		if (chan->isInvited(client->getFd()))
+			chan->delInvite(client->getFd());
 	}
 }
 
 void Server::ft_send(int fd, std::string msg) {
+	ssize_t size = msg.size();
 	if (msg.find("PING") == NPOS && msg.find("PONG") == NPOS) {
 		if (!_botname.empty() && fd == _keeper->getFd())
 			std::cout << YELLOW ">>(" << fd << ") : " BLUE << msg << RESET;
@@ -236,6 +239,6 @@ void Server::ft_send(int fd, std::string msg) {
 	if (!_botname.empty() && fd == _keeper->getFd())
 		_keeper->react(msg);
 	else if (_clients.find(fd) != _clients.end())
-		if (send(fd, msg.c_str(), msg.size(), 0) != msg.size())
+		if (send(fd, msg.c_str(), size, 0) != size)
 			perror(RED "send" RESET);
 }

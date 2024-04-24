@@ -4,13 +4,13 @@ TODO :
 * Parsing
 	Test, test and retest raw COMMANDS (not formated by a client) -> nc ou /quote
 
-* INVITE
-	what if invited client leave and come back ?
-	Crash if user doesnt exist
-
 ===================================================================================================
 
 DONE :
+
+* INVITE
+	what if invited client leave and come back ?
+	Crash if user doesnt exist
 
 * Valgrind
 	when quitting
@@ -47,7 +47,7 @@ DONE :
 * JOIN
 	RPL message to fix
 	pb status user irssi on chan
-	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!mamat@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
+	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!user@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)
 
 * ERR - RPL messages
 	Better format

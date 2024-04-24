@@ -21,7 +21,7 @@
 # define ERR_NOTONCHANNEL(channel) 					(":" + client->getServer()->getHostname() + " 442 " + client->getNick() + " " + channel + ": The user is not on this channel.\r\n")
 # define ERR_USERONCHANNEL(nick, channel) 			(":" + client->getServer()->getHostname() + " 443 " + client->getNick() + " " + nick + " " + channel + " :Is already on channel\r\n")
 # define RPL_INVITELIST(client, channel) 			(":" + client->getServer()->getHostname() + " 336 " + client->getNick() + " " + channel + "\r\n") // 346 or 336
-# define RPL_ENDOFINVITELIST(client) 				(":" + client->getServer()->getHostname() + " 337 " + client->getNick() + " :End of /INVITE list")
+# define RPL_ENDOFINVITELIST(client) 				(":" + client->getServer()->getHostname() + " 337 " + client->getNick() + " :End of /INVITE list\r\n")
 # define RPL_INVITING(usr_id, nick, channel) 		(usr_id  + " 341 " + client->getNick() + " " + nick + " " + channel + "\r\n")
 # define RPL_INVITE(user_id, invited, channel) 		(user_id + " INVITE " + invited + " " + channel + "\r\n")
 

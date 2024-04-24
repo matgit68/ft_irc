@@ -17,7 +17,8 @@ void Bot::setFd(int f) { _fd = f; }
 
 void Bot::sendToServ(std::string msg) {
 	msg += "\r\n";
-	if (send(_sockFd, msg.c_str(), msg.size(), 0) != msg.size())
+	ssize_t size = msg.size();
+	if (send(_sockFd, msg.c_str(), size, 0) != size)
 		perror("send");
 }
 
