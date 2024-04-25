@@ -8,6 +8,9 @@ TODO :
 
 DONE :
 
+* PASS
+	Deconnect MAY if wrong password (we dont)
+
 * INVITE
 	what if invited client leave and come back ?
 	Crash if user doesnt exist
@@ -40,11 +43,14 @@ DONE :
 * MODE
 	Bad behaviour when +o a user in a chan with multiple users
 	not sending RPL to clients (not RPL 324) :nickName MODE #a :coucou
+	+l. Check atoi -> it's ok to set limit 0 when argument is not a number (atoi). It's not to have a negative limit
 
 * DISCONNECTION
 	send message to users like quit
 
 * JOIN
+	Channame has to be lowercased
+	Better pass system
 	RPL message to fix
 	pb status user irssi on chan
 	Welcome message not complete (should reveive 332, 333, 353 (prefixed) and 366, and :user!user@RZ-kvk5j7.fr.orangecustomers.net JOIN :#pouet)

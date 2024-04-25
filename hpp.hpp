@@ -67,6 +67,7 @@ void dispChanList(Client *, std::string);
 // Utils functions
 void setnonblocking(int fd);
 void trim(std::string &);
+std::string toLowercase(std::string);
 std::string timestring(void);
 std::string takeNextArg(std::string &);
 std::string takeNextArg(char, std::string &);

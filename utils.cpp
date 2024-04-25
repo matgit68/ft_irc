@@ -38,3 +38,10 @@ void trim(std::string &str) {
 			str.erase(i, 1);
 	}
 }
+
+std::string toLowercase(std::string str) {
+    std::string result = str;
+    for (std::string::iterator it = result.begin(); it != result.end(); ++it)
+        *it = std::tolower(*it);
+    return result;
+}

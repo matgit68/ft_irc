@@ -14,6 +14,7 @@ void join(Client *client, std::string args) {
 
 	if (args.empty())
 		return server->ft_send(client->getFd(), ERR_NEEDMOREPARAMS("JOIN"));
+	args = toLowercase(args);
 	chan_name = takeNextArg(args);
 	if (!args.empty())
 		chan_key = takeNextArg(args);
@@ -31,12 +32,10 @@ void join(Client *client, std::string args) {
 			if (chan->getMode().find('i') != NPOS) // invite mode is set. invite overrides +l and +k
 				chan->addClientInvite(client);
 			else if (chan->getMode().find('k') != NPOS) { // key mode is set
-			 	if (keys.empty())
+			 	if (keys.size() < i)
 					server->ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
-				else {
-					chan->addClientPass(client, keys.front()); // try to join with first key
-					keys.erase(keys.begin()); // delete used key
-				}
+				else
+					chan->addClientPass(client, keys[i]); // try to join with first key
 			}
 			else
 				chan->addClient(client);
