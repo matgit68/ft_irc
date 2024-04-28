@@ -103,10 +103,15 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 		return sendChan(NULL, RPL_MODEPWD(client, this, mode, arg));
 	}
 	if (mode == 'l') { // user limit
+		std::string tmp = takeNextArg(arg);
+		if (tmp.find_first_not_of("01234546789") != NPOS || tmp.size() > 3)
+			return;
+		_limit = std::atoi(tmp.c_str());
+		if (_limit > 50)
+			_limit = 50;
 		if (_mode.find('l') == NPOS)
 			_mode.append("l");
-		_limit = std::atoi(takeNextArg(arg).c_str());
-		return sendChan(NULL, RPL_MODELIM(client, this, mode, arg));
+		return sendChan(NULL, RPL_MODELIM(client, this, mode, tmp));
 	}
 }
 
