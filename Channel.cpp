@@ -173,18 +173,15 @@ void Channel::addClient(Client *client) {
 	sendWhenJoining(client);
 }
 
-void Channel::addClientInvite(Client *client) { // PAS DE LIMITES DE CHAN !
+void Channel::addClientInvite(Client *client) { // no chan limit nor password required here 
 	if (_clients.find(client->getFd()) != _clients.end()) // client is already on the channel
 		return ;
-	if (!this->isInvited(client->getFd())) // client is not on the list
-		return _server->ft_send(client->getFd(), ERR_INVITEONLYCHAN(this));
 	_clients.insert(client->getFd());
 	sendWhenJoining(client);
 	this->delInvite(client->getFd());
 }
 
 void Channel::addClientPass(Client *client, std::string key) {
-	std::cout << "KEY JOIN" << std::endl;
 	if (_clients.find(client->getFd()) != _clients.end()) // client already on chan -> nothing to do
 		return ; 
 	if (_mode.find('l') != NPOS && _clients.size() >= _limit )
