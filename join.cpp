@@ -32,7 +32,7 @@ void join(Client *client, std::string args) {
 			if (chan->getMode().find('i') != NPOS) // invite mode is set. invite overrides +l and +k
 				chan->addClientInvite(client);
 			else if (chan->getMode().find('k') != NPOS) { // key mode is set
-			 	if (keys.size() < i)
+			 	if (keys.empty() || keys.size() < i)
 					server->ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
 				else
 					chan->addClientPass(client, keys[i]); // try to join with first key

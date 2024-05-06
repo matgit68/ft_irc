@@ -96,10 +96,11 @@ void Channel::addMode(Client *client, char mode, std::string &arg) {
 		return sendChan(NULL, RPL_MODE(client, this, "+t"));
 	}
 	if (mode == 'k') { // key protected mode (password)
+		if (arg.empty())
+			return;
 		if (_mode.find('k') == NPOS)
 			_mode.append("k");
-		if (!arg.empty())
-			_passwd = takeNextArg(arg);
+		_passwd = takeNextArg(arg);
 		return sendChan(NULL, RPL_MODEPWD(client, this, mode, arg));
 	}
 	if (mode == 'l') { // user limit
