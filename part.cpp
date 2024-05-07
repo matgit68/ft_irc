@@ -11,6 +11,7 @@ void part(Client *client, std::string args) {
 
 	while (!chans.empty()) {
 		chanName = takeNextArg(',', chans);
+		prefixChan(chanName);
 		channel = server->getChannel(chanName);
 		if (channel == NULL)
 			server->ft_send(client->getFd(), ERR_NOSUCHCHANNEL(client, chanName));

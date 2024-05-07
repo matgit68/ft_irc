@@ -8,7 +8,6 @@ CXX = c++
 CPPFLAGS = -std=c++98 -Wall -Wextra -Werror -g3 -fsanitize=address
 
 SRC =	Bot.cpp\
-		cap.cpp\
 		Channel.cpp\
 		Client.cpp\
 		invite.cpp\

@@ -43,10 +43,7 @@ public:
 	void delClient(int, std::string);
 	void disconnectClient(int);
 	void createChannel(std::string, Client *);
-	Channel * addChannel(std::string);
-	Channel * addChannel(std::string, std::string);
 	void delChannel(std::string);
-	void dispChannels(Client *);
 	void checkEmptyChannels();
 	void sendToClientsInTouch(Client *, std::string, bool);
 	void removeFromAllChannels(Client *);

@@ -11,9 +11,9 @@
 # define ERR_UNKNOWNCOMMAND(client, command) 		(":" + client->getServer()->getHostname() + " 421 " + client->getNick() + " " + command + " :Unknown command\r\n")
 # define ERR_INPUTTOOLONG(client) (":" + client->getServer()->getHostname() + " 417 " + " :Input line was too long\r\n")
 
-//CAP
-# define RPL_CAPLS(client)							(":" + client->getServer()->getHostname() + " CAP * LS :\r\n")
-# define RPL_CAPEND(client) 						(":" + client->getServer()->getHostname() + " CAP * END\r\n")
+// //CAP
+// # define RPL_CAPLS(client)							(":" + client->getServer()->getHostname() + " CAP * LS :\r\n")
+// # define RPL_CAPEND(client) 						(":" + client->getServer()->getHostname() + " CAP * END\r\n")
 
 //INVITE
 # define ERR_NEEDMOREPARAMS(command) 				(":" + client->getServer()->getHostname() + " 461 " + client->getNick() + " " + command + " :Not enough parameters.\r\n")
@@ -47,7 +47,6 @@
 # define ERR_NICKNAMEINUSE(client, nickname) 		(":" + client->getServer()->getHostname() + " 433 " + client->getNick() + " " + nickname + " :Nickname is already in use.\r\n")
 # define ERR_ERRONEUSNICKNAME(client, nickname) 	(":" + client->getServer()->getHostname() + " 432 " + client->getNick() + " " + nickname + " :Erroneus nickname\r\n")
 # define RPL_NICK(client) 							(":" + client->getOldNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
-//:oldnick!realname@hostname NICK newnick
 
 //NOTICE
 # define RPL_NOTICE(nick, username, target, msg) 	(":" + nick + "!" + username + "@localhost NOTICE " + target + " " + msg + "\r\n")
@@ -84,8 +83,6 @@
 # define RPL_MODE(op, channel, mode)				(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + "\r\n")
 # define RPL_MODEPWD(op, channel, mode, pwd)		(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + pwd + "\r\n")
 # define RPL_MODELIM(op, channel, mode, lim)		(":" + op->getNick() + "!" + op->getUser() + "@" + op->getServer()->getHostname() + " MODE " + channel->getName() + " " + mode + " " + lim + "\r\n")
-//													  :user1!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +o user2
-//													  :user2!mdjemaa@RZ-8gm.037.148.45.IP MODE #test +k toto
 # define ERR_CANNOTSENDTOCHAN(client, channel) 		("404 " + client->getNick() + " " + channel + " :Cannot send to channel\r\n")
 # define ERR_CHANOPRIVSNEEDED(client, channel) 		(":" + client->getServer()->getHostname() + " 482 " + client->getNick() + " " + channel->getName() + " :You're not channel operator\r\n")
 # define ERR_INVALIDMODEPARAM(cl, ch, mode, pwd) 	("696 " + cl->getNick() + " " + ch->getName() + " " + mode + " " + pwd + " : password must only contained alphabetic character\r\n")
@@ -96,33 +93,4 @@
 //PART
 # define RPL_PART(client, channel, reason) (":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " PART " + channel + " :\"" + reason  + "\"\r\n")
 
-//WHO
-// #define RPL_WHOREPLY (352)
-	// "<client> <channel> <username> <host> <server> <nick> <flags> :<hopcount> <realname>"
-// # define RPL_ENDOFWHO (315)
-	//   "<client> <mask> :End of WHO list"
-/*
-	Examples
-
-Command Examples:
-
-  WHO emersion        ; request information on user "emersion"
-  WHO #ircv3          ; list users in the "#ircv3" channel
-
-Reply Examples:
-
-  :calcium.libera.chat 352 dan #ircv3 ~emersion sourcehut/staff/emersion calcium.libera.chat emersion H :1 Simon Ser
-  :calcium.libera.chat 315 dan emersion :End of WHO list
-                                  ; Reply to WHO emersion
-
-  :calcium.libera.chat 352 dan #ircv3 ~emersion sourcehut/staff/emersion calcium.libera.chat emersion H :1 Simon Ser
-  :calcium.libera.chat 352 dan #ircv3 ~val limnoria/val calcium.libera.chat val H :1 Val
-  :calcium.libera.chat 315 dan #ircv3 :End of WHO list
-                                  ; Reply to WHO #ircv3
-
-*/
-
-
-//WHOIS
-//	"<client> <nick> <username> <host> * :<realname>"
 #define RPL_WHOISUSER(client, target) (":" + client->getServer()->getHostname() + " 311 " + target->getNick() + " " + target->getUser() + " " + target->getHost() + " :" + target->getReal() + "\r\n")

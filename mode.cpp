@@ -42,7 +42,7 @@ void mode(Client *client, std::string args) {
 			modestring.erase(0, 1);
 		}
 		if (!modeset)
-			return ; //server->ft_send(client->getFd(), ERR_UMODEUNKNOWNFLAG());
+			return ;
 		if (isHandled(modestring[0])) {
 			if (modeset == '+')
 				chan->addMode(client, modestring[0], modeargs);
@@ -54,5 +54,4 @@ void mode(Client *client, std::string args) {
 		modestring.erase(0, 1);
 	}
 	chan->sortMode();
-//	chan->sendModeInfo(); // Send all connected clients the new modes
 }

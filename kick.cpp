@@ -27,14 +27,14 @@ void kick(Client *client, std::string args) {
 		target = client->getServer()->getClient(nick);
 		if (!target) {
 			std::cout << "Target _" << nick << "_ not found" << std::endl;
-			server->ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, nick, chanName)); //to confirm //	server->ft_send(client->getFd(), ERR_NOSUCHNICK(client->getNick(), nick)
+			server->ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, nick, chanName));
 			continue;
 		}
 		if (!chan->isClient(target))
 			server->ft_send(client->getFd(), ERR_USERNOTINCHANNEL(client, nick, chanName));
 		else {
 			chan->sendChan(NULL, RPL_KICK(client, chanName, target, args));
-			chan->removeUser(target); // to confirm
+			chan->removeUser(target);
 		}
 	}
 	client->getServer()->checkEmptyChannels();

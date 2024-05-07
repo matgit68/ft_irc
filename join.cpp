@@ -1,10 +1,5 @@
 #include "hpp.hpp"
 
-static void prefixChan(std::string &name) {
-	if (name[0] != '#')
-		name.insert(name.begin(), '#');
-}
-
 void join(Client *client, std::string args) {
 	std::string chan_name, chan_key;
 	std::string tmp;
@@ -26,18 +21,24 @@ void join(Client *client, std::string args) {
 		keys.push_back(takeNextArg(',', chan_key));
 
 	for (size_t i = 0; i < names.size(); i++) {
-		if ((!(chan = server->getChannel(names[i])))) // Channel doesn't exist
-			return server->createChannel(names[i], client);
-		if (chan->isInvited(client->getFd())) // client is invited. Invite overrides +l and +k
-			return chan->addClientInvite(client);
-		if (chan->getMode().find('i') != NPOS) // invite mode is set and client was not invited.
-			return server->ft_send(client->getFd(), ERR_INVITEONLYCHAN(chan));
+		if ((!(chan = server->getChannel(names[i])))) { // Channel doesn't exist
+			server->createChannel(names[i], client);
+			continue;
+		}
+		if (chan->isInvited(client->getFd())) { // client is invited. Invite overrides +l and +k
+			chan->addClientInvite(client);
+			continue;
+		}
+		if (chan->getMode().find('i') != NPOS) { // invite mode is set and client was not invited.
+			server->ft_send(client->getFd(), ERR_INVITEONLYCHAN(chan));
+			continue;
+		}
 		if (chan->getMode().find('k') != NPOS) { // key mode is set
 			if (keys.empty() || keys.size() < i)
 				server->ft_send(client->getFd(), ERR_BADCHANNELKEY(client, chan)); // no password was given
 			else
 				chan->addClientPass(client, keys[i]); // try to join with first key
-			return ;
+			continue;
 		}
 		chan->addClient(client); // no mode, any client can join
 	}

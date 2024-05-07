@@ -1,13 +1,5 @@
 #include "hpp.hpp"
 
-// Command: USER
-//   Parameters: <username> 0 * <realname>
-	// for me '0' is the hostname
-	//		'*' is servername
-	// i don't remerber where i've seen thqt, i don't find it anymore
-	// have you see something like this to fill ur blank ?
-// USER user_name user_name 127.0.0.1 :real_name
-
 void user(Client *client, std::string args) {
 	Server *server = client->getServer();
 

@@ -138,7 +138,6 @@ void Channel::unMode(Client *client, char mode, std::string &arg) {
 void Channel::sortMode() {	std::sort(_mode.begin(), _mode.end()); }
 
 void Channel::sendModeInfo(Client *client) const {
-// send mode infos to specific client
 	_server->ft_send(client->getFd(), RPL_CHANNELMODEIS(client, this, getRPLMode(client->getFd())));
 }
 
@@ -200,9 +199,9 @@ void Channel::sendWhenJoining(Client *client) const {
 	_server->ft_send(client->getFd(), RPL_ENDOFNAMES(client, this));
 }
 
-void Channel::sendChan(Client *client, std::string msg) const {
 // If client is set, send msg to all clients connected to the chan EXCEPT the sender
 // If client is NULL, send to ALL clients, even the sender
+void Channel::sendChan(Client *client, std::string msg) const {
 	int fd = 0;
 	if (client != NULL)
 		fd = client->getFd();
@@ -210,18 +209,6 @@ void Channel::sendChan(Client *client, std::string msg) const {
 		if (*it != fd)
 			_server->ft_send(*it, msg);
 	}
-}
-
-void Channel::sendClients(std::string msg) const { // send msg to all clients except ops
-	for (std::set<int>::iterator it = _clients.begin(); it != _clients.end(); it++) {
-		if (_ops.find(*it) == _ops.end())
-			_server->ft_send(*it, msg);
-	}
-}
-
-void Channel::sendOps(std::string msg) const { // send msg to all ops
-	for (std::set<int>::iterator it = _ops.begin(); it != _ops.end(); it++)
-		_server->ft_send(*it, msg);
 }
 
 void Channel::removeUser( Client *client ){

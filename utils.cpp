@@ -10,6 +10,11 @@ void setnonblocking(int fd) {
 		perror("fcntl");
 }
 
+void prefixChan(std::string &name) {
+	if (name[0] != '#')
+		name.insert(name.begin(), '#');
+}
+
 // returns the next string delimited by space (or char sep if specified) and remove it from str
 std::string takeNextArg(std::string &str) { // single argument version uses ' ' as delimiter
 	return takeNextArg(' ', str);

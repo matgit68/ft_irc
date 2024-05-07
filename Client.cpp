@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int f, Server *s): _host("default"), _server(s), _fd(f), _response(false), _passwd(false), _gone(false) {}
+Client::Client(int f, Server *s): _host("default"), _server(s), _fd(f), _response(false), _passwd(false) {}
 
 Client::~Client() {}
 
@@ -21,8 +21,6 @@ bool Client::getResponse() const { return _response; }
 bool Client::getPasswd() const { return _passwd; }
 
 bool Client::getStatus(void) const { return _passwd && !_nick.empty() && !_real.empty() && !_user.empty(); }
-
-bool Client::isGone(void) const { return _gone; }
 
 std::string Client::getHost() const { return _host; }
 
@@ -45,8 +43,6 @@ void Client::setOldNick(std::string nickname) { _oldnick = nickname; }
 void Client::setHost(std::string h) { _host = h; }
 
 void Client::setReal(std::string r) { _real = r; }
-
-void Client::setGone(bool g) { _gone = g; }
 
 void Client::receive(char* str) { 
 	_buffer.append(str);

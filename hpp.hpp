@@ -53,7 +53,6 @@ void kick(Client *, std::string);
 void invite(Client *, std::string);
 void topic(Client *, std::string);
 void mode(Client *, std::string);
-void cap(Client *, std::string);
 void pass(Client *, std::string);
 void nick(Client *, std::string);
 void user(Client *, std::string);
@@ -61,11 +60,11 @@ void quit(Client *, std::string);
 void join(Client *, std::string);
 void privmsg(Client *, std::string);
 void part(Client *, std::string);
-void whois(Client *, std::string);
 void who(Client *, std::string);
 
 // Utils functions
-void setnonblocking(int fd);
+void prefixChan(std::string &);
+void setnonblocking(int);
 void trim(std::string &);
 std::string toLowercase(std::string);
 std::string timestring(void);

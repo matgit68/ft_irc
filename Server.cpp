@@ -98,13 +98,6 @@ void Server::createChannel(std::string chanName, Client *creator) {
 	}
 }
 
-Channel * Server::addChannel(std::string channel) {
-	if (_channels.find(channel) == _channels.end())
-		_channels[channel] = new Channel(this, channel);
-	return _channels[channel];
-}
-
-
 void Server::delChannel(std::string channel) {
 	if (_channels.find(channel) != _channels.end())
 		delete _channels[channel];
@@ -117,19 +110,12 @@ bool Server::findChannel(std::string channel)
 	return true;
 }
 
-void Server::dispChannels(Client *client) {
-	std::map<std::string, Channel*>::iterator it;
-	for(it = _channels.begin(); it != _channels.end(); it++)
-		ft_send(client->getFd(), it->second->getName());
-}
-
 void Server::initFunPtr() {
 	_commands["PING"] = &ping;
 	_commands["KICK"] = &kick;
 	_commands["INVITE"] = &invite;
 	_commands["TOPIC"] = &topic;
 	_commands["MODE"] = &mode;
-	_commands["CAP"] = &cap;
 	_commands["PASS"] = &pass;
 	_commands["NICK"] = &nick;
 	_commands["USER"] = &user;
@@ -157,7 +143,6 @@ void Server::delClient(int fd, std::string reason) {
 		checkEmptyChannels();
 		delete _clients[fd];
 		_clients.erase(fd);
-		//ft_send(fd, ERR_QUIT); // end of IRC suppression part
 
 		if (epoll_ctl(_epollfd, EPOLL_CTL_DEL,fd, &_ev) == FAIL) { // unwatch fd
 			perror("epoll_ctl: DEL");
@@ -174,8 +159,7 @@ void Server::delClient(int fd, std::string reason) {
 
 bool Server::isNickAvailable(std::string& newNick) {
 	std::map<int, Client*>::iterator it;
-	for(it = _clients.begin(); it != _clients.end(); it++)
-	{
+	for(it = _clients.begin(); it != _clients.end(); it++) {
 		if(it->second->getNick() == newNick)
 			return false;
 	}
