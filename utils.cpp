@@ -1,12 +1,7 @@
 #include "hpp.hpp"
 
 void setnonblocking(int fd) {
-	int flags;
-	flags = fcntl(fd, F_GETFL, 0);
-	if (flags == FAIL)
-		perror("fcntl");
-	flags |= O_NONBLOCK;
-	if (fcntl(fd, F_SETFL, flags) == FAIL)
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) == FAIL)
 		perror("fcntl");
 }
 

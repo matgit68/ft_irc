@@ -7,20 +7,15 @@
 # define RPL_CREATED(client, datetime) 				(":" + client->getServer()->getHostname() + " 003 " + client->getNick() + " :This server was created " + datetime + "\r\n")
 # define RPL_MYINFO(c, u_m, c_m, cp_m) 				(":" + client->getServer()->getHostname() + " 004 " + client->getNick() + " " + client->getServer()->getHostname() + " " + VERSION + " " + u_m + " " + c_m + " " + cp_m + "\r\n")
 # define RPL_ISUPPORT(client, tokens) 				(":" + client->getServer()->getHostname() + " 005 " + client->getNick() + " " + tokens " :are supported by this server\r\n")
-//ERR_NOMOTD (422)
 # define ERR_UNKNOWNCOMMAND(client, command) 		(":" + client->getServer()->getHostname() + " 421 " + client->getNick() + " " + command + " :Unknown command\r\n")
 # define ERR_INPUTTOOLONG(client) (":" + client->getServer()->getHostname() + " 417 " + " :Input line was too long\r\n")
-
-// //CAP
-// # define RPL_CAPLS(client)							(":" + client->getServer()->getHostname() + " CAP * LS :\r\n")
-// # define RPL_CAPEND(client) 						(":" + client->getServer()->getHostname() + " CAP * END\r\n")
 
 //INVITE
 # define ERR_NEEDMOREPARAMS(command) 				(":" + client->getServer()->getHostname() + " 461 " + client->getNick() + " " + command + " :Not enough parameters.\r\n")
 # define ERR_NOSUCHCHANNEL(client, channel) 		(":" + client->getServer()->getHostname() + " 403 " + client->getNick() + " " + channel + " :No such channel\r\n")
 # define ERR_NOTONCHANNEL(channel) 					(":" + client->getServer()->getHostname() + " 442 " + client->getNick() + " " + channel + ": The user is not on this channel.\r\n")
 # define ERR_USERONCHANNEL(nick, channel) 			(":" + client->getServer()->getHostname() + " 443 " + client->getNick() + " " + nick + " " + channel + " :Is already on channel\r\n")
-# define RPL_INVITELIST(client, channel) 			(":" + client->getServer()->getHostname() + " 336 " + client->getNick() + " " + channel + "\r\n") // 346 or 336
+# define RPL_INVITELIST(client, channel) 			(":" + client->getServer()->getHostname() + " 336 " + client->getNick() + " " + channel + "\r\n")
 # define RPL_ENDOFINVITELIST(client) 				(":" + client->getServer()->getHostname() + " 337 " + client->getNick() + " :End of /INVITE list\r\n")
 # define RPL_INVITING(usr_id, nick, channel) 		(usr_id  + " 341 " + client->getNick() + " " + nick + " " + channel + "\r\n")
 # define RPL_INVITE(user_id, invited, channel) 		(user_id + " INVITE " + invited + " " + channel + "\r\n")
@@ -47,9 +42,6 @@
 # define ERR_NICKNAMEINUSE(client, nickname) 		(":" + client->getServer()->getHostname() + " 433 " + client->getNick() + " " + nickname + " :Nickname is already in use.\r\n")
 # define ERR_ERRONEUSNICKNAME(client, nickname) 	(":" + client->getServer()->getHostname() + " 432 " + client->getNick() + " " + nickname + " :Erroneus nickname\r\n")
 # define RPL_NICK(client) 							(":" + client->getOldNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " NICK " + client->getNick() + "\r\n")
-
-//NOTICE
-# define RPL_NOTICE(nick, username, target, msg) 	(":" + nick + "!" + username + "@localhost NOTICE " + target + " " + msg + "\r\n")
 
 //QUIT
 # define RPL_QUIT(client, reason) 					(":" + client->getNick() + "!" + client->getUser() + "@" + client->getServer()->getHostname() + " QUIT :Quit: " + reason + "\r\n")
